@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chat</title>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgb(224, 224, 224);
+            /* background-image: url("winter.jpg"); */
+        }
+        #chat {
+            padding: 20px;
+            height: 500px;
+            width: 1130px;
+            color: rgb(255, 255, 255);
+            font-size: 19px;
+            /* background:linear-gradient(#008cffc2, #442222d7); */
+            background: rgba(122, 41, 41, 0.63);
+            overflow-x: hidden;
+            word-wrap: break-word;
+            border: 3px solid rgb(165, 0, 0);
+            border-radius: 5px;
+        }
+        #chat div {
+            /* display: inline-block; */
+            /* background: rgba(255, 0, 0, 0.548); */
+            background: rgba(0, 0, 0, 0.45);
+            color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+
+        #nickname, #chatMessage, #sendMessage {
+            padding: 10px 20px;
+            color: rgb(206, 206, 206);
+            background: rgb(43, 43, 43);
+            border: 2px solid rgb(165, 0, 0);
+            margin-top: 25px;
+            font-size: 19px;
+            border-radius: 20px;
+        }
+        #nickname {
+            text-align: center;
+            width: 250px;
+        }
+        #chatMessage {
+            width: 500px;
+        }
+        #sendMessage {
+            font-size: 19px;
+            width: 250px;
+        }
+    </style>
+
+</head>
+<body>
+    
+    <div id="chat"></div>
+    
+    <div>
+
+
+        <input id="nickname" type="text" value="Ваш ник">
+        <input id="chatMessage" type="text" value="Ваше сообщение">
+            
+        <button id="sendMessage">Отправить</button>
+        </form>
+    </div>
+
+    <script>
+        
+        async function jsonPost (url, data) {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                if (response.ok) {
+                    // console.log(response)
+                    return await response.json()
+                }
+                return console.log("Ошибка")
+            }
+            catch (error) {
+                console.log("Ошибка", error)
+            }
+        }   
+
+        const chat = document.getElementById("chat")
+        let indexPosta = 0 // хранится индекс массива с начальным/последним положением
+        
+        post(0) // отрисовываем весь чат с нулевого индекса объекта
+        
+        async function post (index) {
+            let result = await jsonPost("/", {
+                func: "getMessages",
+                messageId: index
+            })
+            
+            
+            console.log(result.data)     
+            // console.log(index)
+            
+            let i = indexPosta
+            let arrMessage = result.data
+            
+            // если сообщения не добавлялись, выход из функции
+            if (result.nextMessageId === indexPosta) {
+                // console.log("тут1")
+                return
+            }
+            
+            // // если индекс изменился с последнего на +1, меняем предпоследний индекс поста на последний
+            
+            if (result.nextMessageId === indexPosta + 1) {
+                // console.log("тут2")
+                indexPosta = result.nextMessageId
+            }
+            
+            // // если отрисовка начинается с первого сообщения, запоминаем последний индекс
+            if (index === 0) {
+                // console.log("тут3")
+                indexPosta = result.nextMessageId
+            }
+            
+            // console.log(arrMessage)
+            
+            // // перебор и добавление сообщений
+            arrMessage.forEach (function (elem) {
+                const div = document.createElement("div")
+                const p = document.createElement("p")
+                
+                
+                
+                p.textContent = `${i++}) ${elem.nickname}: ${elem.message}`
+                        div.append(p)
+                        chat.append(div) // div со всеми элементами добавили в сам чат
+                    })
+                    
+                    chat.scrollBy(0, chat.scrollHeight)
+                    
+                }
+                
+                // // интервал
+                setInterval( () => {
+                    post(indexPosta) // отрисовка если добавилось новое сообщение
+                }, 1000)
+        
+
+
+        // setInterval( () => {
+
+        
+        // }, 1000)
+
+
+
+        document.getElementById("chatMessage").addEventListener("keydown", function (event) {
+            // event.preventDefault()
+            
+            if (event.code === "Enter") {
+                let userName = document.getElementById("nickname").value
+                let userText = document.getElementById("chatMessage").value
+                
+    
+                // Отправка данных на сервер
+                jsonPost("/", {
+                    func: 'addMessage',
+                    nickname: userName,
+                    message: userText
+                })
+    
+                document.getElementById("chatMessage").value = "" // очистка поля для текста
+    
+                post(indexPosta) // отрисовываем с последней позиции при клике
+            }
+            
+        })
+
+        
+        // document.getElementById("sendMessage").addEventListener("keydown", function (event) {
+            // if (event.code === "Enter") {
+            //     console.log("нажал ентер")
+            // }
+        // })
+
+    </script>
+
+</body>
+</html>
