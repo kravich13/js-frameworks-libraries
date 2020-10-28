@@ -90,3 +90,92 @@ localhost:3000/products/4
 
 Товар 4
 ```
+*** 
+
+
+
+
+## Обработчики маршрутов
+
+Для обработки запроса можно указать несколько функций обратного вызова подобно middleware. 
+
+Единственным исключением является то, что эти обратные вызовы могут инициировать `next('route')` для обхода остальных обратных вызовов маршрута. С помощью этого механизма можно включить в маршрут предварительные условия, а затем передать управление последующим маршрутам, если продолжать работу с текущим маршрутом не нужно.
+
+
+Один маршрут может обрабатываться несколькими функциями обратного вызова (**объект next обязателен**): 
+
+```javascript
+app.get("/example/b", function (req, res, next) {
+    console.log("перешел на страницу")
+    next()
+}, function (req, res) {
+    res.send("Привет b")
+})
+
+app.listen(3000)
+```
+
+Массив функций обратного вызова может обрабатывать один маршрут:
+
+```javascript
+const cb0 = function (req, res, next) {
+    console.log("Один")
+    next()
+}
+
+const cb1 = function (req, res, next) {
+    console.log("Два")
+    next()
+}
+
+const cb2 = function (req, res, next) {
+    res.send("Привет на C")
+}
+
+app.get("/example/c", [cb0, cb1, cb2])
+
+app.listen(3000)
+```
+
+Маршрут может обрабатываться сочетанием независимых функций и массивов функций:
+
+```javascript
+const cb0 = function (req, res, next) {
+    console.log("Один")
+    next()
+}
+
+const cb1 = function (req, res, next) {
+    console.log("Два")
+    next()
+}
+
+app.get("/example/d", [cb0, cb1], function (req, res, next) {
+    console.log("Сочетание массива и встроенной функции, три")
+    next()
+}, function (req, res) {
+    res.send("Привет d")
+})
+
+app.listen(3000)
+```
+***
+## app.route()
+
+Метод `app.route()` позволяет создавать обработчики маршрутов, образующие цепочки, для пути маршрута:
+
+```javascript
+app.route("/kravich")
+    .get( function (req, res) {
+        res.send("Прочитать блог")
+    })
+    .post( function (req, res) {
+        res.send("Добавить в блог")
+    })
+    .put( function (req, res) {
+        res.send("Обновить блог")
+    })
+
+app.listen(3000)
+```
+
