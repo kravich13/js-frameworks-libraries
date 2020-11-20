@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Общий чат</title>
+</head>
+<body>
+    
+    <nav>
+        <p id="countUsers">0 online |</p>
+        <p id="whatChat">| Общий чат</p>
+    </nav>
+
+    <div id="chat">
+    </div>
+
+    <form name="formUserData" id="formSendChat">
+        <input id="userName" name="userName" type="text" placeholder="Ваш никнейм" value="Anonymous">
+        <input id="userMessage" name="userMessage" type="text" placeholder="Ваше сообщение">
+        <button id="sendMessage" name="sendMessage">></button>
+    </form>
+
+
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+
+        async function jsonPost(url, data) {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                if (response.ok) {
+                    // console.log(response)
+                    return await response.json()
+                }
+                return console.log("Ошибка")
+            } catch (error) {
+                console.log("Ошибка", error)
+            }
+        }
+
+
+        const socket = io()
+
+        const $navUsers = document.getElementById("countUsers")
+        const $chatWindow = document.getElementById("chat")
+
+        const $form = document.forms.formUserData
+        const name = $form.elements.userName
+        const message = $form.elements.userMessage
+        
+
+        // отрисовать сообщения с самого начала
+        all(0)
+        async function all (index) {
+
+            const result = await jsonPost("/", {
+                messageId: index
+            })
+
+            // console.log(result)
+
+            for (let data of result) {
+                domRendering(data)
+            }
+        }
+
+        function domRendering (data) {
+            const regexp = /\d{1,2}:\d{2}/
+            const finalyTime = data.createdAt.match(regexp)
+
+            const $div = document.createElement("div")
+            let $p = document.createElement("p")
+            const $br = document.createElement("br")
+            const $span = document.createElement("span")
+            $p.textContent = `${data.user}: ${data.message} `
+            $div.append($p)
+            
+            $p = document.createElement("p")
+            $p.textContent = finalyTime
+            $p.id = "dataTime"
+            $div.append($p)
+
+            $chatWindow.append($div)
+            $chatWindow.append($br)
+            $chatWindow.scrollBy(0, chat.scrollHeight)
+        }
+
+        // если есть новое сообщение - получить
+        socket.on("lastMessage", function (data) {
+            domRendering(data)
+        })
+        
+        
+        // кол-во пользователей онлайн
+        socket.on("numberOfUsers", function (count) {
+            $navUsers.innerHTML = `${count} online |`
+        })
+
+        $form[2].addEventListener("click", function (event) {
+            event.preventDefault()
+            
+            if (name.value != "" && message.value != "") {
+                socket.emit("addMessage", {name: name.value, message: message.value})
+                return message.value = ""
+            }
+        })
+        
+        
+    </script> 
+
+</body>
+</html>
