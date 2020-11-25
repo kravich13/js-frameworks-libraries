@@ -25,31 +25,80 @@ body {
     background: rgb(224, 224, 224);
     /* background-image: url("winter.jpg"); */
 }
-
 nav {
     display: flex;
-    flex-direction: row;
     justify-content: center;
+    flex-direction: row;
+    /* justify-content: space-between; */
 
-    padding: 3px 5px;
+    padding: 12px 5px;
     color: rgb(206, 206, 206);
     background: rgb(43, 43, 43);
     font-size: 19px;
     width: 100%;
 }
-
+nav #containerNav {
+    display: flex;
+    justify-content: center;
+    width: 1070px;
+}
+#chatRoom {
+    display: flex;
+    justify-content: center;
+    width: 300px;
+}
+#addRoom {
+    /* color: rgb(255, 255, 255);
+    font-size: 19px;
+    background: rgba(122, 41, 41, 0.3);
+    border: 1px solid rgb(165, 0, 0); */
+    color: rgb(206, 206, 206);
+    background: rgb(43, 43, 43);
+    border: 2px solid rgb(165, 0, 0);
+    font-size: 19px;
+    border-radius: 8px;
+}
+#messagesRoom {
+    display: flex;
+    justify-content: center;
+    width: 730px;
+}
+section {
+    display: flex;
+    background: lightblue;
+    height: 740px;
+    /* flex-direction: column; */
+}
+#allRooms {
+    /* height: 740px; */
+    width: 300px;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 19px;
+    background: rgba(122, 41, 41, 0.63);
+    border: 1px solid rgb(165, 0, 0);
+    /* padding: 0 10px; */
+}
+#allRooms div p {
+    padding: 5px 10px;
+}
+.rooms {
+    background: rgb(197, 197, 197, 0.3);
+    padding: 3px 8px;
+}
 #chat {
     padding: 20px;
-    height: 700px;
-    width: 1130px;
+    /* height: 700px; */
+    width: 730px;
     color: rgb(255, 255, 255);
     font-size: 19px;
     /* background:linear-gradient(#008cffc2, #442222d7); */
     background: rgba(122, 41, 41, 0.63);
     overflow-x: hidden;
     word-wrap: break-word;
-    border: 3px solid rgb(165, 0, 0);
-    border-radius: 5px;
+    border: 1px solid rgb(165, 0, 0);
+    /* border-radius: 5px; */
 }
 
 #chat div {
