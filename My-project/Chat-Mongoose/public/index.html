@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Общий чат</title>
+</head>
+<body>
+    
+    <nav>
+        <div id="containerNav">
+            <div id="chatRoom">
+                <input type="text" id="addRoom" placeholder="Название и Enter">
+            </div>
+            <div id="messagesRoom">
+                <p id="countUsers">0 online |</p>
+                <p id="whatChat">| Общий чат</p>
+            </div>
+        </div>
+    </nav>
+
+    <section>
+        <div id="allRooms"></div>
+        <div id="chat"></div>
+    </section>
+
+    <form name="formUserData" id="formSendChat">
+        <input id="userName" name="userName" type="text" placeholder="Ваш никнейм" value="Anonymous">
+        <input id="userMessage" name="userMessage" type="text" placeholder="Ваше сообщение">
+        <button id="sendMessage" name="sendMessage">></button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+
+        async function jsonPost(url, data) {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                if (response.ok) {
+                    return await response.json()
+                }
+                return console.log("Ошибка")
+            } catch (error) {
+                console.log("Ошибка", error)
+            }
+        }
+
+
+        const socket = io()
+
+        const $navUsers = document.getElementById("countUsers")
+        const $chatWindow = document.getElementById("chat")
+        const $addRoom = document.getElementById("addRoom")
+        const $allRooms = document.getElementById("allRooms")
+        let $rooms = document.getElementsByClassName("rooms")
+        const $navNameRoom = document.getElementById("whatChat")
+ 
+        
+        const arrRooms = []
+        let lastElement
+        let currentElement
+
+        const $form = document.forms.formUserData
+        const name = $form.elements.userName
+        const message = $form.elements.userMessage
+        
+
+        // отрисовать все комнаты и переписку из начальной комнаты
+        all()
+        async function all () {            
+            const result = await jsonPost("/", {
+                nameRoom: ""
+                // передать название комнаты на которую нажал пользователь
+            })
+
+            const arrShowTables = result.showTables
+            const arrHistoryMessages = result.history
+
+            // Отрисовка всех комнат и подсветка самой первой
+            arrShowTables.forEach(elem => {
+                domRenderingRooms(elem)
+            })
+
+            $rooms[0].style.backgroundColor = "darkcyan"
+            $rooms[0].flagTable = true
+            lastElement = $rooms[0]
+            currentElement = $rooms[0].textContent
+            $navNameRoom.textContent = `| ${currentElement}`
+
+            // Отрисовка сообщений текущей первой комнаты
+            arrHistoryMessages.forEach(elem => {
+                domRenderingMessages(elem)
+            })
+        }
+
+        function domRenderingRooms (room) {
+            const $p = document.createElement("p")
+            $p.className = "rooms"
+            $p.textContent = room
+            arrRooms.push($p)
+            $allRooms.append($p)
+        }
+
+        function domRenderingMessages (data) {
+            const date = new Date(data.createdAt)
+            const currentDate = `${date.getHours()}:${date.getMinutes()}`
+            
+            const $div = document.createElement("div")
+            let $p = document.createElement("p")
+            const $br = document.createElement("br")
+            const $span = document.createElement("span")
+            $p.textContent = `${data.user}: ${data.message} `
+            $div.append($p)
+            
+            $p = document.createElement("p")
+            $p.textContent = currentDate
+            $p.id = "dataTime"
+            $div.append($p)
+
+            $chatWindow.append($div)
+            $chatWindow.append($br)
+            $chatWindow.scrollBy(0, chat.scrollHeight)
+        }
+
+        // если есть новое сообщение, проверить, из этой ли оно комнаты
+        socket.on("lastMessage", function (data) {
+            if (currentElement === data[1]) return domRenderingMessages(data[0])
+        })
+        
+        
+        // кол-во пользователей онлайн
+        socket.on("numberOfUsers", function (count) {
+            $navUsers.innerHTML = `${count} online |`
+        })
+
+        
+        // если добавили новую комнату - отрисовать
+        socket.on("newRoom", function (talbeName) {
+            domRenderingRooms(talbeName)
+        })
+
+        $form[2].addEventListener("click", function (event) {
+            event.preventDefault()
+
+            if (name.value != "" && message.value != "") {
+                socket.emit("addMessage", {name: name.value, message: message.value}, currentElement)
+                return message.value = ""
+            }
+        })
+    
+
+        document.body.addEventListener("click", async function (event) {
+            const et = event.target
+            
+
+            // если тыкнул на комнату из массива
+            if (et.classList.contains("rooms")) {     
+                // если комната является текущей
+                // если да - ничего не делать и записать последний элемент в переменную
+                if (et.flagTable) return lastElement = et
+
+
+                lastElement.style.backgroundColor = ""
+                lastElement.flagTable = false
+                et.flagTable = true
+                et.style.backgroundColor = "darkcyan"
+                lastElement = et
+                currentElement = et.textContent
+                $navNameRoom.textContent = `| ${et.textContent}`
+                
+                $chatWindow.innerHTML = ""
+                
+                // отправка запроса на сервер по адресу
+                const result = await jsonPost("/", {
+                    nameRoom: et.textContent,
+                }) 
+
+                result.history.forEach(elem => {
+                    domRenderingMessages(elem)
+                })
+            }
+        })
+
+
+        $addRoom.addEventListener("keydown", function (event) {
+            const et = event.target
+
+            if (event.code === "Enter") {
+                if (et.value === "") return et.placeholder = "Пустая строка"
+                
+                console.log(et.value)
+
+                const regexp = /^\w$/ig
+
+                console.log(et.value.match(regexp))
+
+                // Отправить на серв данные о новой комнате с указанным именем
+                socket.emit("addRoom", et.value)
+                et.value = ""
+                et.placeholder = "Название и Enter"
+            }
+        })
+
+    </script> 
+
+</body>
+</html>

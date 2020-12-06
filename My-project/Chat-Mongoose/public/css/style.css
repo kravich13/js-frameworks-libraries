@@ -1,0 +1,147 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ul, li, ol, fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgb(224, 224, 224);
+    /* background-image: url("winter.jpg"); */
+}
+nav {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    /* justify-content: space-between; */
+
+    padding: 12px 5px;
+    color: rgb(206, 206, 206);
+    background: rgb(43, 43, 43);
+    font-size: 19px;
+    width: 100%;
+}
+nav #containerNav {
+    display: flex;
+    justify-content: center;
+    width: 1070px;
+}
+#chatRoom {
+    display: flex;
+    justify-content: center;
+    width: 300px;
+}
+#addRoom {
+    /* color: rgb(255, 255, 255);
+    font-size: 19px;
+    background: rgba(122, 41, 41, 0.3);
+    border: 1px solid rgb(165, 0, 0); */
+    color: rgb(206, 206, 206);
+    background: rgb(43, 43, 43);
+    border: 2px solid rgb(165, 0, 0);
+    font-size: 19px;
+    border-radius: 8px;
+}
+#messagesRoom {
+    display: flex;
+    justify-content: center;
+    width: 730px;
+}
+section {
+    display: flex;
+    background: lightblue;
+    height: 740px;
+    /* flex-direction: column; */
+}
+#allRooms {
+    /* height: 740px; */
+    width: 300px;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 19px;
+    background: rgba(122, 41, 41, 0.63);
+    border: 1px solid rgb(165, 0, 0);
+    /* padding: 0 10px; */
+}
+#allRooms div p {
+    padding: 5px 10px;
+}
+.rooms {
+    background: rgb(197, 197, 197, 0.3);
+    padding: 3px 8px;
+}
+#chat {
+    padding: 20px;
+    /* height: 700px; */
+    width: 730px;
+    color: rgb(255, 255, 255);
+    font-size: 19px;
+    /* background:linear-gradient(#008cffc2, #442222d7); */
+    background: rgba(122, 41, 41, 0.63);
+    overflow-x: hidden;
+    word-wrap: break-word;
+    border: 1px solid rgb(165, 0, 0);
+    /* border-radius: 5px; */
+}
+
+#chat div {
+    display: inline-block;
+    background: rgba(255, 0, 0, 0.548);
+    background: rgba(0, 0, 0, 0.45);
+    color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 5px 15px;
+    margin-bottom: 5px;
+}
+
+#chat p {
+    text-align: right;
+}
+
+#dataTime {
+    text-align: end;
+    font-size: 17px;
+}
+
+#userName,
+#userMessage,
+#sendMessage {
+    padding: 10px 20px;
+    color: rgb(206, 206, 206);
+    background: rgb(43, 43, 43);
+    border: 2px solid rgb(165, 0, 0);
+    margin-top: 25px;
+    font-size: 19px;
+    border-radius: 20px;
+}
+
+#userName {
+    text-align: center;
+    width: 150px;
+}
+
+#userMessage {
+    width: 400px;
+}
+
+#sendMessage {
+    font-size: 19px;
+    width: 85px;
+}
