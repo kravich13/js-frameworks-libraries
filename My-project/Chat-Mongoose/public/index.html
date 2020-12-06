@@ -31,8 +31,8 @@
         <button id="sendMessage" name="sendMessage">></button>
     </form>
 
-    <script src="/socket.io/socket.io.js"></script>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script>
 
         async function jsonPost(url, data) {
@@ -51,6 +51,18 @@
             } catch (error) {
                 console.log("Ошибка", error)
             }
+        }
+
+        // изменение адреса url
+        function changeUrl (title, url) {
+            if (typeof (history.pushState) != undefined) {
+
+                let obj = { Title: title, Url: url }
+                history.pushState(obj, obj.Title, obj.Url)
+                return 
+            }
+
+            return console.log("Не поддерживается")
         }
 
 
@@ -84,24 +96,38 @@
             const arrShowTables = result.showTables
             const arrHistoryMessages = result.history
 
+
             // Отрисовка всех комнат и подсветка самой первой
             arrShowTables.forEach(elem => {
                 domRenderingRooms(elem)
             })
-
+            
             $rooms[0].style.backgroundColor = "darkcyan"
             $rooms[0].flagTable = true
             lastElement = $rooms[0]
             currentElement = $rooms[0].textContent
             $navNameRoom.textContent = `| ${currentElement}`
 
+
+            // console.log(lastElement.tex)
+
             // Отрисовка сообщений текущей первой комнаты
             arrHistoryMessages.forEach(elem => {
                 domRenderingMessages(elem)
             })
+
+            changeUrl(lastElement.textContent, `?nameRoom=${lastElement.textContent}`)
+            document.title = `Chat|${lastElement.textContent}`
         }
 
         function domRenderingRooms (room) {
+            // const $a = document.createElement("a")
+            // $a.className = "rooms"
+            // $a.textContent = room
+            // $a.href = `?nameRoom=${room}`
+            // arrRooms.push($a)
+            // $allRooms.append($a)
+
             const $p = document.createElement("p")
             $p.className = "rooms"
             $p.textContent = room
@@ -179,13 +205,17 @@
                 $chatWindow.innerHTML = ""
                 
                 // отправка запроса на сервер по адресу
-                const result = await jsonPost("/", {
+                const result = await jsonPost(`/`, {
                     nameRoom: et.textContent,
                 }) 
 
                 result.history.forEach(elem => {
                     domRenderingMessages(elem)
                 })
+
+                changeUrl(et.textContent, `?nameRoom=${et.textContent}`)
+                document.title = `Chat|${et.textContent}`
+
             }
         })
 
@@ -210,6 +240,5 @@
         })
 
     </script> 
-
 </body>
 </html>

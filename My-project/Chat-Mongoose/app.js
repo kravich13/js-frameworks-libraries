@@ -72,21 +72,31 @@ async function addRoomsInMongoDB (nameTable) {
 
     try {
         await allCollections[nameTable].createCollection()
-        console.log("Коллекция успешно создана и добавлена в БД.")
+        console.log("Коллекция успешно синхронизирована с БД.")
     } catch (err) {
         return console.log(err)
     }
 }
 
-app.use(express.static(path.join(__dirname, 'public')))
 
-app.get("/:room")
+// let dirtyRoomArr = []
+// let cleanLength 
+
+// app.use(function (req, res, next) {
+//     dirtyRoomArr.push(req.query.nameRoom)
+//     next()
+// })
 
 app.post("/", jsonParser, function (req, res) {
     if (!req.body) return res.sendStatus(400)
 
-    // console.log(req.query.user = "VladKravich")
+    // const cleanRoomArr = dirtyRoomArr.filter(function (elem) {
+    //     if (elem != undefined) return true
+    // })
+    // cleanLength = cleanRoomArr.length
+    // console.log(cleanRoomArr[cleanRoomArr.length - 1])
 
+    
     // если у клиента отрисовка впервые - послать ему чат из первой таблицы в списке
     if (req.body.nameRoom === "") {
 
@@ -155,4 +165,5 @@ io.on("connection", function (socket) {
     })
 })
 
+app.use(express.static(path.join(__dirname, 'public')))
 server.listen(PORT)
