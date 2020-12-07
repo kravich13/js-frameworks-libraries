@@ -11,6 +11,7 @@ const { response } = require('express')
 const { type } = require('os')
 const { send } = require("process")
 const { table } = require("console")
+const { captureRejectionSymbol } = require("events")
 const PORT = process.env.PORT || 3000
 
 
@@ -61,7 +62,7 @@ const messageStorageScheme = new Schema({
 
 
 try {
-    mongoose.connect("mongodb://localhost:27017/generalChat", { useUnifiedTopology: true})
+    const generalChat = mongoose.connect("mongodb://localhost:27017/generalChat", { useUnifiedTopology: true})
 } catch (err) {
     console.log(err)
 }
@@ -78,29 +79,32 @@ async function addRoomsInMongoDB (nameTable) {
     }
 }
 
+const urlRoomUser = []
 
-// let dirtyRoomArr = []
-// let cleanLength 
+app.get("/", function (req, res) {
+    res.redirect("/rooms")
+})
 
-// app.use(function (req, res, next) {
-//     dirtyRoomArr.push(req.query.nameRoom)
-//     next()
-// })
+app.get("/rooms", function (req, res) {
+    urlRoomUser[0] = req.query.nameRoom
+    res.sendFile(path.join(__dirname, "public", "index.html"))
+})
 
-app.post("/", jsonParser, function (req, res) {
+
+app.post("/rooms", jsonParser, function (req, res) {
     if (!req.body) return res.sendStatus(400)
-
-    // const cleanRoomArr = dirtyRoomArr.filter(function (elem) {
-    //     if (elem != undefined) return true
-    // })
-    // cleanLength = cleanRoomArr.length
-    // console.log(cleanRoomArr[cleanRoomArr.length - 1])
 
     
     // если у клиента отрисовка впервые - послать ему чат из первой таблицы в списке
     if (req.body.nameRoom === "") {
-
-        correspondenceTables = arrNamesCollections[0]
+        
+        if (!urlRoomUser[0]) { // если url-параметра не было, то вернуть как обычно
+            return gettingDataInTables(allCollections[arrNamesCollections[0]])
+        }
+        // если введенный параметр не равен параметру по дефолту
+        if (urlRoomUser[0] != arrNamesCollections[0]) {
+            return gettingDataInTables(allCollections[urlRoomUser[0]])
+        }
         return gettingDataInTables(allCollections[arrNamesCollections[0]])
     }
 
@@ -111,7 +115,7 @@ app.post("/", jsonParser, function (req, res) {
 
         keyConst.find({}, function (err, docs) {
             if (err) return console.log(err)
-            res.json({showTables: arrNamesCollections, history: docs})
+            res.json({showTables: arrNamesCollections, history: docs, transferredRoom: urlRoomUser[0]})
         })
     } 
 })

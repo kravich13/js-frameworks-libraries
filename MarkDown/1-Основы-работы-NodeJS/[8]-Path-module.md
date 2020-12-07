@@ -48,6 +48,10 @@ const path = require("path")
     path.join('/srv/app', '../config/..', 'app/app.js') // \srv\app\app.js
     ```
 
+    **Важно**
+    * `app.use(express.static(path.join(__dirname, 'public')))` работает только для корреного пути (отдаёт файл для прорисовки с подключенными стилями).
+    * `res.sendFile(path.join(__dirname, "public", "index.html"))` нужно подключать к каждому **роутеру**. При таком подходе на всех платформах путь будет отображён корректно.
+
 * `normalize()` - корректирует переданный путь в нормальный вид: 
 
     ```javascript

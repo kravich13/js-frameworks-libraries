@@ -88,45 +88,53 @@
         // отрисовать все комнаты и переписку из начальной комнаты
         all()
         async function all () {            
-            const result = await jsonPost("/", {
+            const result = await jsonPost("/rooms", {
                 nameRoom: ""
                 // передать название комнаты на которую нажал пользователь
             })
 
             const arrShowTables = result.showTables
             const arrHistoryMessages = result.history
+            const strTransferredRoom = result.transferredRoom
 
 
+            
             // Отрисовка всех комнат и подсветка самой первой
             arrShowTables.forEach(elem => {
                 domRenderingRooms(elem)
             })
+
+
+            function roomAllocation (numb) {
+                $rooms[numb].style.backgroundColor = "darkcyan"
+                $rooms[numb].flagTable = true
+                lastElement = $rooms[numb]
+                currentElement = $rooms[numb].textContent
+                $navNameRoom.textContent = `| ${currentElement}`
+            }
             
-            $rooms[0].style.backgroundColor = "darkcyan"
-            $rooms[0].flagTable = true
-            lastElement = $rooms[0]
-            currentElement = $rooms[0].textContent
-            $navNameRoom.textContent = `| ${currentElement}`
-
-
-            // console.log(lastElement.tex)
-
+            if (!strTransferredRoom) {
+                roomAllocation(0)
+            }
+            else {
+                for (let i = 0; i < arrShowTables.length; i++) {
+                    if (strTransferredRoom === $rooms[i].textContent) {
+                        roomAllocation(i)
+                    }
+                }        
+            }
+        
             // Отрисовка сообщений текущей первой комнаты
             arrHistoryMessages.forEach(elem => {
                 domRenderingMessages(elem)
             })
 
+            // Установка url адреса на выделенную комнату
             changeUrl(lastElement.textContent, `?nameRoom=${lastElement.textContent}`)
             document.title = `Chat|${lastElement.textContent}`
         }
 
         function domRenderingRooms (room) {
-            // const $a = document.createElement("a")
-            // $a.className = "rooms"
-            // $a.textContent = room
-            // $a.href = `?nameRoom=${room}`
-            // arrRooms.push($a)
-            // $allRooms.append($a)
 
             const $p = document.createElement("p")
             $p.className = "rooms"
@@ -205,7 +213,7 @@
                 $chatWindow.innerHTML = ""
                 
                 // отправка запроса на сервер по адресу
-                const result = await jsonPost(`/`, {
+                const result = await jsonPost(`/rooms`, {
                     nameRoom: et.textContent,
                 }) 
 
