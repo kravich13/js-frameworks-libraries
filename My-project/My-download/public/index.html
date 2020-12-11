@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <form name="formUserData" enctype=" multipart/form-data">
+        <input type="file" name="userFile" id="test">
+        <button type="submit">Отправить</button>
+    </form>
+
+</body>
+
+<script>
+    const $form = document.forms.formUserData
+
+    
+    $form[1].addEventListener("click", function (event) {
+        event.preventDefault()
+
+        const file = $form[0].files[0]
+
+        const xhr = new XMLHttpRequest()
+        xhr.open("POST", "/upload", true)
+        console.log(file.name)
+        xhr.send({test: file.name})
+    })
+
+</script>
+
+</html>
