@@ -5,6 +5,8 @@ const fs = require("fs")
 const path = require("path")
 const { chdir } = require("process")
 const { pipeline } = require('stream')
+const { json } = require("body-parser")
+const jsonParser = express.json()
 const server = require('http').createServer(app)
 const PORT = process.env.PORT || 3000
 
@@ -31,20 +33,25 @@ const PORT = process.env.PORT || 3000
 // 2) Считывание файла с диска и перезапись его на диск.
 
 // 2.1) копирование файла в другое место 
-const fileData = path.parse("/uploads/Cold Rush & Tiff Lacey - Cry Wolf (Original Mix).mp3")
-const readableStream = fs.createReadStream(`uploads/${fileData.base}`)
-const chunks = []
+// const fileData = path.parse("/uploads/17_Corona_-_Baby_Baby.mp3")
+// const readableStream = fs.createReadStream(`uploads/${fileData.base}`)
+// const writeableStream = fs.createWriteStream(`rewriting/${fileData.base}`)
 
-readableStream.on("data", chunk => {
-    chunks.push(chunk)
-})
+// copyFile(readableStream, writeableStream)
 
-readableStream.on("end", () => {
-    const file = chunks.join('') 
+// async function copyFile (origin, destination) {
+//     for await (const chunk of origin) {
+//         destination.write(chunk)
+//     }
+//     console.log("Закончил")
+// }
 
-    const writeableStream = fs.createWriteStream(`rewriting/${fileData.base}`)
-    writeableStream.write(file)
-})
+// readableStream.on("data", chunk => {
+    // writeableStream.write(chunk)
+// })
+
+// readableStream.on("end", () => {
+// })
 
 
 // 2.2) перенаправление потока чтения в поток записи
@@ -62,6 +69,49 @@ readableStream.on("end", () => {
 // 		}
 // 	}
 // )
+
+
+
+// 3) Считывание текстовых данных файла
+// const fileData = path.parse("/uploads/kravich.txt")
+// const readableStream = fs.createReadStream(`uploads/${fileData.base}`)
+
+
+// readableStream.setEncoding("utf8") // установка кодировки, иначе вернет баффер
+// readableStream.on("readable", () => {
+//     while ((chunk = readableStream.read()) !== null) {
+//         console.log(chunk)
+//         // Vlad Kravich 
+//         // 13kk+$
+//         break
+//     }
+// })
+
+
+app.post("/", function (req, res) {
+
+    // const readableStream = fs.createReadStream(req)
+
+    const chunks = []
+
+    req.on("readable", () => {
+        let chunk
+        while ((chunk = req.read()) !== null) {
+            chunks.push(chunk)
+            break
+        }
+    })
+
+    req.on("end", () => {
+        const finaly = chunks.join(" ")
+        console.log(finaly)
+    })
+
+
+    res.json("qq")
+})
+
+
 
 
 app.use(express.static(path.join(__dirname, 'public')))
