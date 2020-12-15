@@ -39,9 +39,17 @@ readableStream.on("data", function (chunk) {
 
 Запись файла производится с помощью метода `write()`, в который передаются данные. Для окончания записи используется метод `end()`.
 
+
 Для создания потока чтения применяется метод `fs.createReadStream()`, в который передаётся название файла и его кодировка.
 
-Сам поток разбивается на ряд кусков и при считывании каждого такого куска, возникает событие `data`. С помощью метода `on()` можно подписаться на это событие и вывести каждый кусок данных в консоль.
+### ***Ивенты Readable:***
+
+* `data` - получение потоком данных;
+* `resume` - инициируется при вызове метода `resume()`;
+* `pause` - инициируется при вызове метода `pause()`;
+* `close` - возникает при закрытии источника данных или самого потока;
+* `end` - генерируется, когда из источника считаны все данные;
+* `error` - возникновение в потоке ошибки, обработчику аргументом передается объект ошибки.
 
 ### Terminal
 
@@ -53,43 +61,29 @@ VIP
 Точно такой же вид имеет файл `hello.txt`.
 ***
 
-## Pipe
+## Pipeline
 
-`Pipe` - это канал, который связывает поток для чтения и поток для записии и позволяет сразу считать из потока чтения в поток записи.   
+`Pipeline` - это канал, который связывает поток для чтения и поток для записии и позволяет сразу считать из потока чтения в поток записи. 
 
-Копирование данных из одного файла в другой:
+Имеет ключевую особенность от метода `pipe` в том, что при прерывании юзером загрузки (закрыл вкладку/браузер/комп), **загрузка завершится сразу же**, а не будет висеть в памяти до перезапуска в сервере.
 
-```javascript
-const fs = require("fs")
+Копирование данных из одной файла в папке в другой файл в другой папке:
 
-// Чтение файла
-let readableStream = fs.createReadStream("hello.txt", "utf8")
+```js
+const { pipeline } = require('stream')
 
-// Запись файла
-let writeableStream = fs.createWriteStream("some.txt")
+const readableStream = fs.createReadStream("uploads/Cold Rush & Tiff Lacey - Cry Wolf (Original Mix).mp3")
+const writeableStream = fs.createWriteStream("rewriting/Cold Rush & Tiff Lacey - Cry Wolf (Original Mix).mp3")
 
-// Копирование из hello.txt в some.txt
-readableStream.pipe(writeableStream)
-```
-
-У потока чтения вызывается метод `pipe()` в который передаётся поток записи.
-
-Пример с архивацией файла, где сначала нужно считать файл, затем сжать данные и в конце записать сжатые данные в файл-архив.
-
-```javascript
-// Модуль на чтение и архивации
-const fs = require("fs")
-const zlib = require("zlib")
-
-// 1) Чтение из файла hello.txt
-let readableStream = fs.createReadStream("hello.txt", "utf8")
-
-// 2) Определние файла hello.txt.gz
-let writeableStream = fs.createWriteStream("hello.txt.gz")
-
-// 3) Архивируем модуль
-let gzip = zlib.createGzip()
-
-// 4) Файл hello.txt запихиваем в архив hello.txt.gz
-readableStream.pipe(gzip).pipe(writeableStream)
+pipeline(
+    readableStream,
+    writeableStream,
+	(err) => {
+		if (err) {
+			console.error('Pipeline failed.', err)
+		} else {
+			console.log('Pipeline succeeded.')
+		}
+	}
+)
 ```

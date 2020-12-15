@@ -19,15 +19,18 @@
     const $form = document.forms.formUserData
 
     
-    $form[1].addEventListener("click", function (event) {
+    $form[1].addEventListener("click", async function (event) {
         event.preventDefault()
 
-        const file = $form[0].files[0]
+        // const file = $form[0].files[0]
+        // const fileId = `${file.lastModified}-${file.size}-${file.name}`
 
-        const xhr = new XMLHttpRequest()
-        xhr.open("POST", "/upload", true)
-        console.log(file.name)
-        xhr.send({test: file.name})
+        
+        // const response = await fetch("upload", {
+        //     headers: {
+        //         "X-File-Id": fileId
+        //     }
+        // })
     })
 
 </script>
