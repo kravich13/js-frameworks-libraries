@@ -7,30 +7,20 @@
     <title>Document</title>
 </head>
 <body>
-    
-    <form name="formUserData" enctype=" multipart/form-data">
+
+    <form name="formUserData" enctype="multipart/form-data">
         <input type="file" name="userFile" id="test">
-        <!-- <button type="submit">Отправить</button> -->
+        <button type="submit">Отправить</button>
     </form>
+
+    <!-- <p id="audioName"></p>
+    <audio id="test" controls style="width:100%;max-width:600px;">
+        <source  src="" type="audio/mp3">
+    </audio> -->
+
 
 </body>
 
-<script>
-    const $form = document.forms.formUserData
-
-    
-    $form[1].addEventListener("click", async function (event) {
-        // const file = $form[0].files[0]
-        // const fileId = `${file.lastModified}-${file.size}-${file.name}`
-
-        
-        // const response = await fetch("upload", {
-        //     headers: {
-        //         "X-File-Id": fileId
-        //     }
-        // })
-    })
-
-</script>
+<script src="/js/script.js"></script>
 
 </html>

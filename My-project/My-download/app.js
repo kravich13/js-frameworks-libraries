@@ -6,9 +6,10 @@ const path = require("path")
 const { chdir } = require("process")
 const { pipeline } = require('stream')
 const { json } = require("body-parser")
+const events = require("events")
 const jsonParser = express.json()
 const server = require('http').createServer(app)
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 4000
 
 
 
@@ -20,20 +21,24 @@ const PORT = process.env.PORT || 3000
 
 
 // 1) Чтение файла в виде бинарки
-// const readableStream = fs.createReadStream("uploads/kravich.txt", "utf8")
+// const fileData = path.parse("/uploads/kravich.txt")
+// const readableStream = fs.createReadStream(`uploads/${fileData.base}`)
 
-// readableStream.on("data", chunk => {
-//     console.log(Buffer.from(new String(chunk)))
-//     // arrChunks.push(Buffer.from(new String(chunk)))
+// // readableStream.setEncoding("utf8") // установка кодировки, иначе вернет баффер
+// readableStream.on("readable", () => {
+//     while ((chunk = readableStream.read()) !== null) {
+//         console.log(chunk)
+//         // Vlad Kravich 
+//         // 13kk+$
+//         break
+//     }
 // })
-
-
 
 
 // 2) Считывание файла с диска и перезапись его на диск.
 
 // 2.1) копирование файла в другое место 
-// const fileData = path.parse("/uploads/17_Corona_-_Baby_Baby.mp3")
+// const fileData = path.parse("/uploads/Cold Rush & Tiff Lacey - Cry Wolf (Original Mix).mp3")
 // const readableStream = fs.createReadStream(`uploads/${fileData.base}`)
 // const writeableStream = fs.createWriteStream(`rewriting/${fileData.base}`)
 
@@ -47,7 +52,7 @@ const PORT = process.env.PORT || 3000
 // }
 
 // readableStream.on("data", chunk => {
-    // writeableStream.write(chunk)
+//     writeableStream.write(chunk)
 // })
 
 // readableStream.on("end", () => {
@@ -88,27 +93,56 @@ const PORT = process.env.PORT || 3000
 // })
 
 
+// 4) Считать файл с диска и отправить клиенту потоками
+
 app.post("/", function (req, res) {
 
-    // const readableStream = fs.createReadStream(req)
+    // const fileData = path.parse("/uploads/Cold Rush & Tiff Lacey - Cry Wolf (Original Mix).mp3")
+    // const readableStream = fs.createReadStream(`uploads/${fileData.base}`)
 
-    const chunks = []
+    // resFile(readableStream, res) 
 
-    req.on("readable", () => {
-        let chunk
-        while ((chunk = req.read()) !== null) {
-            chunks.push(chunk)
-            break
+
+    const fileName = req.headers["file-name"]
+    const writeableStream = fs.createWriteStream(`rewriting/${fileName}`)
+
+    reqFile(req, writeableStream)
+
+    // 5) Передача файла от клиента серверу
+    async function reqFile (origin, destination) {
+        try {
+            for await (const chunk of origin) {
+                const isDrained = destination.write(chunk)
+			    if (!isDrained) await events.once(destination, "drain")
+            }
+            destination.end()
+            console.log("готово")
+
+        } catch (err) {
+            origin.destroy()
+            destination.destroy()
+            console.log(err)
         }
-    })
+    }
 
-    req.on("end", () => {
-        const finaly = chunks.join(" ")
-        console.log(finaly)
-    })
+    // 4) Передача файла от сервера клиенту
+    async function resFile (origin, destination) {
+        try {
+            res.setHeader('AudioName', fileData.name)
 
+            for await (const chunk of origin) { 
+                const isDrained = destination.write(chunk)
+			    if (!isDrained) await events.once(destination, "drain")
+            }
 
-    res.json("qq")
+            destination.end()
+
+        } catch (err) {
+            origin.destroy()
+            destination.destroy()
+            console.log(err)
+        }
+    }
 })
 
 

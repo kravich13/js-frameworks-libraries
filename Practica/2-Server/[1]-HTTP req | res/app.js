@@ -80,3 +80,35 @@
 //     response.end()
 
 // }).listen(3000)
+
+
+
+
+// Запросы request с сервера
+
+const http = require("http")
+const express = require("express")
+const app = express()
+
+app.get('/', (req, res) => {
+    console.log("тут")
+    console.log(req.body)
+    res.end("красава")
+})
+app.listen(3000)
+
+
+const options = {
+    method: "get",
+    path: "/",
+    port: 3000
+}
+
+const req = http.request(options, (res) => {
+    // console.log(res) 
+})
+
+req.end()
+
+
+

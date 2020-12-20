@@ -25,62 +25,100 @@ http.createServer( function (request, response) {
 }).listen(3000)
 ```
 
-У неё есть два параметра: 
-* `request` - хранит информацию о запросе.
-* `response` - управляет отправкой ответа.
+### ***Запрос из сервера:***
+
+* ### `http.request (options[, callback])` 
+    Позволяет отправить запрос из сервера в этот же сервер, есть следующие основные `options`:
+
+    
+    * `method` - по дефолту: `GET`.
+    * `port` - по дефолту: `80` для **http** и `443` для **https**.
+    * `host` | `hostname` - например **kravich.com**, по дефолту: `localhost`.
+    * `path` - путь запроса,  /index.html?user=kravich.
+    * `port` - порт.
+    * `headers` - объект с заголовками.
+
+    Возвращает **поток записи** (`writeable`).
+
+    ```js
+    const http = require("http")
+    const express = require("express")
+    const app = express()
+
+    app.get('/', (req, res) => {
+        console.log("тут")
+    })
+    app.listen(3000)
+
+
+    const options = {
+        method: "get",
+        path: "/",
+        port: 3000
+    }
+
+    const req = http.request(options, (res) => {
+        console.log(res)
+    })
+
+    req.end()
+    ```
 ***
 
-## Request 
+## Параметры createServer
 
-Параметр `request` позволяет получить информацию о запросе и представляет объект `http.IncomingMessage`. Основые свойства этого объекта:
-* `headers` - возвращает заголовок запроса.
-* `method` - тип запроса (`GET`, `POST`, `DELETE`, `PUT`).
-* `url` - представляет запрошенный адрес.
+* ### `Request`
+    Позволяет получить информацию о запросе и представляет объект `http.IncomingMessage`. Основые свойства этого объекта:
+    * `headers` - возвращает заголовок запроса.
+    * `method` - тип запроса (`GET`, `POST`, `DELETE`, `PUT`).
+    * `url` - представляет запрошенный адрес.
 
-Пример использования: 
+    Пример использования: 
 
-```javascript
-const http = require("http")
+    ```javascript
+    const http = require("http")
 
-http.createServer( function (request, response) {
+    http.createServer( function (request, response) {
 
-    console.log(`Url: ${request.url}`)
-    console.log(`Тип запроса: ${request.method}`)
-    console.log(`User-Agent: ${request.headers["user-agent"]}`)
-    console.log("Все заголовки")
-    console.log(request.headers)
-     
-    response.end()
-}).listen(3000)
-```
-***
+        console.log(`Url: ${request.url}`)
+        console.log(`Тип запроса: ${request.method}`)
+        console.log(`User-Agent: ${request.headers["user-agent"]}`)
 
-## Response
+        // Все заголовки
+        console.log(request.headers)
+        // Один заголовок
+        console.log(request.getHeader('Content-Type')
+        
+        response.end()
+    }).listen(3000)
+    ```
 
-Параметр `response` управляет отправкой ответа и представляет объект `http.ServerResponse`. У него есть следующие основные методы:
-* `statusCode` - устанавливает статусный код ответа.
-* `statusMessage` - устанавливает сообщение, отправленное вместе со статусным кодом.
-* `setHeader(name, value)` - добавляет в ответ один заголовок.
-* `write` - пишет в поток ответа некоторое содержимое.
-* `writeHead` - добавляет в ответ статусный код и набор заголовков.
-* `end` - сигнализирует серверу, что заголовки и тело ответа установлены и в итоге отслылается ответ клиента. Данный метод должен вызываться в каждом запросе.
 
-Пример использования: 
+* ### `Response`
+    Управляет отправкой ответа и представляет объект `http.ServerResponse`. У него есть следующие основные методы:
+    * `statusCode` - устанавливает статусный код ответа.
+    * `statusMessage` - устанавливает сообщение, отправленное вместе со статусным кодом.
+    * `setHeader(name, value)` - добавляет в ответ один заголовок.
+    * `write` - пишет в поток ответа некоторое содержимое.
+    * `writeHead` - добавляет в ответ статусный код и набор заголовков.
+    * `end` - сигнализирует серверу, что заголовки и тело ответа установлены и в итоге отслылается ответ клиента. Данный метод должен вызываться в каждом запросе.
 
-```javascript
-const http = require("http")
- 
-http.createServer( function (request, response) {
-     
-    response.setHeader("UserId", 12)
-    response.setHeader("Content-Type", "text/html; charset=utf-8;")
-    response.write("<h2>Vlad Kravich</h2>")
-    response.end()
+    Пример использования: 
 
-}).listen(3000)
-```
+    ```javascript
+    const http = require("http")
+    
+    http.createServer( function (request, response) {
+        
+        response.setHeader("UserId", 12)
+        response.setHeader("Content-Type", "text/html; charset=utf-8;")
+        response.write("<h2>Vlad Kravich</h2>")
+        response.end()
 
-В инструментах браузера по пути `Network` - `all` - `localhost` - `headers` можно найти все Хедеры.
+    }).listen(3000)
+    ```
+
+    В инструментах браузера по пути `Network` - `all` - `localhost` - `headers` можно найти все Хедеры.
 ***
 
 ## Маршрутизация 

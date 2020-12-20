@@ -1,64 +1,96 @@
-# Stream и Pipe
+# Stream, Readable, Writable
 
-## Stream
+`Stream` представляет поток данных, среди которых можно выделить поток **чтения**, **записи** и одновременный поток **чтения** и **записи**.
+***
 
-`Stream` представляет поток данных, потоки бывают различных типов, среди которых можно выделить "потоки для чтения" и "потоки для записи".
+## Поток чтения
+`fs.createStream()` - поток **чтения**.
 
-С помощью этих двух потоков можно считывать и записывать информацию в файл (как в сампе при регистрации аккаунта создавался новый файл с кучей полей): 
+Поток чтения - это также и `req` **запрос** от клиента.
+
+Принимает два параметра:
+1. `path` - типа `string` | `Buffer` | `URL`.
+2. `options` - типа `string` | `Object`.
+
+
+### ***Ивенты:***
+
+Основные ивенты чтения `readable.on("event", callback)`: 
+* `data` - применяется для чтения потока, его лучше **не** использовать, т.к. в случае закрытия страницы у клиента во время потока - поток сам не закроется.
+
+* `readable` - применяется для чтения потока и не имеет недостатков `data`.
+* `end` - сигнализирует о том, что поток чтения был окончен.
+	
+Пример с событием `readable`, чтения данных из файла с помощью `stream.read()`: 
 
 ```javascript
-// Модуль для работы с файлами
-const fs = require("fs")
+const fileData = path.parse("/uploads/kravich.txt")
+const readableStream = fs.createReadStream(`uploads/${fileData.base}`)
+const chunks = [] // массив кусков (один кусок 64 кб)
 
-// В переменную записьСтрим записали файл hello.txt
-let writeableStream = fs.createWriteStream("hello.txt")
-
-// Запись в сам файл
-writeableStream.write("Имя \n")
-writeableStream.write("Возраст\n")
-// Окончание записи
-writeableStream.end("VIP")
-
-
-// Создание потока для чтения в файл hello.txt
-let readableStream = fs.createReadStream("hello.txt", "utf8")
-
-
-// на файл hello.txt вешается обработчик
-readableStream.on("data", function (chunk) {
-    console.log(chunk)
+readableStream.setEncoding("utf8") // установка кодировки, иначе вернет баффер
+readableStream.on("readable", () => {
+	let chunk
+    while ((chunk = readableStream.read()) !== null) {
+        chunks.push(chunk)
+        break
+    }
+})
+readableStream.on("end", () => { // финал
+    const finaly = chunks.join(" ")
+    console.log(finaly)
+    // Vlad Kravich 
+	// 13kk+$
 })
 ```
+***
 
-Для создания потока записи применяется метод `fs.createWriteStream()`, в который передаётся **два** параметра:
+## Поток записи
 
-1. название файла. 
-2. кодировка файла.
+`fs.createWriteStream()` - поток **записи**.
 
-Если такого файла в папке нет - он будет создан.
+Поток записи - это также `res` поток отправки данных клиенту.
 
-Запись файла производится с помощью метода `write()`, в который передаются данные. Для окончания записи используется метод `end()`.
+Принимает два параметра:
+1. `path` - типа `string` | `Buffer` | `URL`.
+2. `options` - типа `string` | `Object`.
 
 
-Для создания потока чтения применяется метод `fs.createReadStream()`, в который передаётся название файла и его кодировка.
+### ***Ивенты:***
 
-### ***Ивенты Readable:***
+Основные ивенты чтения `writeableStream.on("event", callback)`: 
+* `close` - срабатывает, когда любой из его базовых ресурсов закрыт. Событие указывает, что больше никаких событий не будет и вычислений тоже.
 
-* `data` - получение потоком данных;
-* `resume` - инициируется при вызове метода `resume()`;
-* `pause` - инициируется при вызове метода `pause()`;
-* `close` - возникает при закрытии источника данных или самого потока;
-* `end` - генерируется, когда из источника считаны все данные;
-* `error` - возникновение в потоке ошибки, обработчику аргументом передается объект ошибки.
+* `drain` - если `stream.write(chunk)` возвращает `false`, ивент `drain` будет сгенерирован, когда будет необходимо возобновить запись данных в поток. 
+* `finish` - генерируется после того, как `stream.end()` метод был вызван, и все данные были сброшены в базовую систему. 
 
-### Terminal
+### ***Примеры:***
+Пример с одновременным чтением и записью в другой файл с помощью метода `writable.write()`:
 
+**Важное уточнение**: если поток чтения готов, а поток записи не закончен - то поток чтения буфферизируется и занимает память. Т.е. происходит синхронное действие: к примеру 3 чтения и 1 запись. А должно быть асинхронно: 1 чтение - 1 запись.
+
+Для эффективного решения ипользуется событие `stream.drain()`, если `stream.write(chunk)` возвращает `false` - то это событие срабатывает и ждёт, когда нужно будет возобновить запись.
+
+```js
+const fileData = path.parse("/uploads/Cold Rush & Tiff Lacey - Cry Wolf (Original Mix).mp3")
+const readableStream = fs.createReadStream(`uploads/${fileData.base}`)
+const writeableStream = fs.createWriteStream(`rewriting/${fileData.base}`)
+
+// передаётся поток чтения и записи
+copyFile(readableStream, writeableStream) 
+
+async function copyFile (origin, destination) {
+    for await (const chunk of origin) { 
+		// пока один кусок не прочитается и не запишется - цикл продолжен не будет
+		const isDrained = destination.write(chunk)
+		
+		if (!isDrained) await events.once(destination, "drain") // нужен модуль events
+	}
+
+	destination.end()
+}
 ```
-Имя 
-Возраст
-VIP
-```
-Точно такой же вид имеет файл `hello.txt`.
+**Важно** отметить, что для полного окончания записи нужно использовать `writeable.end()`, чтобы сервер дал понять, что запись всех кусков была завершена. 
 ***
 
 ## Pipeline
@@ -72,18 +104,21 @@ VIP
 ```js
 const { pipeline } = require('stream')
 
-const readableStream = fs.createReadStream("uploads/Cold Rush & Tiff Lacey - Cry Wolf (Original Mix).mp3")
-const writeableStream = fs.createWriteStream("rewriting/Cold Rush & Tiff Lacey - Cry Wolf (Original Mix).mp3")
+const fileData = path.parse("/uploads/Cold Rush & Tiff Lacey - Cry Wolf (Original Mix).mp3")
+const readableStream = fs.createReadStream(`uploads/${fileData.base}`)
+const writeableStream = fs.createWriteStream(`rewriting/${fileData.base}`)
 
-pipeline(
-    readableStream,
-    writeableStream,
-	(err) => {
-		if (err) {
-			console.error('Pipeline failed.', err)
-		} else {
-			console.log('Pipeline succeeded.')
-		}
+run(readableStream, writeableStream) 
+
+async function run (origin, dest) {
+	try {
+		await pipeline(origin, dest)
+		// чтение и запись на лету
+	} 
+	catch (err) { // в случае какой-то ошибки убиваем все процессы
+		origin.destroy()	
+		dest.destroy()
+		console.log(err)
 	}
-)
+}
 ```
