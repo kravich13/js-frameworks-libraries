@@ -38,7 +38,7 @@ http.createServer( function (request, response) {
     * `port` - порт.
     * `headers` - объект с заголовками.
 
-    Возвращает **поток записи** (`writeable`).
+    Сам `req` возвращает **поток записи** (`writeable`), а `res` внутри него - поток **чтения** (`readable`).
 
     ```js
     const http = require("http")
@@ -55,7 +55,7 @@ http.createServer( function (request, response) {
         method: "get",
         path: "/",
         port: 3000
-    }
+    }   
 
     const req = http.request(options, (res) => {
         console.log(res)

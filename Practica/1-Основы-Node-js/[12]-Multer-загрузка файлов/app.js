@@ -17,7 +17,7 @@ const urlencodedParser = bodyParser.urlencoded( {extended: false} )
 // const upload = multer( {dest:"uploads"} )
 
 
-
+const storage = multer.memoryStorage()
 const storageConfig = multer.diskStorage({
     destination: (req, file, cb) => { // 1
         cb(null, "uploads")

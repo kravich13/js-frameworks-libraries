@@ -107,6 +107,53 @@ app.post("/upload", upload.single("filedata"), function (req, res) {
     return res.send("Файл загружен")
 })
 ```
+
+### ***Методы приёма файлов:***
+
+* ### `upload.single (filename)`
+    Принимает только один файл с входными данными `name="filename"`. Единственный файл будет сохранён в `req.file`:
+
+    ```javascript
+    upload.single("filedata")
+    ```
+
+* ### `.array(fieldname [,maxcount])`
+    Принимает массив файлов с помощью `name="filename"`. Будет ошибка, если кол-во файлов больше, чем `maxcount`. Массив хранится в `req.file`:
+
+    ```javascript
+    upload.array("filesdatas", 3)
+    ```
+
+* ### `fields(fields)`
+    Принимает сочетание разных файлов с разных `form`:
+
+    ```html
+    <input type="file" name="screen" />
+    <input type="file" name="video" multiple />
+    ```
+
+    ```js
+    router.post('/form', upload.fields([
+            { name: "screen", maxCount: 1 },
+            { name: "video" }
+        ])
+    )
+    ```
+    
+* ### `.none()`
+    Принимает только текстовые поля, при загрузке любого файла будет выдана ошибка с кодом `LIMIT_UNEXPECTED_FILE`.
+
+* ### `any()`
+    Принимает все файлы. Массив хранится в `req.file`. 
+
+    Важно: `any()` нужно использовать только в тех маршрутах, где идёт обработка загруженных файлов:
+
+    ```javascript
+    router.post('/form', upload.any(), (req, res, next) => {
+	    req.files.forEach( (file) => console.log(file))
+    }
+    ```
+
 ***
 
 ## Настройка multer
@@ -183,3 +230,24 @@ app.use(multer( {storage:storageConfig, fileFilter: fileFilter} ).single("fileda
 
 С помощью `file.mimetype` можно проверить тип файла, а далее вызывается `cb` и если тип `mimetype` подходит, то в качестве второго параметра в функцию `cb` передаётся `true`. Если же нужно **отклонить** файл - передаётся значение `false`.
 
+### ***Обработка ошибок:***
+
+Если нужно проконтролировать ошибки именно в `multer` без передачи ошибки в `express`, то можно использовать класс `MulterError`, который прикреплён к этому `multer`:
+
+```javascript
+const multer = require("multer")
+const upload = multer().single("screen")
+
+app.post("/profile", function (req, res) {
+
+    upload(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+            // при загрузке произошла ошибка
+        } else {
+            if (err) // при загрузке произошла неизвестная ошибка
+
+            // ошибок нет и всё чётко
+        }
+    })
+})
+```

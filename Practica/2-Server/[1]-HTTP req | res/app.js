@@ -89,25 +89,51 @@
 const http = require("http")
 const express = require("express")
 const app = express()
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 
-app.get('/', (req, res) => {
-    console.log("тут")
+app.post('/', (req, res) => {
     console.log(req.body)
-    res.end("красава")
+    res.send(`Отправленный юзер: ${req.body.name}`)
 })
 app.listen(3000)
 
 
+const postData = JSON.stringify({
+	name: "Vlad",
+	age: 23
+})
+
 const options = {
-    method: "get",
+    method: "POST",
     path: "/",
-    port: 3000
+    port: 3000,
+    headers: {
+		'Content-Type': 'application/json'
+	}
 }
 
 const req = http.request(options, (res) => {
-    // console.log(res) 
+    const chunks = []
+
+	res.on('readable', () => {
+		let chunk
+		while ((chunk = res.read()) !== null) {
+            chunks.push(chunk)
+            break
+		}
+	})
+
+	res.on('end', () => {
+		console.log(chunks.join(''))
+	})
+
+	res.on('error', (err) => {
+		console.error(err)
+	})
 })
 
+req.write(postData)
 req.end()
 
 

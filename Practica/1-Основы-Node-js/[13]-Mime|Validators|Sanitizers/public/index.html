@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form name="formUserData" id="formSendChat">
+        <input name="userEmail" type="email" placeholder="user@gmail.com">
+        <input name="userText" type="text" placeholder="Текст...">
+        <button id="sendMessage" name="sendMessage">></button>
+    </form>
+
+</body>
+
+<script>
+    const $form = document.forms.formUserData
+    const $email = $form.elements.userEmail
+    const $text = $form.elements.userText
+    
+    async function run (value1, value2) {
+        await fetch("/", {
+            method: "POST", 
+            body: JSON.stringify({
+                userEmail: value1,
+                userText: value2
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+    }
+
+    $form[2].addEventListener("click", async function (event) {
+        event.preventDefault()
+
+        if (!$email.value && text.value) return
+
+        await run($email.value, $text.value)
+    })
+
+</script>
+
+</html>
