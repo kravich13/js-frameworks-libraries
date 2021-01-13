@@ -1,0 +1,12 @@
+type Room {
+    id: ID!
+    user: String!
+    message: String!
+    createdAt: String!
+}
+
+type Query {
+    getRoom (nameRoom: String!): [Room]!
+    allRoom: [String]!
+    urlAdress: String!
+}

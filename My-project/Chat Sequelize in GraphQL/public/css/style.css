@@ -35,7 +35,7 @@ nav {
     color: rgb(206, 206, 206);
     background: rgb(43, 43, 43);
     font-size: 19px;
-    width: 100%;
+    width: 99.4%;
 }
 nav #containerNav {
     display: flex;
@@ -71,7 +71,6 @@ section {
 }
 #allRooms {
     /* height: 740px; */
-    position: relative;
     width: 300px;
     overflow-x: hidden;
     word-wrap: break-word;
@@ -84,16 +83,18 @@ section {
 #allRooms div p {
     padding: 5px 10px;
 }
+#testqq {
+    border: none; 
+    outline: none; 
+    position: fixed;
+    background: red;
+}
 .rooms {
-    /* background: rgb(197, 197, 197, 1); */
+    background: rgb(197, 197, 197, 0.3);
     padding: 3px 8px;
 }
-
-/* #testqq {
-    position: fixed; 
-    background: red; 
-} */
 #chat {
+    position: relative;
     padding: 20px;
     /* height: 700px; */
     width: 730px;
@@ -121,6 +122,20 @@ section {
     text-align: right;
 }
 
+#historyDate {
+    display: flex;
+    justify-content: center;
+    margin-bottom: -18px;
+}
+#dateColor {
+    font-weight: 600;
+    color: rgb(255, 255, 255);
+    background: rgba(0, 0, 0, 0.315);
+    border: 1px solid grey; 
+    border-radius: 5px;
+    padding: 3px 7px;
+}
+
 #dataTime {
     text-align: end;
     font-size: 17px;
@@ -128,13 +143,14 @@ section {
 
 #userName,
 #userMessage,
-#sendMessage {
-    padding: 10px 20px;
+#sendMessage,
+#userFile {
+    padding: 5px 10px;
     color: rgb(206, 206, 206);
     background: rgb(43, 43, 43);
     border: 2px solid rgb(165, 0, 0);
     margin-top: 25px;
-    font-size: 19px;
+    font-size: 17px;
     border-radius: 20px;
 }
 
@@ -148,6 +164,6 @@ section {
 }
 
 #sendMessage {
-    font-size: 19px;
+    /* font-size: 19px; */
     width: 85px;
 }

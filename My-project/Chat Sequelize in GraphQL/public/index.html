@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>GeneralChat</title>
+</head>
+
+<body>
+
+
+    <nav>
+        <div id="containerNav">
+            <div id="chatRoom">
+                <input type="text" id="addRoom" placeholder="Название и Enter">
+            </div>
+            <div id="messagesRoom">
+                <p id="countUsers">0 online |</p>
+                <p id="whatChat">| Общий чат</p>
+            </div>
+        </div>
+    </nav>
+
+    <section>
+        <div id="allRooms"></div>
+        <div id="chat"></div>
+        <button id="testqq">[X]</p>
+    </section>
+
+    <form name="formUserData" id="formSendChat" enctype="multipart/form-data">
+        <input id="userName" name="userName" type="text" placeholder="Ваш никнейм" value="Anonymous">
+        <input id="userFile" type="file" name="userFile" multiple="true">
+        <input id="userMessage" name="userMessage" type="text" placeholder="Ваше сообщение">
+        <button id="sendMessage" name="sendMessage">></button>
+    </form>
+
+    
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/script.js"></script>
+
+</html>
