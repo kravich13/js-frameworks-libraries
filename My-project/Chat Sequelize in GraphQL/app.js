@@ -2,8 +2,17 @@ const express = require("express")
 const app = express()
 const server = require('http').createServer(app)
 const path = require("path")
-const { readFileSync } = require("fs")
+const { readFileSync, fstat} = require("fs")
+const fs = require("fs")
+const events = require("events")
+
 const io = require("socket.io")(server)
+// const ss = require("socket.io-stream")
+
+const { pipeline } = require('stream')
+const multer = require("multer")
+const bodyParser = require("body-parser")
+
 const Sequelize = require("sequelize")
 const { graphqlHTTP } = require('express-graphql')
 const { buildSchema } = require("graphql")
@@ -59,6 +68,55 @@ app.get("/rooms", function (req, res) {
 })
 
 
+app.post("/uploads", function (req, res) {
+    const fileModifiend = req.headers["file-modified"]
+    const fileName = path.extname(req.headers["file-name"])
+    const fileType = req.headers["content-type"]
+
+    let fullFileName = ""
+
+    switch (fileType) {
+        case "image/png":
+        case "image/bmp":
+        case "image/jpg":
+        case "image/jpeg":
+        case "image/gif":
+            fullFileName = `name_${fileModifiend}${fileName}`
+            break
+        default: 
+            return res.end()
+    }
+
+    const writeableStream = fs.createWriteStream(`uploads/${fullFileName}`)
+
+    streamAll()
+    async function streamAll () {
+        // запись в папку
+        await reqFile(req, writeableStream)
+
+        // отправка файла всем клиентам
+        const readableStream = fs.createReadStream(`uploads/${fullFileName}`)
+        reqFile(readableStream, res)
+    }
+
+    async function reqFile (origin, destination) {
+        try {
+            for await (const chunk of origin) {
+                const isDrained = destination.write(chunk)
+			    if (!isDrained) await events.once(destination, "drain")
+            }
+            destination.end()
+        } catch (err) {
+            origin.destroy()
+            destination.destroy()
+            console.log(err)
+            
+            res.end()
+        } 
+    }
+})
+
+
 run ()
 async function run() {
     
@@ -72,10 +130,7 @@ async function run() {
         }
         sequelize.sync()
         
-    } catch (err) { console.log(`Ошибка в синхронизации схем: ${err}`) }
-
-    // Обработка входящих запросов от клиента
-    try {
+        // Обработка входящих запросов от клиента
         const root = {
             getRoom: async function ({nameRoom}) {
                 if (nameRoom === "713dbhqpo666") {
@@ -96,13 +151,14 @@ async function run() {
                 return urlRoomUser[0] 
             }
         }
-
+    
         app.use("/rooms", graphqlHTTP({
             schema: schema,
             rootValue: root,
             // graphiql: true
         }))
-    } catch (err) { console.log(`Ошибка в отправлении запроса или получении ответа: ${err}`) }
+    } catch (err) { console.log(`Ошибка в синхронизации схем: ${err}`) }
+
 
 }
 
@@ -193,6 +249,11 @@ io.on("connection", function (socket) {
         connections.splice(connections.indexOf(socket), 1)
         io.sockets.emit("numberOfUsers", connections.length)
     })
+
+
+    // ss(socket).on("file", function (stream) {
+    //     console.log(stream)
+    // })
 })
 
 app.use(express.static(path.join(__dirname, 'public')))

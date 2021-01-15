@@ -105,7 +105,7 @@ app.post("/", function (req, res) {
 
     const fileName = req.headers["file-name"]
     const writeableStream = fs.createWriteStream(`rewriting/${fileName}`)
-
+    console.log(writeableStream.path)
     reqFile(req, writeableStream)
 
     // 5) Передача файла от клиента серверу

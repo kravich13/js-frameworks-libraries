@@ -14,11 +14,14 @@ const arrRooms = []
 let lastElement
 let currentElement
 let deleteNameRoom = ""
+let testDate = ""
+const arraysBuffers = []
 
 const $form = document.forms.formUserData
 const name = $form.elements.userName
 const message = $form.elements.userMessage
 const file = $form.elements.userFile
+file.value = ""
 
 
 // отрисовать все комнаты и переписку из начальной комнаты
@@ -119,9 +122,6 @@ function roomAllocation (numb) {
   currentElement = $rooms[numb].textContent
   $navNameRoom.textContent = `| ${currentElement}`
 }
-
-
-let testDate = ""
 
 function domRenderingMessages (data, scrollTrue = false) {
   const date = new Date(data.createdAt)
@@ -227,13 +227,27 @@ socket.on("deleteLastRoom", async function (nameRoom) {
   $navNameRoom.textContent = `| ${arrRooms[0].textContent}`
 })
 
-
-$form[3].addEventListener("click", function (event) {
+$form[3].addEventListener("click", async function (event) {
   event.preventDefault()
 
+  // if (arraysBuffers.length !== 0) { 
+  //   const res = await fetch("/uploads", {
+  //     method: "POST",
+  //     headers: { "Content-type": "application/json" },
+  //     body: arraysBuffers[0]
+  //   })
+  //   console.log("отправил файл")
+
+  //   return
+  // }
+
   if (name.value != "" && message.value != "") {
-      console.log(file.value)
-      socket.emit("addMessage", {name: name.value, message: message.value}, currentElement)
+
+      socket.emit("addMessage", {
+        name: name.value, message: message.value
+      }, currentElement)
+      
+      file.value = ""
       return message.value = ""
   }
 })
@@ -243,19 +257,43 @@ document.body.addEventListener("change", function (event) {
 
   if (et === file) {
 
-    const arraysBuffers = []
-
-    for (let key of et.files) {
-      // console.log(key)
-
+    if (file.files) {
+      const fileData = file.files[0]
       let fileReader = new FileReader()
-
-      fileReader.readAsArrayBuffer(key)
   
-      fileReader.onload = function () {
-        arraysBuffers.push(fileReader.result)
+      fileReader.readAsArrayBuffer(fileData)
+  
+      fileReader.onload = async function () {
+
+        const res = await fetch("/uploads", {
+          method: "POST",
+          headers: { 
+            "Content-type": fileData.type,
+            "File-name": encodeURIComponent(fileData.name),
+            "File-modified": encodeURIComponent(fileData.lastModified)
+          },
+          body: fileReader.result
+        })
+        console.log(await res.blob())
       }
     }
+
+    // for (let key of et.files) {
+    // }
+
+    // console.log("тут")
+    // console.log(arraysBuffers)
+    // if (arraysBuffers.length !== 0) { 
+      // console.log(arraysBuffers)
+      // const res = await fetch("/uploads", {
+      //   method: "POST",
+      //   headers: { "Content-type": "application/json" },
+      //   body: arraysBuffers[0]
+      // })
+      // console.log("отправил файл")
+  
+      // return
+    // }
   }
 })
 
