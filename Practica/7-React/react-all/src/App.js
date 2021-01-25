@@ -1,6 +1,7 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import "./App.css"
-// import TestTodo from "./Todo/TestTodo"
+import TestTodo from "./Todo/TestTodo"
+import TodoItem from "./Todo/TodoItem"
 
 
 // function randomState () {
@@ -38,34 +39,26 @@ function App () {
 
     ////// Работа с компонентами
 
-    // let i = 1   
-    // let messages = [
-    //     { id: i++, completed: false, title: "Привет"  },
-    //     { id: i++, completed: false, title: "ну даров"  },
-    //     { id: i++, completed: false, title: "хай"  },
-    //     { id: i++, completed: false, title: "кравич?"  },
-    //     { id: i++, completed: false, title: "да"  }
-    // ]
+    let i = 1   
+    let [messages, setMessages] = useState([
+        { id: i++, completed: false, title: "Привет"  },
+        { id: i++, completed: false, title: "ну даров"  },
+        { id: i++, completed: false, title: "хай"  },
+        { id: i++, completed: false, title: "кравич?"  },
+        { id: i++, completed: false, title: "да"  }
+    ])
 
-    // let [messages, setMessages] = useState([
-    //     { id: i++, completed: false, title: "Привет"  },
-    //     { id: i++, completed: false, title: "ну даров"  },
-    //     { id: i++, completed: false, title: "хай"  },
-    //     { id: i++, completed: false, title: "кравич?"  },
-    //     { id: i++, completed: false, title: "да"  }
-    // ])
-
-    // function toogleMessage (id) {
-    //     setMessages(
-    //         messages.map(mess => {
-    //             if (mess.id === id) {
-    //                 return mess.completed = !mess.completed
-    //             }
-    //             return mess
-    //         })
-    //     )
+    function toogleMessage (id) {
+        setMessages(
+            messages.map(mess => {
+                if (mess.id === id) {
+                    return mess.completed = !mess.completed
+                }
+                return mess
+            })
+        )
         
-    // }
+    }
 
 
     /////// Условия для рендеринга компонентов
@@ -106,7 +99,9 @@ function App () {
     //     </div>
     // )
 
-    // Условия в JSX
+
+    ////// Условия в JSX
+
     // const messages = ["заработал 13 битков?", "эй ты"]
 
     // function MailBox (objArr)  {
@@ -124,26 +119,82 @@ function App () {
     //     )
     // }
     
-    const [flag, setFlag] = useState( () => false)
+    // const [flag, setFlag] = useState( () => false)
 
-    function MenuClick (objFlag) {
-        if (!objFlag.flag) return null
+    // function MenuClick (objFlag) {
+    //     if (!objFlag.flag) return null
 
-        return (
-            <div>1 лист...</div>
-        )
-    }
+    //     return (
+    //         <div>1 лист...</div>
+    //     )
+    // }
 
-    function clickButton () { setFlag(!flag) }
+    // function clickButton () { setFlag(!flag) }
+
+
+
+
+    ////// Работа с формарми
+
+    // const [userName, setUserName] = useState( () => "")
+
+    // function handleSubmit (event) {
+    //     event.preventDefault()
+    //     alert(`Отправленное имя: ${userName}`)
+    // }
+
+    // function handleChange (event) {
+    //     setUserName(event.target.value)
+    // }
+
+
+
+
+    /////// Хук useEffect
+
+    // const [type, setType] = useState("users")
+    
+    // // console.log("рендер компонента")
+
+    // useEffect( () => {
+    //     // Вызывается всегда при рендере любого компонента
+    //     console.log("рендер эффекта")
+    // })
+
+    // useEffect( () => {
+    //     // Отслеживание изменения конкретного компонента 
+    //     console.log("Тип изменён", type)
+    // }, [type])
 
     return (
         <div className="App">
 
-            <button onClick={() => clickButton(flag)}>
+            {/* <h1>Ресурс: {type}</h1>
+
+            <button onClick={ () => setType("users")}>Пользователи</button>
+            <button onClick={ () => setType("todo")}>Todo</button>
+            <button onClick={ () => setType("posts")}>Посты</button> */}
+
+
+            {/* <form onSubmit={handleSubmit}>
+               <label>
+                Введите имя:
+                <input onChange={handleChange}
+                    type="text" 
+                    name="userName" 
+                    placeholder="Kravich" 
+                />
+               </label>
+                <button>Отправить</button>
+            </form> */}
+
+
+
+            {/* <button onClick={() => clickButton(flag)}>
                 {flag ? "Скрыть" : "Показать"} меню
             </button>
 
-            <MenuClick flag={flag}/>
+            <MenuClick flag={flag}/> */}
 
 
             {/* <p>
@@ -151,6 +202,14 @@ function App () {
             </p> */}
 
             {/* <MailBox myMessages={messages} /> */}
+
+
+            <div className="App">
+                <h1>Привет ещё раз.</h1>
+                <p>Спустя 1 год я взялся за реакт</p>
+    
+                <TestTodo messages={messages}/>
+            </div>
         </div>
     )
 }

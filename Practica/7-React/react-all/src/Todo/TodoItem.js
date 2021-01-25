@@ -8,8 +8,8 @@ export default function TodoItem ({ message, clickLi }) {
     }
 
     return (
-        <li className={classes.join(" ")}
-            // className="testLi"
+        <li 
+            className={classes.join(" ")}
             onClick={ () => clickLi(message.id)}
         >
         {`[${message.id}]: ${message.title}`}
