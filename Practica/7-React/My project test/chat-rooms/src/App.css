@@ -12,6 +12,35 @@ header {
 section {
   display: flex;
   width: 1210px;
-  height: 780px;
+  height: 800px;
   border: 1px solid lightcoral;
+}
+
+.done {
+  list-style-type: none;
+  background: rgba(240, 240, 240, 0.8);
+  color: black;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.done1 {
+  list-style-type: none;
+  background: rgb(60, 223, 201);
+  color: black;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.done2 {
+  list-style-type: none;
+  background: rgba(60, 223, 201, 0.5);
+  color: black;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
