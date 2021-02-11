@@ -268,3 +268,99 @@ function App() {
 
 * В компоненте, в котором нужно реализовать логику и передать контекст в другой компонет - подключаем этот самый объект `Context`, оборачиваем в компонент `Context.Provider` с передаваемыми параметрами тот компонент, в котором необходимо получить эти данные
 * И затем в том самом файле, где необходимо получить контекст из главного файла - просто подключаем хук `useContext`, объект `Context` и получаем данные из него с помощью `useContext(context)`.
+***
+
+## Хук useRef
+
+### ***Замена глобальным переменным:***
+
+Например, стоит задача узнать, сколько рендеров было произведено на странице, как это сделать без глобальных переменных?
+
+```js
+function App() {
+  const [countRender, setCountRender] = useState(0)
+
+  useEffect(() => {
+    setCountRender((prev) => prev + 1)
+  })
+
+  return (
+    <div className="App">
+      <p>Значение: {countRender}</p>
+    </div>
+  )
+}
+```
+
+Вот так делать нельзя, потому что после рендера мы изменяем стейт, изменение стейта производит рендер и снова заходим в эффект, который изменяет стейт и так в вечном цикле.
+
+Конечно, можно просто вынести переменную за пределы `function App`, но глобальная переменная за пределами компонента - не есть хорошо.
+
+Тут и выручает хук `useRef`, который по сути является объектом со свойством `current`:
+
+```js
+function App() {
+
+  const countRender = useRef(1)
+  const [value, setValue] = useState('initial')
+
+  useEffect(() => {
+    console.log(countRender) // Object { current: 1 }
+    countRender.current++
+  })
+
+
+  return (
+    <div className="App">
+      <p>Значение: {countRender.current}</p>
+
+      <input
+        type="text"
+        onChange={(event) => setValue(event.target.value)}
+        value={value}
+      />
+  )
+}
+```
+
+Рендер изменяется при каждом изменении стейта, так что всё работает!
+
+![v](img/photo_2021-02-10_15-04-20.png)
+
+### ***Получение ссылок на DOM элементы:***
+
+Можно получать ссылки на `DOM` элементы с помощью специального `props` - `ref` и также можно задавать фокус на этот самый элемент
+
+```js
+function App() {
+
+  const [value, setValue] = useState('initial')
+  const countRender = useRef(1)
+  const inputRef = useRef(null)
+
+  useEffect(() => {
+    countRender.current++
+
+    // Это сам DOM элемент, со всеми его доступными свойствами
+    console.log(inputRef.current.value)
+  })
+
+  // При клике на кнопку будет фокус на элементе inputRef
+  const focus = () => inputRef.current.focus()
+
+  return (
+    <div className="App">
+      <p>Значение: {countRender.current}</p>
+
+      <input
+        // Здесь можно передать ссылку на этот элемент
+        ref={inputRef}
+        type="text"
+        onChange={(event) => setValue(event.target.value)}
+        value={value}
+      />
+
+      <button onClick={focus}>Фокус</button>
+  )
+}
+```
