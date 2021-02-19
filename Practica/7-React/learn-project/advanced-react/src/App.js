@@ -1,10 +1,12 @@
 import './App.css'
 import React, { useState } from 'react'
+import ReactDOM from 'react-dom'
 // import JSX_All from './components/jsx-all'
 // import Columns from './components/fragment-columns'
 // import JSX_All from './components/jsx-all'
 // import ErrorBoundary from './components/error-boundary'
-import Modal from './Modal/Modal'
+// import Modal from './Modal/Modal'
+import PortalModal from './Modal/My-modal'
 
 // Фрагменты
 // function App() {
@@ -98,10 +100,14 @@ import Modal from './Modal/Modal'
 //   )
 // }
 
+// ПОРТАЛЫ
 function App() {
+  const [openPortal, setOpenPortal] = useState(false)
+
   return (
     <div className="App">
-      <Modal />
+      <button onClick={() => setOpenPortal(true)}>Открыть портал</button>
+      <PortalModal isOpen={openPortal} onClose={() => setOpenPortal(false)} />
     </div>
   )
 }
