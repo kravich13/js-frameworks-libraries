@@ -364,3 +364,74 @@ function App() {
   )
 }
 ```
+***
+
+## Собственный хук
+
+Можно создавать свои собственные хуки. По сути, может возникнуть ситуация, когда нужно **повторять** одну и ту же логику со стейтами и элементами **несколько** раз, это не очень удобно и требует много места:
+
+```jsx
+function App() {
+  const [name, setName] = useState('')  // 1)
+  const [lastName, setLastName] = useState('')  // 1)
+
+  function changeHandler(event) { // 1)
+    setName(event.target.value)
+  }
+
+  function lastNameHandler(event) { // 2)
+    setLastName(event.target.value)
+  }
+
+  return (
+    <div className="App">
+      <input type="text" value={name} onChange={changeHandler} />
+      <input type="text" value={lastName} onChange={lastNameHandler} />
+      <p>
+        {name} {lastName}
+      </p>
+    </div>
+  )
+}
+```
+
+Т.е. видно, что два элемента имеют одну и ту же логику со стейтами и приходится дублировать код + придумывать новые имена. 
+
+Для решения этой задачи можно создать свой собственный хук, который по сути является **функцией**. Называться она должна со слова `use`:
+
+```jsx
+// Функция самого хука
+function useInput(initialValue) {
+  // 1) Создаём локальный стейт с предыдущим значением
+  const [value, setValue] = useState(initialValue)
+
+  function onChange(event) {
+    setValue(event.target.value)
+  }
+
+  // 2) Здесь идёт возврат объекта value и функции onChange
+  return {
+    value,
+    onChange
+  }
+}
+
+function App() {
+  // 3) Теперь просто в переменную записываем 
+  // возвращаемый объект и функцию:
+  // Object { value: "куку", onChange: onChange(event) }
+  
+  const input = useInput('')
+  const lastName = useInput('')
+
+  return (
+    <div className="App">
+      <input type="text" {...input} />
+      <input type="text" {...lastName} />
+      <p>
+        {input.value} {lastName.value}
+      </p>
+    </div>
+  )
+}
+```

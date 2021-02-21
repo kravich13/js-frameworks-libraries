@@ -1,5 +1,5 @@
 import './App.css'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 // import JSX_All from './components/jsx-all'
 // import Columns from './components/fragment-columns'
@@ -101,13 +101,41 @@ import PortalModal from './Modal/My-modal'
 // }
 
 // ПОРТАЛЫ
+// function App() {
+//   const [openPortal, setOpenPortal] = useState(false)
+
+//   return (
+//     <div className="App">
+//       <button onClick={() => setOpenPortal(true)}>Открыть портал</button>
+//       <PortalModal isOpen={openPortal} onClose={() => setOpenPortal(false)} />
+//     </div>
+//   )
+// }
+
+function useInput(initialValue) {
+  const [value, setValue] = useState(initialValue)
+
+  function onChange(event) {
+    setValue(event.target.value)
+  }
+
+  return {
+    value,
+    onChange
+  }
+}
+
 function App() {
-  const [openPortal, setOpenPortal] = useState(false)
+  const input = useInput('')
+  const lastName = useInput('')
 
   return (
     <div className="App">
-      <button onClick={() => setOpenPortal(true)}>Открыть портал</button>
-      <PortalModal isOpen={openPortal} onClose={() => setOpenPortal(false)} />
+      <input type="text" {...input} />
+      <input type="text" {...lastName} />
+      <p>
+        {input.value} {lastName.value}
+      </p>
     </div>
   )
 }

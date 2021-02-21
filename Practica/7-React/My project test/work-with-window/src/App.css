@@ -1,0 +1,25 @@
+.App {
+  text-align: center;
+}
+.block-Li {
+  margin: 10px auto;
+  width: 500px;
+}
+.elem-li {
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  background: lightblue;
+  border: 1px solid grey;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  padding: 3px 5px;
+}
+.span-X {
+  color: rgba(207, 0, 0, 0.877);
+  background: white;
+  border-radius: 20px;
+}
+.li-click {
+  background: rgba(0, 114, 207, 0.5);
+}
