@@ -1,11 +1,16 @@
 import React, { useState } from 'react'
-import './App.css'
-import FormInput from './components/form-input'
-import TodoList from './components/list-todo'
-import Context from './context'
+import FormInput from '../components/form-input'
+import TodoList from '../components/list-todo'
+import Context from '../context'
 
-function App() {
-  const [elemLi, setElemLi] = useState([
+interface stateLi {
+  id: number
+  title: string
+  hover: boolean
+}
+
+export const ListTodo: React.FC = () => {
+  const [elemLi, setElemLi] = useState<stateLi[]>([
     { id: 1, title: 'Владислав', hover: false },
     { id: 2, title: 'Максим', hover: false },
     { id: 3, title: 'Кравич', hover: false },
@@ -15,24 +20,25 @@ function App() {
     { id: 7, title: 'Максим', hover: false }
   ])
 
-  const [flag, setFlag] = useState(false)
-
-  function clickExit(id) {
-    setElemLi(elemLi.filter((elem) => elem.id !== id))
-    setFlag(true)
+  function clickExit(id: string | number) {
+    setElemLi(elemLi.filter((elem: any) => elem.id !== id))
   }
 
-  function hoverElem(id) {
-    if (flag) return setFlag(false)
-    setElemLi(
-      elemLi.map((elem) => {
-        if (elem.id === id) elem.hover = !elem.hover
+  function hoverElem(id: string | number) {
+    setElemLi((prev) =>
+      prev.map((elem: any) => {
+        if (elem.id === id) {
+          return {
+            ...elem,
+            hover: !elem.hover
+          }
+        }
         return elem
       })
     )
   }
 
-  function addLi(title) {
+  function addLi(title: string) {
     setElemLi(
       elemLi.concat([
         {
@@ -45,8 +51,7 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <h2>Тестовое приложение с основной работой DOM.</h2>
+    <div>
       <FormInput addLi={addLi} />
 
       <ul className={'block-Li'}>
@@ -54,7 +59,7 @@ function App() {
           <li style={{ listStyle: 'none' }}>Нет таких элементов</li>
         )}
         <Context.Provider value={{ clickExit, hoverElem }}>
-          {elemLi.map((elem, index) => {
+          {elemLi.map((elem: any, index: number) => {
             return <TodoList {...elem} index={index} key={elem.id} />
           })}
         </Context.Provider>
@@ -62,5 +67,3 @@ function App() {
     </div>
   )
 }
-
-export default App

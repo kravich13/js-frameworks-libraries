@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import Context from '../context'
 
-export default function TodoList(props) {
-  const { clickExit, hoverElem } = useContext(Context)
-  const classes = ['elem-li']
+const TodoList: React.FC = (props: any) => {
+  const { clickExit, hoverElem } = useContext<any>(Context)
+  const classes: string[] = ['elem-li']
   if (props.hover) classes.push('li-click ')
 
   return (
@@ -15,3 +15,5 @@ export default function TodoList(props) {
     </li>
   )
 }
+
+export default TodoList

@@ -202,8 +202,68 @@ class Kravich {
 }
 const vlad = new Kravich("Vlad", "kravich13@gmail.con", 23)
 console.log(vlad.age) // 23
+```
+
+### ***Enum:***
+
+Перечисления - это наборы именованных констант. Может быть **строковым** или **числовым**:
+
+```ts
+// На индексе, который начинается с нуля как у массивов:
+enum Crypto {
+    BTC,
+    ETH,
+    EOS
+}
+
+const index = Crypto.ETH 
+console.log(index) // 1
+
+
+// По ключу:
+enum CryptoCount {
+    BTC = "1 BTC === $47k",
+    ETH = "1 ETH === $1450",
+    EOS = "1 EOS === $3,65"
+}
+
+const price = CryptoCount.EOS 
+console.log(price) // 1 EOS === $3,65
 
 ```
+
+### ***Динамические ключи:***
+
+Допустим, что нужно описать кучу свойств css объекта React:
+
+```ts
+interface cssStyles = {
+    border: string
+    borderRadius: string
+    display: string
+}
+
+const styles: cssStyles = {
+    border: "1px solid black",
+    borderRadius: "5px",
+    display: "flex"
+}
+```
+
+Так делать абсолютно не удобно и вместо этого можно примедить динамические ключи:
+
+```ts
+interface cssStyles = {
+    [key: string]: string
+}
+
+const styles: cssStyles = {
+    border: "1px solid black",
+    borderRadius: "5px",
+    display: "flex"
+}
+```
+
 ***
 
 ## Компиляция

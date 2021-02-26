@@ -23,3 +23,30 @@
 .li-click {
   background: rgba(0, 114, 207, 0.5);
 }
+.navbar {
+  background: rgb(255, 123, 0);
+  color: rgb(56, 56, 56);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2%;
+  margin-bottom: 10px;
+}
+.urlAdress {
+  font-size: 19px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+.clickAdress {
+  list-style: none;
+  cursor: pointer;
+  padding: 8px 20px;
+}
+.clickAdress:hover {
+  background: rgba(255, 255, 255, 0.521);
+  border-radius: 7px;
+}
+a {
+  color: rgb(56, 56, 56);
+  text-decoration: none;
+}
