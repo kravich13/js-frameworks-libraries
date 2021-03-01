@@ -9,19 +9,26 @@
   display: flex;
   justify-content: space-between;
   list-style: none;
-  background: lightblue;
+  background: rgb(32, 168, 178);
+  color: white;
+  font-weight: 600;
+  margin-bottom: 5px;
   border: 1px solid grey;
   border-radius: 10px;
-  margin-bottom: 5px;
-  padding: 3px 5px;
+}
+.titleLi {
+  padding: 5px 10px;
 }
 .span-X {
   color: rgba(207, 0, 0, 0.877);
   background: white;
-  border-radius: 20px;
+  border-radius: 10px;
 }
 .li-click {
-  background: rgba(0, 114, 207, 0.5);
+  background: rgba(207, 0, 0, 0.5);
+}
+.li-hover {
+  background: rgba(32, 168, 178, 0.7);
 }
 .navbar {
   background: rgb(255, 123, 0);

@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import './App.css'
-import { NavBar } from './components/navbar'
+import { NavBar } from './components/Navbar'
 import { ListTodo } from './pages/ListTodo'
 import { Kravich } from './pages/Kravich'
 import { Max } from './pages/Max'
