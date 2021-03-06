@@ -7,7 +7,7 @@
 Для запуска нового проекта на full `TS` вводим следующую команду:
 
 ```bash
-npx create-react my-rooms --template typescript
+npx create-react-app my-rooms --template typescript
 ```
 
 ### ***Установка в существующий проект:***

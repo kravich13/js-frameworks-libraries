@@ -16,8 +16,8 @@ export default function Header() {
   return (
     <header style={styles.header}>
       <h2>Чат комнаты:</h2>
-      <h2>Влад Кравич</h2>
-      <h2>Онлайн: 2</h2>
+      <h2>None</h2>
+      <h2>Онлайн: 0</h2>
     </header>
   )
 }

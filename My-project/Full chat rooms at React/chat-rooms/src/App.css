@@ -1,0 +1,80 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#main-section {
+  width: 1050px;
+}
+header {
+  background: rgb(255, 123, 0);
+  color: rgb(56, 56, 56);
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  padding: 0 2%;
+}
+header ul {
+  font-size: 19px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+header ul li {
+  list-style: none;
+  cursor: pointer;
+  padding: 8px 0;
+}
+header ul li:hover {
+  background: rgba(255, 255, 255, 0.521);
+  border-radius: 7px;
+}
+header ul li a {
+  color: rgb(56, 56, 56);
+  text-decoration: none;
+  padding: 8px 20px;
+}
+
+/* Стили окна приложения чата */
+#main-window-chat {
+  background: rgba(255, 123, 0, 0.7);
+  border: 1px solid black;
+}
+#block-rooms-chat {
+  height: 650px;
+  display: flex;
+}
+#block-chat {
+  display: flex;
+  flex-direction: column;
+  width: 775px;
+  background: rgba(255, 255, 255, 0.83);
+}
+#block-chat form {
+  height: 40px;
+  width: 100%;
+  display: flex;
+}
+#chat-window {
+  padding: 10px;
+  height: 100%;
+}
+#chat-info {
+  display: flex;
+}
+#chat-info div {
+  border-right: 1px solid rgb(54, 54, 54);
+  width: 325px;
+  text-align: center;
+}
+#chat-info h3 {
+  width: 775px;
+  display: flex;
+  justify-content: center;
+}
+
+#block-rooms {
+  border-right: 1px solid rgb(54, 54, 54);
+  width: 325px;
+}
