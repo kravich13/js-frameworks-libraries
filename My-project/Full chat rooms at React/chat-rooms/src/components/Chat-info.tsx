@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { IChatInfoProps } from '../interfaces'
 
-export const ChatInfo: React.FC = () => {
+export const ChatInfo: React.FC<IChatInfoProps> = ({ socket }) => {
+  const [numberOfusers, setNumberOfusers] = useState<number>(0)
   const enterRoom = (event: React.KeyboardEvent<HTMLInputElement>): any => {
     if (event.code === 'Enter') {
       const et: any = event.target
@@ -10,14 +12,27 @@ export const ChatInfo: React.FC = () => {
         et.value = ''
         return (et.placeholder = 'От 3-х до 32-х символов')
       }
+      socket.emit('addRoom', et.value)
+      et.value = ''
     }
   }
+
+  useEffect(() => {
+    socket.on('numberOfUsers', (count: number) => {
+      setNumberOfusers(count)
+    })
+  }, [socket])
+
   return (
     <div id="chat-info">
       <div>
-        <input onKeyDown={(event: any) => enterRoom(event)} type="text" />
+        <input
+          onKeyDown={(event: any) => enterRoom(event)}
+          type="text"
+          placeholder="Введите название комнаты"
+        />
       </div>
-      <h3>Noname | Online: 0</h3>
+      <h3>Noname | Online: {numberOfusers}</h3>
     </div>
   )
 }
