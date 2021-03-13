@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { IChatInfoProps } from '../interfaces'
 
-export const ChatInfo: React.FC<IChatInfoProps> = ({ socket }) => {
+export const ChatInfo: React.FC<IChatInfoProps> = ({ socket, clickRoom }) => {
   const [numberOfusers, setNumberOfusers] = useState<number>(0)
   const enterRoom = (event: React.KeyboardEvent<HTMLInputElement>): any => {
     if (event.code === 'Enter') {
@@ -32,7 +32,9 @@ export const ChatInfo: React.FC<IChatInfoProps> = ({ socket }) => {
           placeholder="Введите название комнаты"
         />
       </div>
-      <h3>Noname | Online: {numberOfusers}</h3>
+      <h3>
+        {clickRoom} | Online: {numberOfusers}
+      </h3>
     </div>
   )
 }

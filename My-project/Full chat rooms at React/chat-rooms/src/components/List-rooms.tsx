@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
+import { IListRoomsProps } from '../interfaces'
 
-export const ListRooms: React.FC<any> = (props) => {
+export const ListRooms: React.FC<IListRoomsProps> = (props) => {
   const { id, title, clickLi, clickDelete, overLi, outLi } = props
   const mainElem = useRef<HTMLLIElement>(null)
   const classes: string[] = ['roomsLi']
@@ -17,7 +18,7 @@ export const ListRooms: React.FC<any> = (props) => {
       onMouseOut={() => outLi(id)}
     >
       <span className="room-li">{title}</span>
-      <button className="delete-room" onClick={() => clickDelete(props.id)}>
+      <button className="delete-room" onClick={() => clickDelete(title)}>
         &#10008;
       </button>
     </li>

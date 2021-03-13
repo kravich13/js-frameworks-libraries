@@ -3,13 +3,24 @@ import { IRoom, IRoomsProps } from '../interfaces'
 import { ListRooms } from '../components/List-rooms'
 import { nanoid } from 'nanoid'
 
-export const Rooms: React.FC<IRoomsProps> = ({
-  socket,
-  chatRequest,
-  setMessages
-}) => {
-  const [rooms, setRooms] = useState<any>([])
+const Rooms: React.FC<IRoomsProps> = ({ socket, setClickRoom }) => {
+  const [rooms, setRooms] = useState<IRoom[]>([])
   const $previousRef = useRef<any>(null)
+
+  useEffect((): any => {
+    let cleanupFunction = false
+    socket.on('newRoom', (nameRoom: string) => {
+      if (!cleanupFunction) {
+        setRooms((prev) => {
+          return [
+            ...prev,
+            { id: nanoid(), title: nameRoom, click: false, hover: false }
+          ]
+        })
+      }
+    })
+    return () => (cleanupFunction = true)
+  }, [socket, setRooms])
 
   useEffect(() => {
     run()
@@ -25,7 +36,7 @@ export const Rooms: React.FC<IRoomsProps> = ({
       const arrNameRooms = await response.json()
 
       arrNameRooms.forEach((nameRoom: string, index: number) => {
-        setRooms((prev: any) => {
+        setRooms((prev) => {
           return [
             ...prev,
             {
@@ -37,23 +48,9 @@ export const Rooms: React.FC<IRoomsProps> = ({
           ]
         })
       })
+      if (arrNameRooms) setClickRoom(arrNameRooms[0])
     }
-  }, [])
-
-  useEffect((): any => {
-    let cleanupFunction = false
-    socket.on('newRoom', (nameRoom: string) => {
-      if (!cleanupFunction) {
-        setRooms((prev: any) => {
-          return [
-            ...prev,
-            { id: nanoid(), title: nameRoom, click: false, hover: false }
-          ]
-        })
-      }
-    })
-    return () => (cleanupFunction = true)
-  }, [socket])
+  }, [setClickRoom])
 
   const clickLi = async (
     event: React.MouseEvent<HTMLLIElement>,
@@ -67,7 +64,7 @@ export const Rooms: React.FC<IRoomsProps> = ({
     if ($previousRef.current === ref) return
     $previousRef.current = ref
 
-    setRooms((prev: IRoom[]) => {
+    setRooms((prev) => {
       return prev.map((elem) => {
         if (elem.id !== id && elem.click) {
           // Не равен нажатому элементу и имеет покраску
@@ -93,12 +90,11 @@ export const Rooms: React.FC<IRoomsProps> = ({
       })
     })
 
-    const arrMessages: IRoom[] = await chatRequest(title)
-    setMessages([...arrMessages])
+    setClickRoom(title)
   }
 
   function overLi(id: string): void {
-    setRooms((prev: IRoom[]) => {
+    setRooms((prev) => {
       return prev.map((elem) => {
         if (elem.id === id) {
           if (elem.click) {
@@ -116,7 +112,7 @@ export const Rooms: React.FC<IRoomsProps> = ({
     })
   }
   function outLi(id: string): void {
-    setRooms((prev: IRoom[]) => {
+    setRooms((prev) => {
       return prev.map((elem) => {
         if (elem.id === id) {
           return {
@@ -129,18 +125,26 @@ export const Rooms: React.FC<IRoomsProps> = ({
     })
   }
 
-  const clickDelete = (id: string): void => {
-    setRooms((prev: IRoom[]) => {
-      return prev.filter((elem) => elem.id !== id)
-    })
+  const clickDelete = (title: string): void => {
+    socket.emit('deleteRoom', title)
   }
+
+  useEffect(() => {
+    socket.on('roomDeleted', (result: boolean, titleRoom: string) => {
+      if (result) {
+        setRooms((prev) => {
+          return prev.filter((elem) => elem.title !== titleRoom)
+        })
+      }
+    })
+  }, [socket])
 
   return (
     <div id="block-rooms">
       <ul>
         {!rooms && <li>Комнаты отсутствуют.</li>}
         {rooms &&
-          rooms.map((room: IRoom) => {
+          rooms.map((room) => {
             return (
               <ListRooms
                 {...room}
@@ -156,3 +160,5 @@ export const Rooms: React.FC<IRoomsProps> = ({
     </div>
   )
 }
+
+export default React.memo(Rooms)

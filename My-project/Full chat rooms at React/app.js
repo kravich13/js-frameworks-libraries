@@ -2,11 +2,16 @@ const express = require('express')
 const app = express()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
+const PORT = process.env.PORT || 5000
+// import {
+//   allCollections,
+//   arrNamesCollections,
+//   MongoMethods
+// } from './mongoose/workWithMongoose.js'
+
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 mongoose.pluralize(null)
-const PORT = process.env.PORT || 5000
-
 const MongoClient = require('mongodb').MongoClient
 const url = 'mongodb://localhost:27017/'
 const mongoClient = new MongoClient(url, { useUnifiedTopology: true })
@@ -74,7 +79,6 @@ async function addRoomsInMongoDB(nameTable) {
 app.post('/rooms', async (req, res) => {
   try {
     if (!req.body) return
-
     res.json(arrNamesCollections)
   } catch (e) {
     res.status(500).json({ message: 'Какая-то ошибка, попробуйте позже' })
@@ -87,20 +91,10 @@ app.post('/rooms/allmessages', async (req, res) => {
 
     const { clickRoom } = req.body
 
-    if (clickRoom === 'firstRoom') {
-      allCollections[arrNamesCollections[0]].find({}, (err, docs) => {
-        if (err) return console.log(`Ошибка поиска в БД: ${err}`)
-        res.json(docs)
-      })
-      return
-    }
-
     allCollections[clickRoom].find({}, (err, docs) => {
       if (err) return console.log(`Ошибка поиска в БД: ${err}`)
       res.json(docs)
     })
-
-    // console.log(req.body)
   } catch (e) {
     res.status(500).json({ message: 'Какая-то ошибка, попробуйте позже' })
   }
@@ -121,19 +115,35 @@ io.on('connection', (socket) => {
       user,
       message
     )
-    io.sockets.emit('lastMessage', lastData)
+    io.sockets.emit('lastMessage', { lastData, sendFromRoom: clickRoom })
   })
 
   socket.on('addRoom', (room) => {
+    let uniqueRoom = false
     arrNamesCollections.forEach((elem) => {
-      if (room !== elem) console.log('не равно существующей')
-      else console.log('равно существующей')
+      if (room === elem) return (uniqueRoom = true)
     })
+    if (uniqueRoom) return
+
     addRoomsInMongoDB(room)
     arrNamesCollections.push(room)
     io.sockets.emit('newRoom', room)
   })
+  socket.on('deleteRoom', async (room) => {
+    const collectionDeleted = await deleteRoom(allCollections[room])
+    io.sockets.emit('roomDeleted', collectionDeleted ? true : false, room)
+
+    if (collectionDeleted) {
+      delete allCollections[room]
+      const index = arrNamesCollections.indexOf(room)
+      if (index > -1) arrNamesCollections.splice(index, 1)
+    }
+  })
 })
+
+async function deleteRoom(collectionName) {
+  return await collectionName.collection.drop()
+}
 
 async function newMessagesMongo(collectionName, user, message) {
   let obj

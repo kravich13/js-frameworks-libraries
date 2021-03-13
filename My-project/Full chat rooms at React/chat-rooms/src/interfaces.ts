@@ -1,18 +1,28 @@
 interface IChatProps {
   socket: any
-  chatRequest: Function
-  arrMessagesState: any
   clickRoom: string
+  chatRequest: Function
 }
 
 interface IRoomsProps {
   socket: any
-  chatRequest: Function
-  setMessages: any
+  setClickRoom: Function
 }
 
 interface IChatInfoProps {
   socket: any
+  clickRoom: string
+}
+
+interface IListRoomsProps {
+  clickLi: Function
+  id: string
+  title: string
+  click: boolean
+  hover: boolean
+  outLi: Function
+  overLi: Function
+  clickDelete: Function
 }
 
 interface IMessage {
@@ -29,4 +39,17 @@ interface IRoom {
   hover: boolean
 }
 
-export type { IChatProps, IRoomsProps, IChatInfoProps, IMessage, IRoom }
+interface ISocketLastMessage {
+  lastData: IMessage
+  sendFromRoom: string
+}
+
+export type {
+  IChatProps,
+  IRoomsProps,
+  IChatInfoProps,
+  IListRoomsProps,
+  IMessage,
+  IRoom,
+  ISocketLastMessage
+}

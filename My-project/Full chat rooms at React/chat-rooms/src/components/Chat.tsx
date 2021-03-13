@@ -1,6 +1,5 @@
-import React, { useRef, useEffect } from 'react'
-import { IChatProps, IMessage } from '../interfaces'
-// import { Context } from '../Context'
+import React, { useRef, useEffect, useState } from 'react'
+import { IChatProps, IMessage, ISocketLastMessage } from '../interfaces'
 
 interface styleCss {
   [key: string]: string
@@ -38,16 +37,11 @@ const styles: styleFinally = {
   }
 }
 
-export const Chat: React.FC<IChatProps> = ({
-  socket,
-  chatRequest,
-  arrMessagesState,
-  clickRoom
-}) => {
+const Chat: React.FC<IChatProps> = ({ socket, clickRoom, chatRequest }) => {
   const $inputName = useRef<any>(null)
   const $inputMessage = useRef<any>(null)
   const $chatWindow = useRef<any>(null)
-  const { messages, setMessages } = arrMessagesState
+  const [messages, setMessages] = useState<IMessage[]>([])
 
   const formSendChat = (event: React.ChangeEvent<HTMLFormElement>): any => {
     event.preventDefault()
@@ -70,31 +64,35 @@ export const Chat: React.FC<IChatProps> = ({
     $inputMessage.current.placeholder = 'Напишите сообщение...'
   }
 
-  // Если только зашел на страницу - обновить один раз
-  useEffect(() => {
-    run()
-  }, [])
-
-  async function run() {
-    const arrMessages: IMessage[] = await chatRequest()
-    setMessages([...arrMessages])
-  }
-
   useEffect((): any => {
     let cleanupFunction = false
-    socket.on('lastMessage', (data: IMessage) => {
+    socket.on('lastMessage', (data: ISocketLastMessage) => {
       if (!cleanupFunction) {
-        setMessages((prev: any) => {
-          return [...prev, data]
-        })
+        const { lastData, sendFromRoom } = data
+
+        if (clickRoom === sendFromRoom) {
+          setMessages((prev) => {
+            return [...prev, lastData]
+          })
+        }
       }
     })
     return () => (cleanupFunction = true)
-  }, [socket])
+  }, [socket, setMessages, clickRoom])
 
   useEffect(() => {
     $chatWindow.current.scrollBy(0, $chatWindow.current.scrollHeight)
   }, [messages])
+
+  useEffect(() => {
+    run()
+    async function run() {
+      if (clickRoom) {
+        const arrMessages: IMessage[] = await chatRequest()
+        setMessages([...arrMessages])
+      }
+    }
+  }, [clickRoom, chatRequest])
 
   return (
     <div id="block-chat">
@@ -105,6 +103,7 @@ export const Chat: React.FC<IChatProps> = ({
             elem.createdAt
           ).getMinutes()}`
           const stringTime: string = `${stringHours}:${stringMinutes}`
+
           return (
             <React.Fragment key={elem._id}>
               <div style={styles.messageMain}>
@@ -143,3 +142,5 @@ export const Chat: React.FC<IChatProps> = ({
     </div>
   )
 }
+
+export default React.memo(Chat)

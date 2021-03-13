@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import './App.css'
 import { Navbar } from './components/Navbar'
-import { ChatRoom } from './pages/Chat-room'
+import ChatRoom from './pages/Chat-room'
 import { Kravich } from './pages/Kravich'
 import { MainList } from './pages/Main-list'
 
