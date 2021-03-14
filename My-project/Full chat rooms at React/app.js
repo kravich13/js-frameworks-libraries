@@ -3,11 +3,6 @@ const app = express()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
 const PORT = process.env.PORT || 5000
-// import {
-//   allCollections,
-//   arrNamesCollections,
-//   MongoMethods
-// } from './mongoose/workWithMongoose.js'
 
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
@@ -34,7 +29,7 @@ mongoClient.connect(function (err, client) {
   db.listCollections().toArray(function (err, collInfos) {
     collInfos.forEach((elem) => {
       arrNamesCollections.push(elem.name)
-      addRoomsInMongoDB(elem.name)
+      syncCollection(elem.name)
     })
   })
 })
@@ -66,35 +61,16 @@ try {
   console.log(err)
 }
 
-async function addRoomsInMongoDB(nameTable) {
-  allCollections[nameTable] = mongoose.model(nameTable, roomsSchema)
-  try {
-    await allCollections[nameTable].createCollection()
-    console.log(`Коллекция ${nameTable} успешно синхронизирована с БД.`)
-  } catch (err) {
-    console.log(`Ошибка синхронизации коллекции: ${err}`)
-  }
-}
-
 app.post('/rooms', async (req, res) => {
   try {
     if (!req.body) return
-    res.json(arrNamesCollections)
-  } catch (e) {
-    res.status(500).json({ message: 'Какая-то ошибка, попробуйте позже' })
-  }
-})
 
-app.post('/rooms/allmessages', async (req, res) => {
-  try {
-    if (!req.body) return
+    const { message, clickRoom } = req.body
 
-    const { clickRoom } = req.body
-
-    allCollections[clickRoom].find({}, (err, docs) => {
-      if (err) return console.log(`Ошибка поиска в БД: ${err}`)
-      res.json(docs)
-    })
+    if (message === 'allRoom') res.json(arrNamesCollections)
+    if (message === 'allMessages') {
+      if (clickRoom) res.json(await allMessages(allCollections[clickRoom]))
+    }
   } catch (e) {
     res.status(500).json({ message: 'Какая-то ошибка, попробуйте позже' })
   }
@@ -110,11 +86,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('addMessage', async ({ user, message, clickRoom }) => {
-    const lastData = await newMessagesMongo(
-      allCollections[clickRoom],
-      user,
-      message
-    )
+    const lastData = await newMessage(allCollections[clickRoom], user, message)
     io.sockets.emit('lastMessage', { lastData, sendFromRoom: clickRoom })
   })
 
@@ -125,7 +97,7 @@ io.on('connection', (socket) => {
     })
     if (uniqueRoom) return
 
-    addRoomsInMongoDB(room)
+    syncCollection(room)
     arrNamesCollections.push(room)
     io.sockets.emit('newRoom', room)
   })
@@ -141,11 +113,33 @@ io.on('connection', (socket) => {
   })
 })
 
+async function syncCollection(nameTable) {
+  allCollections[nameTable] = mongoose.model(nameTable, roomsSchema)
+  try {
+    await allCollections[nameTable].createCollection()
+    console.log(`Коллекция ${nameTable} успешно синхронизирована с БД.`)
+  } catch (err) {
+    console.log(`Ошибка синхронизации коллекции: ${err}`)
+  }
+}
+
 async function deleteRoom(collectionName) {
   return await collectionName.collection.drop()
 }
 
-async function newMessagesMongo(collectionName, user, message) {
+async function allMessages(collectionName) {
+  let arr
+  await new Promise((resolve) => {
+    collectionName.find({}, (err, docs) => {
+      if (err) return console.log(`Ошибка поиска в БД: ${err}`)
+      arr = docs
+      resolve()
+    })
+  })
+  return arr
+}
+
+async function newMessage(collectionName, user, message) {
   let obj
   await new Promise((resolve) => {
     collectionName.create(

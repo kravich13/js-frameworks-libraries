@@ -1,13 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { IChatProps, IMessage, ISocketLastMessage } from '../interfaces'
-
-interface styleCss {
-  [key: string]: string
-}
-
-interface styleFinally {
-  [key: string]: styleCss
-}
+import {
+  IChatProps,
+  IMessage,
+  IMessageFromRes,
+  ISocketLastMessage,
+  styleFinally
+} from '../interfaces'
+import { ListMessages } from '../components/List-messages'
 
 const styles: styleFinally = {
   userName: {
@@ -20,20 +19,6 @@ const styles: styleFinally = {
   },
   button: {
     fontSize: '21px'
-  },
-  messageMain: {
-    fontSize: '17px',
-    width: 'auto',
-    display: 'inline-block',
-    background: 'rgba(255, 0, 0, 0.13)',
-    border: '1px solid lightblue',
-    borderRadius: '8px',
-    padding: '5px 15px',
-    marginBottom: '5px',
-    textAlign: 'end'
-  },
-  spanDate: {
-    fontSize: '15px'
   }
 }
 
@@ -88,7 +73,20 @@ const Chat: React.FC<IChatProps> = ({ socket, clickRoom, chatRequest }) => {
     run()
     async function run() {
       if (clickRoom) {
-        const arrMessages: IMessage[] = await chatRequest()
+        let newDayMessage: string = ''
+        const arrMessages = Array.from(
+          await chatRequest(),
+          (elem: IMessageFromRes) => {
+            const day: string = new Date(elem.createdAt).getDate().toString()
+
+            const result = {
+              ...elem,
+              newDay: newDayMessage !== day ? true : false
+            }
+            newDayMessage = day
+            return result
+          }
+        )
         setMessages([...arrMessages])
       }
     }
@@ -97,25 +95,8 @@ const Chat: React.FC<IChatProps> = ({ socket, clickRoom, chatRequest }) => {
   return (
     <div id="block-chat">
       <div id="chat-window" ref={$chatWindow}>
-        {messages.map((elem: IMessage) => {
-          const stringHours: string = `${new Date(elem.createdAt).getHours()}`
-          const stringMinutes: string = `${new Date(
-            elem.createdAt
-          ).getMinutes()}`
-          const stringTime: string = `${stringHours}:${stringMinutes}`
-
-          return (
-            <React.Fragment key={elem._id}>
-              <div style={styles.messageMain}>
-                <p>
-                  {elem.user}: {elem.message}
-                  <br />
-                  <span style={styles.spanDate}> {stringTime}</span>
-                </p>
-              </div>
-              <br />
-            </React.Fragment>
-          )
+        {messages.map((message: IMessage) => {
+          return <ListMessages key={message._id} message={message} />
         })}
       </div>
       <form onSubmit={formSendChat} name="formUserData" id="formSendChat">

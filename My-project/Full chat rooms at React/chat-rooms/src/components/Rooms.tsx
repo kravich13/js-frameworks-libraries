@@ -30,11 +30,10 @@ const Rooms: React.FC<IRoomsProps> = ({ socket, setClickRoom }) => {
         headers: {
           'Content-type': 'application/json'
         },
-        body: JSON.stringify({ message: 'all room' })
+        body: JSON.stringify({ message: 'allRoom' })
       })
 
       const arrNameRooms = await response.json()
-
       arrNameRooms.forEach((nameRoom: string, index: number) => {
         setRooms((prev) => {
           return [

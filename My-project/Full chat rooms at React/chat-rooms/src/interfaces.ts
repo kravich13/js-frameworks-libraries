@@ -25,7 +25,19 @@ interface IListRoomsProps {
   clickDelete: Function
 }
 
+interface IListMessagesProps {
+  message: IMessage
+}
+
 interface IMessage {
+  _id: string
+  user: string
+  message: string
+  createdAt: string
+  newDay: boolean
+}
+
+interface IMessageFromRes {
   _id: string
   user: string
   message: string
@@ -44,12 +56,23 @@ interface ISocketLastMessage {
   sendFromRoom: string
 }
 
+interface styleCss {
+  [key: string]: string
+}
+
+interface styleFinally {
+  [key: string]: styleCss
+}
+
 export type {
   IChatProps,
   IRoomsProps,
   IChatInfoProps,
   IListRoomsProps,
+  IListMessagesProps,
   IMessage,
+  IMessageFromRes,
   IRoom,
-  ISocketLastMessage
+  ISocketLastMessage,
+  styleFinally
 }
