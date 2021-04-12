@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body.dark {
+        background: rgb(39, 39, 39);
+        color: rgb(255, 255, 255);
+      }
+      p {
+        font-weight: 600;
+      }
+      .clickBtn {
+        border-radius: 10px;
+        border: 1px solid rgba(133, 133, 133, 0.767);
+        color: white;
+        font-weight: 600;
+        padding: 5px 15px;
+        font-size: 16px;
+      }
+      #getAdd {
+        background: blue;
+      }
+      #getTake {
+        background: tomato;
+      }
+      #getAsync {
+        background: green;
+      }
+      #getTheme {
+        background: lightseagreen;
+      }
+    </style>
+  </head>
+  <body>
+    <button class="clickBtn" id="getTheme">Сменить тему</button>
+    <div>
+      <p>Счётчик: <span id="countState"></span></p>
+      <button class="clickBtn" id="getAdd">Добавить</button>
+      <button class="clickBtn" id="getTake">Убрать</button>
+      <button class="clickBtn" id="getAsync">Async</button>
+    </div>
+  </body>
+  <script type="module" src="./index.js"></script>
+</html>

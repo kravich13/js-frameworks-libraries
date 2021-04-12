@@ -1,0 +1,26 @@
+.App {
+  text-align: center;
+}
+
+.form {
+  text-align: start;
+  margin-left: 10%;
+}
+.form form {
+  display: flex;
+  flex-direction: column;
+}
+.form form input {
+  width: 400px;
+}
+.form form button {
+  width: 170px;
+}
+.posts {
+  display: flex;
+  justify-content: space-around;
+}
+.card {
+  border: 1px solid rgb(59, 59, 59);
+  width: 500px;
+}

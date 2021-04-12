@@ -509,7 +509,19 @@ import { BrowserRouter, Switch, Route, NavLink, Redirect } from 'react-router-do
 
 * `BrowserRouter` - в этот компонент оборачивается всё, что должно работать с маршрутизацией
 * `Switch` - останавливает рендеринг внутренних компонентов после первого совпадения
-* `<Route component={ListTodo} path="/" exact />` - обработчик, который говорит, что по пути `/`, который является главным `exact` будет отрисовываться компонент `ListTodo`
+* `<Route component={ListTodo} path="/" exact />` - обработчик, который говорит, что по пути `/`, который является главным `exact` будет отрисовываться компонент `ListTodo`.
+
+  * параметр `exact` говорит о том, что **конкретно** по этому пути перейти в такой-то компонент! 
+
+    ```jsx
+    // без exact у /month/events и всего остального переходило бы...
+    // ...только в главный компонент, т.е. в /
+    <Route component={Calendar} path="/" exact />
+    <Route component={SingUp} path="/sing-up" exact /> 
+    <Route component={Login} path="/login" exact />
+    <Route component={ClickMonth} path="/month" exact />
+    <Route component={TaskList} path="/month/events" exact />
+    ```
 * `<NavLink to="/">` - перенаправляет на страницу без её перезагрузки. Можно прикручивать различные стили и сам **css** доступен как атрибут `a`
 
   * Также вместо него может использоваться обработчик `<Link>`, логика та же, только нельзя прикручивать стили.
