@@ -46,6 +46,7 @@ interface IMonth_objOfDay {
 
 interface ITaskList_blocksTask {
   id: number
+  title: string
   posTop: number
   posLeft: number
   posHeight: number
@@ -57,9 +58,9 @@ interface IBlockTask_styles {
 
 interface IBlockTaskProps {
   elem: ITaskList_blocksTask
-  blocksTasks: any
+  // blocksTasks: any
   count: number
-  addTitle: string
+  // addTitle: string
 }
 
 interface IFormAddTaskProps {

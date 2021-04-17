@@ -1,18 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { BlockTask } from '../components/BlockTask'
+import BlocksTask from '../components/BlocksTask'
 import { FormAddTask } from '../components/FormAddTask'
-import { ITaskList_blocksTask } from '../interfaces'
+// import { ITaskList_blocksTask } from '../interfaces'
+import { connect } from 'react-redux'
+import { createTask } from '../redux/actions'
 
-export const TaskList: React.FC = () => {
+const TaskList: React.FC<any> = ({ createTask, blocksTask }) => {
   const [hours, setHours] = useState<string[]>([])
   const [taskHidden, setTaskHidden] = useState<boolean>(false)
-  const [blocksTask, setBlocksTask] = useState<ITaskList_blocksTask[]>([])
   const $addTitle = useRef<any>(null)
   const $startTask = useRef<any>(null)
   const $endTask = useRef<any>(null)
   const $blocksTime = useRef<any[]>([])
-  const $blocksTasks = useRef<any[]>([])
-  const [title, setTitle] = useState<string>('')
 
   const date: Date = new Date()
   const currentHrs: string | number =
@@ -66,10 +65,7 @@ export const TaskList: React.FC = () => {
             : startMin > endMin
             ? 60 - startMin + endMin + 60 * (hrs_minus() - 1)
             : hrs_minus() * 60
-      } else {
-        console.log(startHours, endHours)
-        return alert('Неверно введены часы')
-      }
+      } else return alert('Неверно введены часы')
     }
 
     function min_minus(): number {
@@ -93,21 +89,37 @@ export const TaskList: React.FC = () => {
             ? blockSize.top
             : blockSize.top + startMin * (blockSize.height / 60)
 
-        setBlocksTask((prev) => {
-          return [
-            ...prev,
-            {
-              id: new Date().getTime(),
-              posTop: firstPos,
-              posLeft: elem.children[1].getBoundingClientRect().left,
-              posHeight: finallyHeightPX
+        function test() {
+          const startPosLeft = elem.children[1].getBoundingClientRect().left
+          blocksTask.forEach((elem: any) => {
+            const { posTop, posHeight } = elem
+            //   start: elem.posTop,
+            //   end: elem.posTop + elem.posHeight
+            // }
+
+            if (
+              firstPos >= posTop &&
+              firstPos + finallyHeightPX <= posTop + posHeight
+            ) {
+              return startPosLeft + 100
+              console.log('попал в диапазон')
             }
-          ]
+            return startPosLeft
+          })
+        }
+
+        createTask({
+          id: new Date().getTime(),
+          title: $addTitle.current.value,
+          posTop: firstPos,
+          // posLeft: elem.children[1].getBoundingClientRect().left,
+          posLeft: test(),
+          posHeight: finallyHeightPX
         })
+
         alert('Задача создана!')
-        setTitle($addTitle.current.value)
         $addTitle.current.value = ''
-        window.scrollBy(0, firstPos - finallyHeightPX)
+        // window.scrollBy(0, firstPos - finallyHeightPX)
         return
       }
     }
@@ -129,17 +141,7 @@ export const TaskList: React.FC = () => {
         />
       )}
 
-      {blocksTask.map((elem, index: number) => {
-        return (
-          <BlockTask
-            key={`task${elem.id}`}
-            elem={elem}
-            blocksTasks={$blocksTasks}
-            count={index}
-            addTitle={title}
-          />
-        )
-      })}
+      <BlocksTask />
 
       <ul id="task-list">
         {hours.map((elem, index: number) => {
@@ -160,3 +162,12 @@ export const TaskList: React.FC = () => {
     </React.Fragment>
   )
 }
+
+const mapDispatchToProps = { createTask }
+
+const mapStateToProps = (state: any) => {
+  return {
+    blocksTask: state.tasks.tasks
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(TaskList)

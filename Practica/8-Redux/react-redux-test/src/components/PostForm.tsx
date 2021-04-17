@@ -6,7 +6,7 @@ interface IpostElem {
   title: string
 }
 
-const PostForm: React.FC = () => {
+const PostForm: React.FC = (props: any) => {
   const [postElem, setPostElem] = useState<IpostElem>({ title: '' })
 
   const submitHandler = (event: React.KeyboardEvent<HTMLFormElement>) => {
@@ -17,7 +17,7 @@ const PostForm: React.FC = () => {
       id: Date.now().toString()
     }
 
-    createPost(newPost)
+    props.createPost(newPost)
   }
 
   const changeInputHandrer = (

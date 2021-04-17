@@ -6,7 +6,7 @@ import { Calendar } from './pages/Calendar'
 import { Login } from './pages/Login'
 import { SingUp } from './pages/Sing-up'
 import { ClickMonth } from './pages/ClickMonth'
-import { TaskList } from './pages/Task-list'
+import TaskList from './pages/Task-list'
 import Context from './context'
 
 const App: React.FC = () => {
