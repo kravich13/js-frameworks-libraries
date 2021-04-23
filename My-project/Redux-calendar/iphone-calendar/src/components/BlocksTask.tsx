@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { BlockTask } from '../components/BlockTask'
+import BlockTask from '../components/BlockTask'
 
 const BlocksTask: React.FC<any> = ({ blocksTask }) => {
   return blocksTask.map((elem: any, index: number) => {

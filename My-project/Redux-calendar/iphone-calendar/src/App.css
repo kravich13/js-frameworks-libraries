@@ -48,17 +48,22 @@ header ul li {
   cursor: pointer;
   padding: 8px 0;
 }
-header ul li:hover {
+header ul li :hover {
   background: rgba(255, 255, 255, 0.521);
   border-radius: 7px;
 }
-header ul li a {
+.login-information :hover {
+  background: rgba(255, 255, 255, 0.521);
+  border-radius: 7px;
+}
+header ul li a,
+.login-information {
   color: rgb(56, 56, 56);
   text-decoration: none;
   padding: 8px 20px;
 }
 
-/* ФОРМА РЕГИСТРАЦИИ */
+/* ========== РЕГИСТРАЦИИ ========== */
 #window-registation {
   background: rgba(21, 39, 105, 0.733);
   color: white;
@@ -131,7 +136,7 @@ header ul li a {
   text-align: center;
 }
 
-/* ФОРМА АВТОРИЗАЦИИ */
+/* ========== ФОРМА АВТОРИЗАЦИИ ========== */
 #window-autorization {
   background: rgba(21, 39, 105, 0.733);
   color: white;
@@ -157,7 +162,7 @@ header ul li a {
   text-align: end;
 }
 
-/* КАЛЕНДАРЬ */
+/* ========== КАЛЕНДАРЬ ========== */
 .quarters {
   display: flex;
   justify-content: space-between;
@@ -179,10 +184,12 @@ header ul li a {
   font-size: 24px;
   text-align: center;
 }
-.month-navLink {
+.container-oneMonth {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100%;
+  cursor: pointer;
 }
 .month-nope {
   cursor: default;
@@ -192,10 +199,6 @@ header ul li a {
   height: 100%;
 }
 
-.big-month table tr td {
-  font-size: 20px;
-  padding: 13px;
-}
 .container-bigMonth ul {
   list-style: none;
   display: flex;
@@ -215,11 +218,11 @@ header ul li a {
 .current-month {
   color: red;
 }
-#containter-calendar {
+#container-calendar {
   padding-top: 10px;
-  width: 490px;
+  width: 520px;
 }
-#containter-calendar h1 {
+#container-calendar h1 {
   color: red;
   font-size: 23px;
   font-weight: 600;
@@ -231,19 +234,34 @@ header ul li a {
   font-weight: 600;
 }
 
-/* ДНИ */
-.regular-day {
+/* ========== ДНИ ========== */
+.dayOfYear,
+.dayWithoutAuth,
+.dayWithAuth {
   text-align: center;
-  font-size: 15px;
-  padding: 0 1px;
 }
-.current-day {
+.dayOfYear {
+  padding: 1px;
+}
+.dayWithoutAuth {
+  font-size: 19px;
+  padding: 9px;
+}
+.dayWithAuth {
+  font-size: 19px;
+}
+.dayWithAuth a {
+  display: block;
+  padding: 9px;
+}
+.current-day,
+.current-day a {
   background: red;
   border-radius: 50%;
   color: white;
   font-weight: 600;
-  /* color: red; */
 }
+/* ========== ДНИ ========== */
 
 #block-addTask {
   width: 250px;
@@ -273,15 +291,18 @@ header ul li a {
 #task-save {
   width: 130px;
 }
+#block-allTasks {
+  position: relative;
+}
 #task-list {
   padding: 10px;
 }
 .block-time-toDo {
-  position: relative;
   display: flex;
   list-style: none;
   height: 59px;
   border-top: 1px solid grey;
+  position: relative;
 }
 .time-toDo {
   font-size: 16px;
@@ -295,8 +316,27 @@ header ul li a {
 }
 
 .blocksTasksTitle {
-  display: flex;
-  align-items: center;
   font-size: 14px;
   padding: 0 5px;
+  width: 87%;
+}
+.deleteTask {
+  align-self: flex-start;
+  text-align: center;
+  width: 13%;
+  background: #cf6e6e;
+}
+.leftTaskBorder {
+  width: 3px;
+  background: #6e9ecf;
+}
+.blockTask {
+  display: flex;
+  position: absolute;
+  background: #e2ecf5;
+  width: 200px;
+  z-index: 1;
+}
+.half-blockTask {
+  width: 100px;
 }

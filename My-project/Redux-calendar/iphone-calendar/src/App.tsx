@@ -1,65 +1,40 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import './App.css'
-import { Navbar } from './components/Navbar'
-import { Calendar } from './pages/Calendar'
-import { Login } from './pages/Login'
-import { SingUp } from './pages/Sing-up'
-import { ClickMonth } from './pages/ClickMonth'
+import Navbar from './components/Navbar'
+import Calendar from './pages/Calendar'
+import Login from './pages/Login'
+import SingUp from './pages/Sing-up'
+import ClickMonth from './pages/ClickMonth'
 import TaskList from './pages/Task-list'
-import Context from './context'
+import { connect } from 'react-redux'
 
-const App: React.FC = () => {
-  const [authorized] = useState<boolean>(true)
-  const [flagNavbar, setFlagNavbar] = useState<boolean>(false)
-  const [stateMonth, setStateMonth] = useState<number>()
-  const [generalStateMonth, setGeneralStateMonth] = useState<boolean>(false)
-
-  function clickNavbar(flag: boolean): void {
-    setFlagNavbar(flag)
-    setGeneralStateMonth(false)
-  }
-
-  function clickOnMonth(count: number): void {
-    setStateMonth(count)
-    setGeneralStateMonth(true)
-  }
-
-  function clickDay(openFuncionality: string): void {
-    if (openFuncionality !== '/month/events') return
-  }
-
+const App: React.FC<any> = ({ navbar }) => {
   return (
     <div className="App">
       <BrowserRouter>
-        <Context.Provider
-          value={{
-            authorized,
-            flagNavbar,
-            stateMonth,
-            generalStateMonth,
-            clickNavbar,
-            clickOnMonth,
-            clickDay
-          }}
-        >
-          {!flagNavbar && (
-            <React.Fragment>
-              <Navbar />
-            </React.Fragment>
-          )}
+        {!navbar && (
+          <React.Fragment>
+            <Navbar />
+          </React.Fragment>
+        )}
 
-          <Switch>
-            <Route component={Calendar} path="/" exact />
-            <Route component={SingUp} path="/sing-up" exact />
-            <Route component={Login} path="/login" exact />
-            <Route component={ClickMonth} path="/month" exact />
-            <Route component={TaskList} path="/month/events" exact />
-          </Switch>
-        </Context.Provider>
+        <Switch>
+          <Route component={Calendar} path="/" exact />
+          <Route component={SingUp} path="/sing-up" exact />
+          <Route component={Login} path="/login" exact />
+          <Route component={ClickMonth} path="/month" exact />
+          <Route component={TaskList} path="/month/events" exact />
+        </Switch>
       </BrowserRouter>
     </div>
   )
 }
 
-export default App
+const mapStateToProps = (state: any) => {
+  return {
+    navbar: state.auth.navbar
+  }
+}
+
+export default connect(mapStateToProps, null)(App)

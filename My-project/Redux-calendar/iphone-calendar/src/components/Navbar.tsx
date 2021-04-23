@@ -1,11 +1,35 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { NavLink } from 'react-router-dom'
-import Context from '../context'
-import { MyLogo } from './MyLogo'
-import { IContext } from '../interfaces'
+import MyLogo from './MyLogo'
+// import { IContext } from '../interfaces'
+import { connect } from 'react-redux'
+import { hidden_navbar } from '../redux/actions'
 
-export const Navbar: React.FC = () => {
-  const { clickNavbar } = useContext<IContext>(Context)
+const Navbar: React.FC<any> = ({ authorized, hidden_navbar }) => {
+  function UserAuthorized({ authorized }: any) {
+    if (authorized)
+      return (
+        <React.Fragment>
+          <li>
+            <span className="login-information">{authorized}</span>
+          </li>
+          <li>
+            <span className="login-information">Выйти</span>
+          </li>
+        </React.Fragment>
+      )
+
+    return (
+      <React.Fragment>
+        <li onClick={() => hidden_navbar(true)}>
+          <NavLink to="/login">Вход</NavLink>
+        </li>
+        <li onClick={() => hidden_navbar(true)}>
+          <NavLink to="/sing-up">Регистрация</NavLink>
+        </li>
+      </React.Fragment>
+    )
+  }
 
   return (
     <header>
@@ -13,13 +37,17 @@ export const Navbar: React.FC = () => {
         <MyLogo trueNavbar={false} />
       </div>
       <ul id="container-url">
-        <li onClick={() => clickNavbar(true)}>
-          <NavLink to="/login">Вход</NavLink>
-        </li>
-        <li onClick={() => clickNavbar(true)}>
-          <NavLink to="/sing-up">Регистрация</NavLink>
-        </li>
+        <UserAuthorized authorized={authorized} />
       </ul>
     </header>
   )
 }
+
+const mapDispatchToProps = { hidden_navbar }
+const mapStateToProps = (state: any) => {
+  return {
+    authorized: state.auth.authorized
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar)

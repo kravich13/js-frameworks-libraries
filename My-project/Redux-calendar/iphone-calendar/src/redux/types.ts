@@ -1,1 +1,8 @@
 export const CREATE_TASK = 'CREATE_TASK'
+export const CHANGE_TASK = 'CHANGE_TASK'
+export const DELETE_TASK = 'DELETE_TASK'
+export const SING_UP = 'SING_UP'
+export const AUTOLOGIN = 'AUTOLOGIN'
+export const HIDDEN_NAVBAR = 'HIDDEN_NAVBAR'
+export const MONTH_NUMBER = 'MONTH_NUMBER'
+export const CLICK_MONTH = 'CLICK_MONTH'

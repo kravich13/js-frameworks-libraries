@@ -1,28 +1,46 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { IBlockTaskProps, IBlockTask_styles } from '../interfaces'
+import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import { deleteTask } from '../redux/actions'
+// import { IBlockTaskProps, IBlockTask_styles } from '../interfaces'
 
-export const BlockTask: React.FC<IBlockTaskProps> = ({ elem }) => {
-  const styles = useRef<IBlockTask_styles>({
-    position: 'absolute',
-    background: '#e2ecf5',
-    borderLeft: '3px solid #6e9ecf',
-    width: '200px',
-    top: `${elem.posTop}px`,
-    left: `${elem.posLeft}px`,
-    height: `${elem.posHeight}px`
-  })
+const BlockTask: React.FC<any> = ({ elem, deleteTask }) => {
   const [title, setTitle] = useState<string>('')
 
+  const classes: string[] = ['blockTask']
+  const top: string = `${elem.posTop}px`
+  const left: string = `${elem.posLeft}px`
+  const height: string = `${elem.height}px`
+
   useEffect((): void => {
-    if (elem.title.length < 20) return setTitle(elem.title)
+    let lengthStr: number = 20
 
-    const desiredLength: string = elem.title.slice(0, 20)
-    setTitle(`${desiredLength} ...`)
-  }, [elem.title])
+    if (elem.position === 'center') {
+      if (elem.title.length < 20) return setTitle(elem.title)
+    } else {
+      if (elem.title.length < 8) return setTitle(elem.title)
+      else lengthStr = 8
+    }
 
+    const desiredLength: string = elem.title.slice(0, lengthStr)
+    setTitle(`${desiredLength}...`)
+  }, [elem.title, elem.position])
+
+  if (elem.position !== 'center') classes.push('half-blockTask')
+
+  function clickTest() {
+    deleteTask({ id: elem.id })
+  }
   return (
-    <div style={styles.current}>
+    <div className={classes.join(' ')} style={{ top, left, height }}>
+      <p className="leftTaskBorder"></p>
       <p className="blocksTasksTitle">{title}</p>
+      <div className="deleteTask" onClick={clickTest}>
+        &#215;
+      </div>
     </div>
   )
 }
+
+const mapDispatchToProps = { deleteTask }
+
+export default connect(null, mapDispatchToProps)(BlockTask)

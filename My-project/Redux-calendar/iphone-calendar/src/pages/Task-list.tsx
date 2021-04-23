@@ -3,11 +3,16 @@ import BlocksTask from '../components/BlocksTask'
 import { FormAddTask } from '../components/FormAddTask'
 // import { ITaskList_blocksTask } from '../interfaces'
 import { connect } from 'react-redux'
-import { createTask } from '../redux/actions'
+import { createTask, changeTask } from '../redux/actions'
 
-const TaskList: React.FC<any> = ({ createTask, blocksTask }) => {
+const TaskList: React.FC<any> = ({
+  createTask,
+  blocksTask,
+  changeTask,
+  authorized
+}) => {
   const [hours, setHours] = useState<string[]>([])
-  const [taskHidden, setTaskHidden] = useState<boolean>(false)
+  const [taskHidden, setTaskHidden] = useState<boolean>(true)
   const $addTitle = useRef<any>(null)
   const $startTask = useRef<any>(null)
   const $endTask = useRef<any>(null)
@@ -32,7 +37,7 @@ const TaskList: React.FC<any> = ({ createTask, blocksTask }) => {
     setHours(arrayHours)
   }, [])
 
-  const formAddTask = (event: React.ChangeEvent<HTMLFormElement>): any => {
+  const formAddTask = (event: React.ChangeEvent<HTMLFormElement>): void => {
     event.preventDefault()
 
     if ($addTitle.current.value.length < 2) {
@@ -53,6 +58,7 @@ const TaskList: React.FC<any> = ({ createTask, blocksTask }) => {
     const endMin: number = dateEnd.getMinutes()
 
     let differenceMinutes: number = 0
+    let posBlock: string = 'center'
 
     if (startHours === endHours) {
       if (startMin < endMin) differenceMinutes = min_minus()
@@ -77,97 +83,136 @@ const TaskList: React.FC<any> = ({ createTask, blocksTask }) => {
 
     for (const elem of $blocksTime.current) {
       if (elem.children[0].id === `task${dateStart.getUTCHours()}`) {
-        const blockSize = elem.getBoundingClientRect()
-
-        const finallyHeightPX: number =
+        const finallyHeight: number =
           differenceMinutes < 15
-            ? blockSize.height / 4
-            : Math.floor(differenceMinutes * (blockSize.height / 60))
+            ? elem.offsetHeight / 4
+            : Math.ceil(differenceMinutes * (elem.offsetHeight / 60))
 
         const firstPos: number =
           startMin === 0
-            ? blockSize.top
-            : blockSize.top + startMin * (blockSize.height / 60)
+            ? elem.offsetTop
+            : Math.ceil(elem.offsetTop + startMin * (elem.offsetHeight / 60))
 
-        function test() {
-          const startPosLeft = elem.children[1].getBoundingClientRect().left
-          blocksTask.forEach((elem: any) => {
-            const { posTop, posHeight } = elem
-            //   start: elem.posTop,
-            //   end: elem.posTop + elem.posHeight
-            // }
+        const posLeft: number | null = dynamic_posLeft({
+          elem,
+          firstPos,
+          heightBlock: finallyHeight
+        })
 
-            if (
-              firstPos >= posTop &&
-              firstPos + finallyHeightPX <= posTop + posHeight
-            ) {
-              return startPosLeft + 100
-              console.log('попал в диапазон')
-            }
-            return startPosLeft
-          })
-        }
+        if (posLeft === null) return alert('Блок уже занят!')
 
         createTask({
           id: new Date().getTime(),
           title: $addTitle.current.value,
           posTop: firstPos,
-          // posLeft: elem.children[1].getBoundingClientRect().left,
-          posLeft: test(),
-          posHeight: finallyHeightPX
+          height: finallyHeight,
+          position: posBlock,
+          posLeft
         })
 
-        alert('Задача создана!')
-        $addTitle.current.value = ''
+        // alert('Задача создана!')
+        // $addTitle.current.value = ''
         // window.scrollBy(0, firstPos - finallyHeightPX)
         return
       }
+    }
+
+    function dynamic_posLeft({
+      elem,
+      firstPos,
+      heightBlock
+    }: any): number | null {
+      const startPosLeft: number = elem.offsetLeft + elem.children[1].offsetLeft
+
+      if (!blocksTask.length) return startPosLeft
+
+      let divisionOfWidth: boolean = false
+
+      for (const elem of blocksTask) {
+        const { posTop, height, position } = elem
+
+        const endExisting: number = posTop + height
+        const endCurrent: number = firstPos + heightBlock
+
+        const startPosInTheRange: boolean =
+          firstPos >= posTop && firstPos <= endExisting
+        const endPosInTheRange: boolean =
+          endCurrent >= posTop && endCurrent <= endExisting
+        const existingInTheRange: boolean =
+          posTop >= firstPos && endExisting <= endCurrent
+
+        const hitTheRange: boolean =
+          startPosInTheRange || endPosInTheRange || existingInTheRange
+
+        if (hitTheRange) {
+          if (position === 'right') return null
+
+          changeTask({ id: elem.id, position: 'left' })
+          divisionOfWidth = true
+        }
+      }
+
+      if (divisionOfWidth) {
+        posBlock = 'right'
+        return startPosLeft + 100
+      }
+      return startPosLeft
     }
   }
 
   return (
     <React.Fragment>
-      <button id="task-hiddenForm" onClick={() => setTaskHidden(!taskHidden)}>
-        {!taskHidden ? 'Добавить событие' : 'Скрыть окно'}
-      </button>
+      {authorized && (
+        <React.Fragment>
+          <button
+            id="task-hiddenForm"
+            onClick={() => setTaskHidden(!taskHidden)}
+          >
+            {!taskHidden ? 'Добавить событие' : 'Скрыть окно'}
+          </button>
 
-      {taskHidden && (
-        <FormAddTask
-          formAddTask={formAddTask}
-          addTitle={$addTitle}
-          currentTime={currentTime}
-          startTask={$startTask}
-          endTask={$endTask}
-        />
+          {taskHidden && (
+            <FormAddTask
+              formAddTask={formAddTask}
+              addTitle={$addTitle}
+              currentTime={currentTime}
+              startTask={$startTask}
+              endTask={$endTask}
+            />
+          )}
+
+          <div id="block-allTasks">
+            <BlocksTask />
+            <ul id="task-list">
+              {hours.map((elem, index: number) => {
+                return (
+                  <li
+                    className="block-time-toDo"
+                    key={index}
+                    ref={(el) => ($blocksTime.current[index] = el)}
+                  >
+                    <h3 id={`task${index}`} className="time-toDo">
+                      {elem}
+                    </h3>
+                    <div className="container-toDo"></div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </React.Fragment>
       )}
-
-      <BlocksTask />
-
-      <ul id="task-list">
-        {hours.map((elem, index: number) => {
-          return (
-            <li
-              className="block-time-toDo"
-              key={index}
-              ref={(el) => ($blocksTime.current[index] = el)}
-            >
-              <h3 id={`task${index}`} className="time-toDo">
-                {elem}
-              </h3>
-              <div className="container-toDo"></div>
-            </li>
-          )
-        })}
-      </ul>
+      <div>Вы не авторизировались, функционал недоступен.</div>
     </React.Fragment>
   )
 }
 
-const mapDispatchToProps = { createTask }
+const mapDispatchToProps = { createTask, changeTask }
 
 const mapStateToProps = (state: any) => {
   return {
-    blocksTask: state.tasks.tasks
+    blocksTask: state.tasks.tasks,
+    authorized: state.auth.authorized
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TaskList)
