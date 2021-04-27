@@ -16,7 +16,7 @@ export const FormAddTask: React.FC<IFormAddTaskProps> = ({
           placeholder="Заголовок"
           id="task-addTitle"
           ref={addTitle}
-          defaultValue="test"
+          // defaultValue="test"
         />
 
         <label>
@@ -24,8 +24,8 @@ export const FormAddTask: React.FC<IFormAddTaskProps> = ({
           <input
             type="time"
             ref={startTask}
-            // defaultValue={currentTime}
-            defaultValue="00:00"
+            defaultValue={currentTime}
+            // defaultValue="00:00"
           />
         </label>
         <label>

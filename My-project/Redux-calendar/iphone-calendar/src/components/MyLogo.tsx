@@ -1,9 +1,18 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { connect, ConnectedProps } from 'react-redux'
 import { hidden_navbar } from '../redux/actions'
+import { ImapDispatchToProps, IMapStateToProps } from '../interfaces'
 
-const MyLogo: React.FC<any> = ({ navbar, hidden_navbar }) => {
+const mapDispatchToProps: ImapDispatchToProps = { hidden_navbar }
+const mapStateToProps = (state: IMapStateToProps) => {
+  return { navbar: state.auth.navbar }
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps)
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+const MyLogo: React.FC<PropsFromRedux> = ({ navbar, hidden_navbar }) => {
   const classes: string[] = ['MY_CALENDAR']
 
   if (navbar) classes.push('clickAuth')
@@ -19,13 +28,6 @@ const MyLogo: React.FC<any> = ({ navbar, hidden_navbar }) => {
       </NavLink>
     </React.Fragment>
   )
-}
-
-const mapDispatchToProps = { hidden_navbar }
-const mapStateToProps = (state: any) => {
-  return {
-    navbar: state.auth.navbar
-  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyLogo)

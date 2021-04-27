@@ -1,12 +1,27 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { NavLink } from 'react-router-dom'
-import MyLogo from '../components/MyLogo'
-import { connect } from 'react-redux'
+import { connect, ConnectedProps } from 'react-redux'
 import { req_singUp, req_clearMessage, hidden_navbar } from '../redux/actions'
+import MyLogo from '../components/MyLogo'
+import { ImapDispatchToProps, IMapStateToProps } from '../interfaces'
 
-const SingUp: React.FC<any> = ({
+const mapDispatchToProps: ImapDispatchToProps = {
   req_singUp,
+  req_clearMessage,
+  hidden_navbar
+}
+const mapStateToProps = (state: IMapStateToProps) => {
+  return {
+    eventSingUpAuth: state.auth.eventSingUpAuth
+  }
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps)
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+const SingUp: React.FC<PropsFromRedux> = ({
   eventSingUpAuth,
+  req_singUp,
   req_clearMessage,
   hidden_navbar
 }) => {
@@ -18,10 +33,10 @@ const SingUp: React.FC<any> = ({
   const singUpForm = (event: React.FormEvent<HTMLFormElement>): any => {
     event.preventDefault()
 
-    const login = $login.current.value
-    const birthday = $birthday.current.value
-    const password = $password.current.value
-    const passwordConfirm = $passwordConfirm.current.value
+    const login: string = $login.current.value
+    const birthday: string = $birthday.current.value
+    const password: string = $password.current.value
+    const passwordConfirm: string = $passwordConfirm.current.value
 
     if (login.length < 3) return ($login.current.placeholder = 'Короткое имя')
     if (!birthday) return alert('Неправильная дата рождения')
@@ -38,15 +53,15 @@ const SingUp: React.FC<any> = ({
     })
   }
 
-  const clearEvents = useCallback(() => {
+  const clearEvents = useCallback((): void => {
     req_clearMessage('')
   }, [req_clearMessage])
 
-  useEffect(() => {
+  useEffect((): void => {
     hidden_navbar(true)
   }, [hidden_navbar])
 
-  useEffect(() => {
+  useEffect((): void => {
     if (eventSingUpAuth === '') return
 
     alert(eventSingUpAuth)
@@ -55,7 +70,7 @@ const SingUp: React.FC<any> = ({
 
   return (
     <React.Fragment>
-      <MyLogo trueNavbar={true} />
+      <MyLogo />
 
       <div id="window-registation">
         <h2>Создать аккаунт</h2>
@@ -96,13 +111,6 @@ const SingUp: React.FC<any> = ({
       </label>
     </React.Fragment>
   )
-}
-
-const mapDispatchToProps = { req_singUp, req_clearMessage, hidden_navbar }
-const mapStateToProps = (state: any) => {
-  return {
-    eventSingUpAuth: state.auth.eventSingUpAuth
-  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SingUp)

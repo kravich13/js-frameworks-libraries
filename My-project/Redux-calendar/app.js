@@ -31,11 +31,31 @@ const existingUsersScheme = new Schema(
   { versionKey: false }
 )
 
+const usersTasks = new Schema({
+  userName: String,
+  allDay: [
+    {
+      fullDate: Date,
+      tasksDay: [
+        {
+          id: Number,
+          title: String,
+          posTop: Number,
+          height: Number,
+          position: String,
+          posLeft: Number
+        }
+      ]
+    }
+  ]
+})
+
 mongoose.connect('mongodb://localhost:27017/calendar', {
   useUnifiedTopology: true
 })
 
 const ExistingUsers = mongoose.model('existing_users', existingUsersScheme)
+const UsersTasks = mongoose.model('usersTasks', usersTasks)
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))

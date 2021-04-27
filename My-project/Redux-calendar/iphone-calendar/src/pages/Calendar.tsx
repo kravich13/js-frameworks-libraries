@@ -1,9 +1,18 @@
 import React, { useState } from 'react'
+import { connect, ConnectedProps } from 'react-redux'
 import { Quarter } from '../components/Quarter'
-import { ICalendar_quarters } from '../interfaces'
-import { connect } from 'react-redux'
+import { IMapStateToProps, ICalendar_quarters } from '../interfaces'
 
-const Calendar: React.FC<any> = ({ authorized }) => {
+const mapStateToProps = (state: IMapStateToProps) => {
+  return {
+    authorized: state.auth.authorized
+  }
+}
+
+const connector = connect(mapStateToProps)
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+const Calendar: React.FC<PropsFromRedux> = ({ authorized }) => {
   const date: Date = new Date()
   const currentYear: number = date.getFullYear()
   const [quarters] = useState<ICalendar_quarters[]>([
@@ -31,10 +40,4 @@ const Calendar: React.FC<any> = ({ authorized }) => {
   )
 }
 
-const mapStateToProps = (state: any) => {
-  return {
-    authorized: state.auth.authorized
-  }
-}
-
-export default connect(mapStateToProps, null)(Calendar)
+export default connect(mapStateToProps)(Calendar)

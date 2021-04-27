@@ -1,11 +1,15 @@
-import { CHANGE_TASK, CREATE_TASK, DELETE_TASK } from './types'
+import { CHANGE_TASK, CREATE_TASK, DATA_CLICK_DAY, DELETE_TASK } from './types'
+import { ITasksReducer_state, IAction, IBlocksTask } from './interfacesRedux'
 
-const initialState = {
+const initialState: ITasksReducer_state = {
   tasks: [],
-  monthInfo: null
+  dateClickDay: null
 }
 
-export const tasksReducer = (state = initialState, action: any) => {
+export const tasksReducer = (
+  state = initialState,
+  action: IAction
+): ITasksReducer_state => {
   const { type, payload } = action
 
   switch (type) {
@@ -15,20 +19,30 @@ export const tasksReducer = (state = initialState, action: any) => {
       return changeTask(state, payload.id)
     case DELETE_TASK:
       return deleteTask(state, payload.id)
+    case DATA_CLICK_DAY:
+      return { ...state, dateClickDay: payload }
     default:
       return state
   }
 }
 
-function changeTask(state: any, id: number) {
-  const newTask = state.tasks.map((elem: any) => {
-    return elem.id === id ? { ...elem, position: 'left' } : elem
-  })
+function changeTask(
+  state: ITasksReducer_state,
+  id: number
+): ITasksReducer_state {
+  const newTask = state.tasks.map(
+    (elem): IBlocksTask => {
+      return elem.id === id ? { ...elem, position: 'left' } : elem
+    }
+  )
   return { ...state, tasks: newTask }
 }
 
-function deleteTask(state: any, id: number) {
-  const newTask = state.tasks.filter((elem: any) => {
+function deleteTask(
+  state: ITasksReducer_state,
+  id: number
+): ITasksReducer_state {
+  const newTask = state.tasks.filter((elem): boolean => {
     return elem.id === id ? false : true
   })
   return { ...state, tasks: newTask }

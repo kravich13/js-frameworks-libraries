@@ -1,18 +1,36 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { connect, ConnectedProps } from 'react-redux'
+import { createTask, changeTask } from '../redux/actions'
 import BlocksTask from '../components/BlocksTask'
 import { FormAddTask } from '../components/FormAddTask'
-// import { ITaskList_blocksTask } from '../interfaces'
-import { connect } from 'react-redux'
-import { createTask, changeTask } from '../redux/actions'
+import {
+  ImapDispatchToProps,
+  IMapStateToProps,
+  ITaskList_dynamicPosLeft
+} from '../interfaces'
 
-const TaskList: React.FC<any> = ({
-  createTask,
+const mapDispatchToProps: ImapDispatchToProps = { createTask, changeTask }
+const mapStateToProps = (state: IMapStateToProps) => {
+  return {
+    blocksTask: state.tasks.tasks,
+    dateClickDay: state.tasks.dateClickDay,
+    authorized: state.auth.authorized
+  }
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps)
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+const TaskList: React.FC<PropsFromRedux> = ({
   blocksTask,
-  changeTask,
-  authorized
+  authorized,
+  dateClickDay,
+  createTask,
+  changeTask
 }) => {
   const [hours, setHours] = useState<string[]>([])
   const [taskHidden, setTaskHidden] = useState<boolean>(true)
+  const [openDay, setOpenDay] = useState<string>('None')
   const $addTitle = useRef<any>(null)
   const $startTask = useRef<any>(null)
   const $endTask = useRef<any>(null)
@@ -25,7 +43,7 @@ const TaskList: React.FC<any> = ({
     date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
   const currentTime: string = `${currentHrs}:${currentMin}`
 
-  useEffect(() => {
+  useEffect((): void => {
     const arrayHours: string[] = []
 
     for (let i: number = 0; i < 24; i++) {
@@ -37,10 +55,25 @@ const TaskList: React.FC<any> = ({
     setHours(arrayHours)
   }, [])
 
+  useEffect((): void => {
+    if (!dateClickDay) return
+
+    const currentDate = {
+      year: dateClickDay.getFullYear(),
+      day: dateClickDay.getDate(),
+      month: dateClickDay.toLocaleString('en', { month: 'long' }),
+      weekDay: dateClickDay.toLocaleString('en', { weekday: 'long' })
+    }
+    const { year, day, month, weekDay } = currentDate
+
+    setOpenDay(`${weekDay} ${day} ${month} ${year}`)
+  }, [dateClickDay])
+
   const formAddTask = (event: React.ChangeEvent<HTMLFormElement>): void => {
     event.preventDefault()
 
-    if ($addTitle.current.value.length < 2) {
+    const addTitle: string = $addTitle.current.value
+    if (addTitle.length < 2) {
       $addTitle.current.value = ''
       $addTitle.current.placeholder = 'Меньше двух символов'
       return
@@ -103,7 +136,7 @@ const TaskList: React.FC<any> = ({
 
         createTask({
           id: new Date().getTime(),
-          title: $addTitle.current.value,
+          title: addTitle,
           posTop: firstPos,
           height: finallyHeight,
           position: posBlock,
@@ -121,7 +154,7 @@ const TaskList: React.FC<any> = ({
       elem,
       firstPos,
       heightBlock
-    }: any): number | null {
+    }: ITaskList_dynamicPosLeft): number | null {
       const startPosLeft: number = elem.offsetLeft + elem.children[1].offsetLeft
 
       if (!blocksTask.length) return startPosLeft
@@ -164,6 +197,7 @@ const TaskList: React.FC<any> = ({
     <React.Fragment>
       {authorized && (
         <React.Fragment>
+          <h3 style={{ margin: '30px' }}>{openDay}</h3>
           <button
             id="task-hiddenForm"
             onClick={() => setTaskHidden(!taskHidden)}
@@ -207,12 +241,4 @@ const TaskList: React.FC<any> = ({
   )
 }
 
-const mapDispatchToProps = { createTask, changeTask }
-
-const mapStateToProps = (state: any) => {
-  return {
-    blocksTask: state.tasks.tasks,
-    authorized: state.auth.authorized
-  }
-}
 export default connect(mapStateToProps, mapDispatchToProps)(TaskList)

@@ -1,17 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Redirect } from 'react-router-dom'
+import { connect, ConnectedProps } from 'react-redux'
+import { change_monthNumber } from '../redux/actions'
 import { Week } from './month/Week'
 import { nanoid } from 'nanoid'
 import {
-  // IMonthProps,
+  IMonth_DispatchProps,
+  IClickMonth_passedProps,
   IMonth_stateWeeks,
   IMonth_arrWeeks,
-  IMonth_objOfDay
+  IMonth_objOfDay,
+  IMonth_Moving
 } from '../interfaces'
-import { connect } from 'react-redux'
-import { change_monthNumber } from '../redux/actions'
 
-const Month: React.FC<any> = ({
+const mapDispatchToProps: IMonth_DispatchProps = { change_monthNumber }
+const connector = connect(null, mapDispatchToProps)
+type PropsFromRedux = ConnectedProps<typeof connector>
+type Props = PropsFromRedux & IClickMonth_passedProps
+
+const Month: React.FC<Props> = ({
   monthNumber,
   clickedMonth,
   authorized,
@@ -41,19 +48,18 @@ const Month: React.FC<any> = ({
   }
 
   const [stateWeeks, setStateWeeks] = useState<IMonth_stateWeeks[]>([])
-  const $divMonth = useRef<any>(null)
 
   const currentMonth: number = new Date().getMonth()
   if (currentMonth === monthNumber) titleH3.push('current-month')
 
   const year: number = new Date().getFullYear()
   const date: Date = new Date(year, monthNumber + 1, 0)
-  const currentMonthTitle = date.toLocaleString('en', { month: 'long' })
+  const currentMonthTitle: string = date.toLocaleString('en', { month: 'long' })
   const firstDayOfMonth: number = new Date(year, monthNumber, 0).getDay()
   const numberOfMonth: number =
     33 - new Date(date.getFullYear(), date.getMonth(), 33).getDate()
 
-  useEffect(() => {
+  useEffect((): void => {
     const arrWeeks: IMonth_arrWeeks = {
       0: [],
       1: [],
@@ -94,15 +100,15 @@ const Month: React.FC<any> = ({
     }
 
     function readyState(value: number | string): IMonth_objOfDay {
-      const currentDay: number = new Date().getDate()
+      const numberDay: number = value ? +value : -1
       return {
         day: value,
-        currentDay: currentMonth === monthNumber && value === currentDay
+        fullDate: numberDay >= 0 ? new Date(year, monthNumber, numberDay) : null
       }
     }
-  }, [firstDayOfMonth, numberOfMonth, currentMonth, monthNumber])
+  }, [firstDayOfMonth, numberOfMonth, currentMonth, monthNumber, year])
 
-  function Moving({ flag }: any) {
+  function Moving({ flag }: IMonth_Moving): null | any {
     if (authorized) return null
     if (flag) return <Redirect to="/month" />
     return null
@@ -114,7 +120,6 @@ const Month: React.FC<any> = ({
         change_monthNumber(monthNumber)
         setClickForYear(true)
       }}
-      ref={$divMonth}
     >
       <Moving flag={clickForYear} />
 
@@ -149,7 +154,5 @@ const Month: React.FC<any> = ({
     </div>
   )
 }
-
-const mapDispatchToProps = { change_monthNumber }
 
 export default connect(null, mapDispatchToProps)(Month)

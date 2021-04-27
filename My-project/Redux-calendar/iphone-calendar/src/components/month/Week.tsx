@@ -1,15 +1,15 @@
 import React from 'react'
-import { Day } from './Day'
-// import { IWeekProps } from '../../interfaces'
+import Day from './Day'
+import { IWeekProps } from '../../interfaces'
 
-export const Week: React.FC<any> = ({ week, authorized, classTD }) => {
+export const Week: React.FC<IWeekProps> = ({ week, authorized, classTD }) => {
   return (
     <tr>
-      {week.map((elem: any, index: number) => {
+      {week.map((elem, index: number) => {
         return (
           <Day
             key={index}
-            day={elem}
+            elem={elem}
             authorized={authorized}
             classTD={classTD}
           />

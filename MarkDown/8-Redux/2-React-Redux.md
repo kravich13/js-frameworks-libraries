@@ -1,4 +1,4 @@
-# React-Redux
+# React-Redux: основы, connect, typescript
 
 ## Основы
 
@@ -130,3 +130,124 @@ const mapStateToProps = (state: any) => {
 
 export default connect(mapStateToProps, null)(Posts)
 ```
+***
+
+## Typescript 
+
+### ***Установка и подключение:***
+Для использования встроенной фичи редакса, нужно установить спец пакет `TS`: 
+
+```bash
+npm i @types/react-redux
+```
+
+У Redux есть специальный метод, который позволяет **связывать** два передаваемых объекта `mapDispatchToProps` и `mapStateToProps` под названием `ConnectedProps`: 
+
+```jsx
+import { connect, ConnectedProps } from 'react-redux'
+```
+
+### ***Случай с обоими объектами:***
+Описываем в `interfaces` следующие структуры: 
+
+```ts
+// ============= Общий стейт всего редьюсера =============
+interface ImapDispatchToProps {
+  [key: string]: Function
+}
+interface IMapStateToProps {
+  auth: {
+    authorized: string
+    eventSingUpAuth: string
+    navbar: boolean
+    monthNumber: number
+    clickedMonth: boolean
+  }
+  tasks: {
+    tasks: ITaskList_blocksTask[]
+    dateClickDay: Date
+  }
+}
+```
+
+Т.е. определяем один раз **общий** стейт и затем делаем следующее: 
+
+```tsx
+const mapDispatchToProps: ImapDispatchToProps = { createTask, changeTask }
+const mapStateToProps = (state: IMapStateToProps) => {
+  return {
+    blocksTask: state.tasks.tasks,
+    dateClickDay: state.tasks.dateClickDay,
+    authorized: state.auth.authorized
+  }
+}
+
+// 1) *
+const connector = connect(mapStateToProps, mapDispatchToProps)
+
+// 2) *
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+
+const TaskList: React.FC<PropsFromRedux> = ({
+  blocksTask,
+  authorized,
+  dateClickDay,
+  createTask,
+  changeTask
+}) => {...}
+```
+
+1. Метод `connect` просто делает то же самое, что и раньше: связывает два объекта.
+2. Спец. методом `ConnectedProps` получается на выходе готовый общий интерфейсный объект
+
+И в итоге все пропсы компонента имеют **конкретный** тип. 
+
+Если сказать коротко, то за счёт того, что в объекты передали полностью описанные типы всего стейта редакса  - `ConnectedProps` уже **заранее** знает, какой тип будет иметь каждый пропс из объекта `Store`. 
+
+### ***Случай с одним mapStateToProps:***
+
+Суть та же самая, в объект передаём интерфейс и всё работает: 
+
+```tsx
+const mapStateToProps = (state: IMapStateToProps) => {
+  return {
+    authorized: state.auth.authorized
+  }
+}
+
+const connector = connect(mapStateToProps)
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+const Calendar: React.FC<PropsFromRedux> = ({ authorized }) => {}
+```
+
+Обязательно нужно убрать `null` у второго параметра, иначе `ConnectedProps` будет всегда возвращать `null` и компонент перестанет работать!
+
+
+### ***Случай с одним mapDispatchToProps:***
+
+Здесь уже не подойдет интерфейс с `[key: string]: Function`, его придется описывать отдельно: 
+
+```ts
+interface IMonth_DispatchProps {
+  change_monthNumber: Function
+}
+```
+
+И если помимо изменения стейта редакса прилетают обычные пропсы, то можно просто в тип записать интерфейс `PropsFromRedux` и второй, описывающий пропсы с компонента выше:
+
+```tsx
+const mapDispatchToProps: IMonth_DispatchProps = { change_monthNumber }
+const connector = connect(null, mapDispatchToProps)
+type PropsFromRedux = ConnectedProps<typeof connector>
+type Props = PropsFromRedux & IClickMonth_passedProps
+
+const Month: React.FC<Props> = ({
+  monthNumber,
+  clickedMonth,
+  authorized,
+  change_monthNumber
+}) => {...}
+```
+

@@ -3,10 +3,12 @@ import {
   AUTOLOGIN,
   HIDDEN_NAVBAR,
   MONTH_NUMBER,
-  CLICK_MONTH
+  CLICK_MONTH,
+  LOG_OUT
 } from './types'
+import { IAuthReducer_state, IAction } from './interfacesRedux'
 
-const initialState = {
+const initialState: IAuthReducer_state = {
   eventSingUpAuth: '',
   authorized: '',
   navbar: false,
@@ -14,7 +16,10 @@ const initialState = {
   clickedMonth: false
 }
 
-export const authReducer = (state = initialState, action: any) => {
+export const authReducer = (
+  state = initialState,
+  action: IAction
+): IAuthReducer_state => {
   const { type, payload } = action
 
   switch (type) {
@@ -26,6 +31,9 @@ export const authReducer = (state = initialState, action: any) => {
         authorized: payload.login,
         eventSingUpAuth: payload.message
       }
+    case LOG_OUT: {
+      return { ...state, authorized: payload }
+    }
     case HIDDEN_NAVBAR:
       return { ...state, navbar: payload }
     case MONTH_NUMBER:

@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { connect, ConnectedProps } from 'react-redux'
 import './App.css'
 import Navbar from './components/Navbar'
 import Calendar from './pages/Calendar'
@@ -7,9 +8,16 @@ import Login from './pages/Login'
 import SingUp from './pages/Sing-up'
 import ClickMonth from './pages/ClickMonth'
 import TaskList from './pages/Task-list'
-import { connect } from 'react-redux'
+import { IMapStateToProps } from './interfaces'
 
-const App: React.FC<any> = ({ navbar }) => {
+const mapStateToProps = (state: IMapStateToProps) => {
+  return { navbar: state.auth.navbar }
+}
+
+const connector = connect(mapStateToProps)
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+const App: React.FC<PropsFromRedux> = ({ navbar }) => {
   return (
     <div className="App">
       <BrowserRouter>
@@ -31,10 +39,4 @@ const App: React.FC<any> = ({ navbar }) => {
   )
 }
 
-const mapStateToProps = (state: any) => {
-  return {
-    navbar: state.auth.navbar
-  }
-}
-
-export default connect(mapStateToProps, null)(App)
+export default connect(mapStateToProps)(App)

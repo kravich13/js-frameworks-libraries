@@ -1,29 +1,99 @@
-interface IContext {
-  authorized: boolean
-  flagNavbar: boolean
-  stateMonth: number
-  generalStateMonth: boolean
-  clickNavbar: Function
-  clickOnMonth: Function
-  clickDay: Function
+// ============= Общий стейт всего редьюсера =============
+interface ImapDispatchToProps {
+  [key: string]: Function
 }
+interface IMapStateToProps {
+  auth: {
+    authorized: string
+    eventSingUpAuth: string
+    navbar: boolean
+    monthNumber: number
+    clickedMonth: boolean
+  }
+  tasks: {
+    tasks: ITaskList_blocksTask[]
+    dateClickDay: Date
+  }
+}
+
+// ============= TaskList =============
+interface ITaskList_blocksTask {
+  id: number
+  title: string
+  posTop: number
+  posLeft: number
+  height: number
+  position: string
+}
+interface ITaskList_dynamicPosLeft {
+  elem: any
+  firstPos: number
+  heightBlock: number
+}
+
+// ============= Login || Navbar || TransitionTasks =============
+interface IComponent_UserAuthorized {
+  authorized: string | undefined
+}
+
+// ============= Month =============
+interface IMonth_DispatchProps {
+  change_monthNumber: Function
+}
+interface IQuarter_passedProps {
+  monthNumber: number
+}
+interface IClickMonth_passedProps extends IQuarter_passedProps {
+  clickedMonth?: boolean
+  authorized?: string
+}
+interface IMonth_Moving {
+  flag: boolean
+}
+interface IMonth_objOfDay {
+  day: number | string
+  fullDate: Date | null
+}
+
+// ============= BlockTask =============
+interface IBlockTask_DispatchProps {
+  deleteTask: Function
+}
+interface IBlockTask_Props {
+  elem: ITaskList_blocksTask
+  deleteTask: Function
+}
+
+// ============= Day =============
+interface IDayProps {
+  elem: IMonth_objOfDay
+  authorized: string | undefined
+  classTD: string
+  setDate_Day: Function
+}
+interface IDay_DispatchProps {
+  setDate_Day: Function
+}
+
+interface IFormAddTaskProps {
+  formAddTask: any
+  addTitle: any
+  currentTime: string
+  startTask: any
+  endTask: any
+}
+
 interface IMyLogoProps {
   trueNavbar: boolean
 }
 interface IQuarterProps {
   quarter: number[]
 }
-interface IMonthProps {
-  monthTitle: number
-  pressed: boolean
-}
+
 interface IWeekProps {
   week: IMonth_objOfDay[]
-  propsDay: string
-}
-interface IDayProps {
-  day: IMonth_objOfDay
-  openFuncionality: string
+  authorized: string | undefined
+  classTD: string
 }
 
 interface ICalendar_quarters {
@@ -39,50 +109,35 @@ interface IMonth_arrWeeks {
   [key: number]: IMonth_objOfDay[]
 }
 
-interface IMonth_objOfDay {
-  day: number | string
-  currentDay: boolean
-}
-
-interface ITaskList_blocksTask {
-  id: number
-  title: string
-  posTop: number
-  posLeft: number
-  posHeight: number
-}
-
 interface IBlockTask_styles {
   [keys: string]: string
 }
 
 interface IBlockTaskProps {
   elem: ITaskList_blocksTask
-  // blocksTasks: any
   count: number
-  // addTitle: string
 }
 
-interface IFormAddTaskProps {
-  formAddTask: any
-  addTitle: any
-  currentTime: string
-  startTask: any
-  endTask: any
-}
 export type {
+  IMapStateToProps,
+  ImapDispatchToProps,
+  IComponent_UserAuthorized,
   IMyLogoProps,
   IQuarterProps,
-  IMonthProps,
+  IMonth_DispatchProps,
+  IClickMonth_passedProps,
+  IMonth_Moving,
+  IBlockTask_DispatchProps,
+  IBlockTask_Props,
   IWeekProps,
   IDayProps,
-  IBlockTaskProps,
+  IDay_DispatchProps,
+  // IBlockTaskProps,
   IFormAddTaskProps,
   ICalendar_quarters,
   IMonth_stateWeeks,
   IMonth_arrWeeks,
   IMonth_objOfDay,
-  ITaskList_blocksTask,
   IBlockTask_styles,
-  IContext
+  ITaskList_dynamicPosLeft
 }

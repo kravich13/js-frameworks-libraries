@@ -17,6 +17,7 @@
     "concurrently": "^6.0.0",
     "express": "^4.17.1",
     "g": "^2.0.1",
+    "mongo": "^0.1.0",
     "mongoose": "^5.11.4",
     "nanoid": "^3.1.22",
     "nodemon": "^2.0.6",

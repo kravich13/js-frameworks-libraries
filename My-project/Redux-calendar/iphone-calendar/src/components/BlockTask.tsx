@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { connect } from 'react-redux'
+import { connect, ConnectedProps } from 'react-redux'
 import { deleteTask } from '../redux/actions'
-// import { IBlockTaskProps, IBlockTask_styles } from '../interfaces'
+import { IBlockTask_DispatchProps, IBlockTask_Props } from '../interfaces'
 
-const BlockTask: React.FC<any> = ({ elem, deleteTask }) => {
+const mapDispatchToProps: IBlockTask_DispatchProps = { deleteTask }
+
+const connector = connect(null, mapDispatchToProps)
+type PropsFromRedux = ConnectedProps<typeof connector>
+type Props = PropsFromRedux & IBlockTask_Props
+
+const BlockTask: React.FC<Props> = ({ elem, deleteTask }) => {
   const [title, setTitle] = useState<string>('')
 
   const classes: string[] = ['blockTask']
@@ -27,7 +33,7 @@ const BlockTask: React.FC<any> = ({ elem, deleteTask }) => {
 
   if (elem.position !== 'center') classes.push('half-blockTask')
 
-  function clickTest() {
+  function clickTest(): void {
     deleteTask({ id: elem.id })
   }
   return (
@@ -40,7 +46,5 @@ const BlockTask: React.FC<any> = ({ elem, deleteTask }) => {
     </div>
   )
 }
-
-const mapDispatchToProps = { deleteTask }
 
 export default connect(null, mapDispatchToProps)(BlockTask)
