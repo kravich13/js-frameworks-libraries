@@ -13,12 +13,15 @@ interface IMapStateToProps {
   tasks: {
     tasks: ITaskList_blocksTask[]
     dateClickDay: Date
+    notification: string
   }
 }
 
 // ============= TaskList =============
 interface ITaskList_blocksTask {
   id: number
+  timestamp: number
+  userName: string
   title: string
   posTop: number
   posLeft: number
@@ -29,6 +32,15 @@ interface ITaskList_dynamicPosLeft {
   elem: any
   firstPos: number
   heightBlock: number
+}
+interface ITaskList_req_blocks {
+  id: number
+  position: string
+  posLeft: number
+}
+interface ITaskList_req_change {
+  userName: string
+  tasks: ITaskList_req_blocks[]
 }
 
 // ============= Login || Navbar || TransitionTasks =============
@@ -52,7 +64,13 @@ interface IMonth_Moving {
 }
 interface IMonth_objOfDay {
   day: number | string
-  fullDate: Date | null
+  fullDate: number | null
+}
+
+// ============= BlocksTaskS =============
+interface IBlocksTasks_Props {
+  blocks: ITaskList_blocksTask[]
+  fn_delTask: Function
 }
 
 // ============= BlockTask =============
@@ -60,8 +78,8 @@ interface IBlockTask_DispatchProps {
   deleteTask: Function
 }
 interface IBlockTask_Props {
-  elem: ITaskList_blocksTask
-  deleteTask: Function
+  block: ITaskList_blocksTask
+  fn_delTask: Function
 }
 
 // ============= Day =============
@@ -113,11 +131,6 @@ interface IBlockTask_styles {
   [keys: string]: string
 }
 
-interface IBlockTaskProps {
-  elem: ITaskList_blocksTask
-  count: number
-}
-
 export type {
   IMapStateToProps,
   ImapDispatchToProps,
@@ -127,12 +140,14 @@ export type {
   IMonth_DispatchProps,
   IClickMonth_passedProps,
   IMonth_Moving,
+  ITaskList_blocksTask,
+  ITaskList_req_change,
+  IBlocksTasks_Props,
   IBlockTask_DispatchProps,
   IBlockTask_Props,
   IWeekProps,
   IDayProps,
   IDay_DispatchProps,
-  // IBlockTaskProps,
   IFormAddTaskProps,
   ICalendar_quarters,
   IMonth_stateWeeks,

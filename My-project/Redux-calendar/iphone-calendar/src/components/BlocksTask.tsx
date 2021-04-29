@@ -1,23 +1,16 @@
 import React from 'react'
-import { connect, ConnectedProps } from 'react-redux'
-import BlockTask from '../components/BlockTask'
-import { IMapStateToProps } from '../interfaces'
+import { BlockTask } from '../components/BlockTask'
+import { IBlocksTasks_Props } from '../interfaces'
 
-const mapStateToProps = (state: IMapStateToProps) => {
-  return { blocksTask: state.tasks.tasks }
-}
-
-const connector = connect(mapStateToProps)
-type PropsFromRedux = ConnectedProps<typeof connector>
-
-const BlocksTask: React.FC<PropsFromRedux> = ({ blocksTask }) => {
+export const BlocksTask: React.FC<IBlocksTasks_Props> = ({
+  blocks,
+  fn_delTask
+}) => {
   return (
     <React.Fragment>
-      {blocksTask.map((elem) => {
-        return <BlockTask elem={elem} key={elem.id} />
+      {blocks.map((elem: any) => {
+        return <BlockTask block={elem} key={elem.id} fn_delTask={fn_delTask} />
       })}
     </React.Fragment>
   )
 }
-
-export default connect(mapStateToProps)(BlocksTask)

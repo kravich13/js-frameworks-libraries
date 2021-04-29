@@ -1,19 +1,34 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
-import { createTask, changeTask } from '../redux/actions'
-import BlocksTask from '../components/BlocksTask'
+import {
+  createTask,
+  changeTask,
+  deleteTask,
+  tasks_currentDay,
+  clear_nofificationTasks
+} from '../redux/actions'
+import { BlocksTask } from '../components/BlocksTask'
 import { FormAddTask } from '../components/FormAddTask'
 import {
   ImapDispatchToProps,
   IMapStateToProps,
-  ITaskList_dynamicPosLeft
+  ITaskList_dynamicPosLeft,
+  ITaskList_blocksTask,
+  ITaskList_req_change
 } from '../interfaces'
 
-const mapDispatchToProps: ImapDispatchToProps = { createTask, changeTask }
+const mapDispatchToProps: ImapDispatchToProps = {
+  createTask,
+  changeTask,
+  deleteTask,
+  tasks_currentDay,
+  clear_nofificationTasks
+}
 const mapStateToProps = (state: IMapStateToProps) => {
   return {
     blocksTask: state.tasks.tasks,
     dateClickDay: state.tasks.dateClickDay,
+    notification: state.tasks.notification,
     authorized: state.auth.authorized
   }
 }
@@ -25,8 +40,12 @@ const TaskList: React.FC<PropsFromRedux> = ({
   blocksTask,
   authorized,
   dateClickDay,
+  notification,
   createTask,
-  changeTask
+  changeTask,
+  deleteTask,
+  tasks_currentDay,
+  clear_nofificationTasks
 }) => {
   const [hours, setHours] = useState<string[]>([])
   const [taskHidden, setTaskHidden] = useState<boolean>(true)
@@ -43,6 +62,17 @@ const TaskList: React.FC<PropsFromRedux> = ({
     date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
   const currentTime: string = `${currentHrs}:${currentMin}`
 
+  const clearNotification = useCallback((): void => {
+    clear_nofificationTasks()
+  }, [clear_nofificationTasks])
+
+  useEffect((): void => {
+    if (notification) {
+      alert(notification)
+      clearNotification()
+    }
+  }, [notification, clearNotification])
+
   useEffect((): void => {
     const arrayHours: string[] = []
 
@@ -53,16 +83,24 @@ const TaskList: React.FC<PropsFromRedux> = ({
       }
     }
     setHours(arrayHours)
-  }, [])
+
+    if (authorized) {
+      tasks_currentDay({
+        userName: authorized,
+        timestamp: +new Date(dateClickDay)
+      })
+    }
+  }, [dateClickDay, authorized, tasks_currentDay])
 
   useEffect((): void => {
     if (!dateClickDay) return
 
+    const dateDay: Date = new Date(dateClickDay)
     const currentDate = {
-      year: dateClickDay.getFullYear(),
-      day: dateClickDay.getDate(),
-      month: dateClickDay.toLocaleString('en', { month: 'long' }),
-      weekDay: dateClickDay.toLocaleString('en', { weekday: 'long' })
+      year: dateDay.getFullYear(),
+      day: dateDay.getDate(),
+      month: dateDay.toLocaleString('en', { month: 'long' }),
+      weekDay: dateDay.toLocaleString('en', { weekday: 'long' })
     }
     const { year, day, month, weekDay } = currentDate
 
@@ -133,9 +171,10 @@ const TaskList: React.FC<PropsFromRedux> = ({
         })
 
         if (posLeft === null) return alert('Блок уже занят!')
-
         createTask({
           id: new Date().getTime(),
+          timestamp: dateClickDay,
+          userName: authorized,
           title: addTitle,
           posTop: firstPos,
           height: finallyHeight,
@@ -143,7 +182,6 @@ const TaskList: React.FC<PropsFromRedux> = ({
           posLeft
         })
 
-        // alert('Задача создана!')
         // $addTitle.current.value = ''
         // window.scrollBy(0, firstPos - finallyHeightPX)
         return
@@ -180,7 +218,12 @@ const TaskList: React.FC<PropsFromRedux> = ({
         if (hitTheRange) {
           if (position === 'right') return null
 
-          changeTask({ id: elem.id, position: 'left' })
+          const objData_req: ITaskList_req_change = {
+            userName: authorized,
+            tasks: [{ id: elem.id, position: 'left', posLeft: 60 }]
+          }
+          changeTask(objData_req)
+
           divisionOfWidth = true
         }
       }
@@ -191,6 +234,95 @@ const TaskList: React.FC<PropsFromRedux> = ({
       }
       return startPosLeft
     }
+  }
+
+  async function fn_delTask(delTask: ITaskList_blocksTask) {
+    if (delTask.position === 'center') {
+      return deleteTask({ id: delTask.id, userName: authorized, task: delTask })
+    }
+
+    const delPosition: string = delTask.position
+    const delPosTop: number = delTask.posTop
+    const delPosEnd: number = delPosTop + delTask.height
+
+    const objData: ITaskList_req_change = {
+      userName: authorized,
+      tasks: []
+    }
+
+    for (const elem of blocksTask) {
+      if (delPosition === 'left' && elem.position === 'right') {
+        actionsWithRemote(elem)
+      } else if (delPosition === 'right' && elem.position === 'left') {
+        actionsWithRemote(elem)
+      }
+    }
+
+    if (objData.tasks.length) {
+      await deleteTask({
+        userName: authorized,
+        task: delTask
+      })
+      await changeTask(objData)
+      return
+    }
+
+    function actionsWithRemote(elem: ITaskList_blocksTask) {
+      const { posTop, height } = elem
+
+      const posEnd: number = posTop + height
+      const startPosInTheRange: boolean =
+        posTop >= delPosTop && posTop <= delPosEnd
+      const endPosInTheRange: boolean =
+        posEnd >= delPosTop && posEnd <= delPosEnd
+
+      // const existingInTheRange: boolean =
+      //   delPosTop >= posTop && delPosEnd <= posEnd
+
+      if (startPosInTheRange && endPosInTheRange) {
+        return objData.tasks.push({
+          ...elem,
+          position: 'center',
+          posLeft: 60
+        })
+      }
+      // if (existingInTheRange) {
+      //   touchVariableBlock(elem, delTask.id)
+      // }
+    }
+
+    // function touchVariableBlock(block: ITaskList_blocksTask, delID: number) {
+    //   const variablePosition: string = block.position
+
+    //   for (const elem of blocksTask) {
+    //     if (variablePosition === 'right' && elem.position === 'left') {
+    //       unchangedAdjacentBlock(elem, delID)
+    //     } else {
+    //       if (variablePosition === 'left' && elem.position === 'right') {
+    //         unchangedAdjacentBlock(elem, delID)
+    //       }
+    //     }
+    //   }
+    //   console.log(count)
+    // }
+
+    // function unchangedAdjacentBlock(
+    //   block: ITaskList_blocksTask,
+    //   delID: number
+    // ) {
+    //   const variablePosTop: number = block.posTop
+    //   const variablePosEnd: number = delPosTop + block.height
+
+    //   const { posTop, height } = block
+    //   const posEnd: number = posTop + height
+    //   const startPosInTheRange: boolean =
+    //     posTop >= variablePosTop && posTop <= variablePosEnd
+    //   const hitTheRange: boolean =
+    //     posEnd >= variablePosTop && posEnd <= variablePosEnd
+
+    //   const existingInTheRange: boolean =
+    //     delPosTop >= posTop && delPosEnd <= posEnd
+    // }
   }
 
   return (
@@ -216,7 +348,7 @@ const TaskList: React.FC<PropsFromRedux> = ({
           )}
 
           <div id="block-allTasks">
-            <BlocksTask />
+            <BlocksTask blocks={blocksTask} fn_delTask={fn_delTask} />
             <ul id="task-list">
               {hours.map((elem, index: number) => {
                 return (

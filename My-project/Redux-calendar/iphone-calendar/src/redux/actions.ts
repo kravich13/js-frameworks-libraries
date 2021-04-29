@@ -8,37 +8,91 @@ import {
   MONTH_NUMBER,
   CLICK_MONTH,
   DATA_CLICK_DAY,
-  LOG_OUT
+  LOG_OUT,
+  TASKS_CURRENT_DAY,
+  NOTIFICATION_CLEAR
 } from './types'
 import {
   IBlocksTask,
-  IActions_changeTask,
+  ITasks_currentDay,
   IActions_deleteTask,
   IActions_req_singUp,
   IActions_res_singUp,
   IAction,
   IActions_req_auth,
-  IActions_res_auth
+  IActions_res_auth,
+  IRes_createTask,
+  IRes_changeTask,
+  ITaskList_req_change,
+  ITaskList_res_change
 } from './interfacesRedux'
 
-export function createTask(task: IBlocksTask): IAction {
+export function clear_nofificationTasks(task: string = ''): IAction {
   return {
-    type: CREATE_TASK,
+    type: NOTIFICATION_CLEAR,
     payload: task
   }
 }
-
-export function changeTask(task: IActions_changeTask): IAction {
-  return {
-    type: CHANGE_TASK,
-    payload: task
+export function tasks_currentDay(task: ITasks_currentDay): Function {
+  return async (dispatch: Function) => {
+    const res = await fetch('/tasks', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        'Action-type': 'allTasks'
+      },
+      body: JSON.stringify(task)
+    })
+    const json: IBlocksTask = await res.json()
+    dispatch({ type: TASKS_CURRENT_DAY, payload: json })
   }
 }
 
-export function deleteTask(task: IActions_deleteTask): IAction {
-  return {
-    type: DELETE_TASK,
-    payload: task
+export function createTask(task: IBlocksTask): Function {
+  return async (dispatch: Function) => {
+    const res = await fetch('/tasks', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        'Action-type': 'createTask'
+      },
+      body: JSON.stringify(task)
+    })
+    const json: IRes_createTask = await res.json()
+
+    dispatch({ type: CREATE_TASK, payload: json })
+  }
+}
+
+export function changeTask(task: ITaskList_req_change): Function {
+  return async (dispatch: Function) => {
+    const res = await fetch('/tasks', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        'Action-type': 'changeTask'
+      },
+      body: JSON.stringify(task)
+    })
+    const json: IRes_changeTask[] = await res.json()
+
+    dispatch({ type: CHANGE_TASK, payload: json })
+  }
+}
+
+export function deleteTask(task: IActions_deleteTask): Function {
+  return async (dispatch: Function) => {
+    const res = await fetch('/tasks', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        'Action-type': 'deleteTask'
+      },
+      body: JSON.stringify(task)
+    })
+    const json: ITaskList_res_change = await res.json()
+
+    dispatch({ type: DELETE_TASK, payload: json })
   }
 }
 

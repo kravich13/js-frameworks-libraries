@@ -1,9 +1,23 @@
-import { CHANGE_TASK, CREATE_TASK, DATA_CLICK_DAY, DELETE_TASK } from './types'
-import { ITasksReducer_state, IAction, IBlocksTask } from './interfacesRedux'
+import {
+  CHANGE_TASK,
+  CREATE_TASK,
+  DATA_CLICK_DAY,
+  DELETE_TASK,
+  NOTIFICATION_CLEAR,
+  TASKS_CURRENT_DAY
+} from './types'
+import {
+  ITasksReducer_state,
+  IAction,
+  IBlocksTask,
+  IRes_changeTask,
+  IRes_createTask
+} from './interfacesRedux'
 
 const initialState: ITasksReducer_state = {
   tasks: [],
-  dateClickDay: null
+  dateClickDay: null,
+  notification: ''
 }
 
 export const tasksReducer = (
@@ -13,10 +27,14 @@ export const tasksReducer = (
   const { type, payload } = action
 
   switch (type) {
+    case NOTIFICATION_CLEAR:
+      return { ...state, notification: payload }
+    case TASKS_CURRENT_DAY:
+      return { ...state, tasks: Array.from(payload) }
     case CREATE_TASK:
-      return { ...state, tasks: state.tasks.concat(payload) }
+      return createTask(state, payload)
     case CHANGE_TASK:
-      return changeTask(state, payload.id)
+      return changeTask(state, payload)
     case DELETE_TASK:
       return deleteTask(state, payload.id)
     case DATA_CLICK_DAY:
@@ -26,13 +44,35 @@ export const tasksReducer = (
   }
 }
 
+function createTask(
+  state: ITasksReducer_state,
+  res: IRes_createTask
+): ITasksReducer_state {
+  if (!res.task) return { ...state, notification: res.message }
+
+  return {
+    ...state,
+    tasks: state.tasks.concat(res.task),
+    notification: res.message
+  }
+}
+
 function changeTask(
   state: ITasksReducer_state,
-  id: number
+  task: IRes_changeTask[]
 ): ITasksReducer_state {
   const newTask = state.tasks.map(
     (elem): IBlocksTask => {
-      return elem.id === id ? { ...elem, position: 'left' } : elem
+      for (const needBlock of task) {
+        if (elem.id === needBlock.id) {
+          return {
+            ...elem,
+            position: needBlock.position,
+            posLeft: needBlock.posLeft
+          }
+        }
+      }
+      return elem
     }
   )
   return { ...state, tasks: newTask }

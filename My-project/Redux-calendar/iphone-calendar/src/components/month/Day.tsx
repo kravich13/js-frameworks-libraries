@@ -17,9 +17,12 @@ const Day: React.FC<Props> = ({ elem, authorized, classTD, setDate_Day }) => {
   const { fullDate, day } = elem
   const classes: string[] = [classTD]
 
-  if (fullDate?.toLocaleDateString() === new Date().toLocaleDateString()) {
-    classes.push('current-day')
+  if (fullDate) {
+    const dayElem: string = new Date(fullDate).toLocaleDateString()
+    const currentDay: string = new Date().toLocaleDateString()
+    if (dayElem === currentDay) classes.push('current-day')
   }
+
   function TransitionTasks({ authorized }: IComponent_UserAuthorized): any {
     if (!authorized || !day) {
       return <React.Fragment>{day}</React.Fragment>

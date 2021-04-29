@@ -5,17 +5,28 @@ interface IAction {
 }
 interface IBlocksTask {
   id: number
+  timestamp: number
+  userName: string
   title: string
   posTop: number
   posLeft: number
   height: number
   position: string
 }
-
+interface IBlockTask {
+  id: number
+  timestamp: number
+  title: string
+  posTop: number
+  posLeft: number
+  height: number
+  position: string
+}
 // ============= tasksReducer =============
 interface ITasksReducer_state {
   tasks: IBlocksTask[]
   dateClickDay: null | number
+  notification: string
 }
 // ============= authReducer =============
 interface IAuthReducer_state {
@@ -27,12 +38,33 @@ interface IAuthReducer_state {
 }
 
 // ============= ations =============
-interface IActions_changeTask {
+interface ITasks_currentDay {
+  userName: string
+  timestamp: number
+}
+interface IRes_createTask {
+  message: string
+  task: IBlocksTask
+}
+interface IRes_changeTask {
+  id: number
+  position: string
+  posLeft: number
+}
+interface ITaskList_req_blocks {
   id: number
   position: string
 }
-interface IActions_deleteTask {
+interface ITaskList_req_change {
+  userName: string
+  tasks: ITaskList_req_blocks[]
+}
+interface ITaskList_res_change {
   id: number
+}
+interface IActions_deleteTask {
+  userName: string
+  task: IBlockTask[]
 }
 interface IActions_req_singUp {
   login: string
@@ -57,7 +89,11 @@ export type {
   IBlocksTask,
   ITasksReducer_state,
   IAuthReducer_state,
-  IActions_changeTask,
+  ITasks_currentDay,
+  IRes_createTask,
+  IRes_changeTask,
+  ITaskList_req_change,
+  ITaskList_res_change,
   IActions_deleteTask,
   IActions_req_singUp,
   IActions_res_singUp,

@@ -103,7 +103,8 @@ const Month: React.FC<Props> = ({
       const numberDay: number = value ? +value : -1
       return {
         day: value,
-        fullDate: numberDay >= 0 ? new Date(year, monthNumber, numberDay) : null
+        fullDate:
+          numberDay >= 0 ? +new Date(year, monthNumber, numberDay) : null
       }
     }
   }, [firstDayOfMonth, numberOfMonth, currentMonth, monthNumber, year])
