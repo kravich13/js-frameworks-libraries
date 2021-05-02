@@ -1,4 +1,14 @@
-# React хуки: useState, useEffect, useContext
+- [React хуки](#react-хуки)
+  - [Хук useState](#хук-usestate)
+  - [Хук useEffect](#хук-useeffect)
+  - [Хук useContext](#хук-usecontext)
+  - [Хук useRef](#хук-useref)
+    - [***Замена глобальным переменным:***](#замена-глобальным-переменным)
+    - [***Получение ссылок на DOM элементы:***](#получение-ссылок-на-dom-элементы)
+  - [Собственный хук](#собственный-хук)
+
+
+# React хуки
 
 ## Хук useState
 

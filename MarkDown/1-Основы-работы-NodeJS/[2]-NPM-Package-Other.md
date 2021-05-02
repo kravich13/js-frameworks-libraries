@@ -1,4 +1,11 @@
-# NPM. Package.json. Установка модулей и определение команд.
+- [Основное](#основное)
+  - [NPM](#npm)
+  - [Package.json](#packagejson)
+  - [devDependencies](#devdependencies)
+  - [Удаление пакетов](#удаление-пакетов)
+  - [Команды npm](#команды-npm)
+
+# Основное
 
 ## NPM
 

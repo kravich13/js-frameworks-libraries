@@ -1,3 +1,9 @@
+- [Функции CASE, IF, IFNULL, COALESCE](#функции-case-if-ifnull-coalesce)
+  - [CASE](#case)
+  - [IF](#if)
+  - [IFNULL](#ifnull)
+  - [COALESCE](#coalesce)
+
 # Функции CASE, IF, IFNULL, COALESCE
 
 ## CASE
