@@ -1,8 +1,23 @@
-# React-Redux: основы, connect, typescript
+# React-Redux
 
 ## Основы
 
 ### Установка:
+- [React-Redux](#react-redux)
+  - [Основы](#основы)
+    - [Установка:](#установка)
+  - [Connect](#connect)
+    - [***Запись данных в Store***](#запись-данных-в-store)
+    - [***Прослушка событий из Store:***](#прослушка-событий-из-store)
+  - [Props и actions через хуки](#props-и-actions-через-хуки)
+  - [Saga](#saga)
+    - [***Установка и запуск:***](#установка-и-запуск)
+  - [Typescript](#typescript)
+    - [***Установка и подключение:***](#установка-и-подключение)
+    - [***Случай с обоими объектами:***](#случай-с-обоими-объектами)
+    - [***Случай с одним mapStateToProps:***](#случай-с-одним-mapstatetoprops)
+    - [***Случай с одним mapDispatchToProps:***](#случай-с-одним-mapdispatchtoprops)
+
 
 Связывание реакта и редакса: 
 
@@ -132,6 +147,126 @@ export default connect(mapStateToProps, null)(Posts)
 ```
 ***
 
+## Props и actions через хуки
+
+Вместо использования метода `connect` и функций объектов, можно использовать хуки самого редакса: 
+
+```tsx
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Post } from './Post'
+import { fetchPosts } from '../redux/actions'
+
+export const FetchedPosts: React.FC = () => {
+  // 1)
+  const dispatch = useDispatch()
+
+  // 2)
+  const posts = useSelector((state: any) => {
+    return state.posts.fetchedPosts
+  })
+
+  if (!posts.length) {
+    return <button onClick={() => dispatch(fetchPosts())}>Загрузить</button>
+  }
+  return posts.map((post: any) => <Post post={post} key={post.id} />)
+}
+```
+
+1. `useDispatch` - принимает в себя функцию из `actions.ts`, которая вызывается в `dispatch`
+2. `useSelector` - принимает параметром общий стейт редакса и возвращает из него нужный стейт
+***
+
+## Saga
+
+Саги используются для работы с асинхронными запросами. 
+
+В чём разница между `thunk` и `saga`? 
+
+В том, что `thunk` возвращает что-то один раз, то, что ему прописали, его нельзя масштабировать. 
+
+Эту проблему решают саги, они позволяют после чего-то сделать что-то и если что-то сделалось - сделать следующее. Т.е. вся логика в одной функции вместо того, чтобы это писать в компоненте **react**. 
+
+### ***Установка и запуск:***
+
+Устанавливаем: 
+
+```bash
+npm i redux-saga
+```
+
+Добавляем сагу в `react`:
+
+```tsx
+// index.tsx
+import { applyMiddleware, compose, createStore } from 'redux'
+import { Provider } from 'react-redux'
+import createSagaMiddleware from 'redux-saga'
+import { sagaWatcher } from './redux/sagas'
+
+const saga = createSagaMiddleware()
+
+const store = createStore(rootReducer, compose (applyMiddleware(saga)))
+
+// Привязка наблюдателя
+saga.run(sagaWatcher)
+```
+
+```ts
+// actions.ts
+
+// Функция загрузки постов с сервера
+export function fetchPosts() {
+  return {
+    type: REQUEST_POSTS
+  }
+}
+```
+
+Теперь добавляем эффекты саги: 
+
+```ts
+// sagas.ts
+
+import { call, put, takeEvery } from 'redux-saga/effects'
+import { FETCH_POSTS, REQUEST_POSTS } from './types'
+
+export interface ResponseGenerator {
+  config?: any
+  data?: any
+  headers?: any
+  request?: any
+  status?: number
+  statusText?: string
+}
+
+// Обрабатывает каждый actions поступающий в Store
+export function* sagaWatcher() {
+
+  // Перехватили REQUEST_POSTS и делаем следующее из генератора sagaWorker
+  yield takeEvery(REQUEST_POSTS, sagaWorker)
+}
+
+function* sagaWorker() {
+
+  // С помощью call ждём и записываем данные с сервера
+  const payload: ResponseGenerator = yield call(fetchPosts)
+
+  // И после этого методом put диспатчим данные в стор
+  yield put({ type: FETCH_POSTS, payload })
+}
+async function fetchPosts() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=5')
+  return await res.json()
+}
+
+```
+
+Получается, что в генератор `sagaWorker` можно производить различные действия в одном месте. Обработка ошибок `try..catch` производится в нём же. 
+
+Если вкраце, `saga` перехватывает `action` и делает то, что ей скажут, после чего диспатчит данные обратно в `store`. 
+
+***
 ## Typescript 
 
 ### ***Установка и подключение:***

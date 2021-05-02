@@ -20,7 +20,7 @@ export const App: React.FC = () => {
         </div>
         <div>
           <h1>Асинхронные посты</h1>
-          <FetchedPosts posts={[]} />
+          <FetchedPosts />
         </div>
       </div>
     </div>
