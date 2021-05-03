@@ -11,16 +11,20 @@ const ChatRoom: React.FC = () => {
   const [clickRoom, setClickRoom] = useState<string>('')
 
   async function chatRequest(room: string = clickRoom) {
-    const response = await fetch('/rooms', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify({ message: 'allMessages', clickRoom: room })
-    })
-    const arrMessages: IMessage[] = await response.json()
-    setClickRoom(room)
-    return arrMessages
+    try {
+      const response = await fetch('/rooms', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({ message: 'allMessages', clickRoom: room })
+      })
+      const arrMessages: IMessage[] = await response.json()
+      setClickRoom(room)
+      return arrMessages
+    } catch (err) {
+      alert('Произошла ошибка при запросе, попробуйте позже')
+    }
   }
 
   return (

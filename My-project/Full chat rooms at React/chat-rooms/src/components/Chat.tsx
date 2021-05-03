@@ -3,24 +3,9 @@ import {
   IChatProps,
   IMessage,
   IMessageFromRes,
-  ISocketLastMessage,
-  styleFinally
+  ISocketLastMessage
 } from '../interfaces'
 import { ListMessages } from '../components/List-messages'
-
-const styles: styleFinally = {
-  userName: {
-    width: '230px',
-    fontSize: '17px'
-  },
-  userMessage: {
-    width: '430px',
-    fontSize: '17px'
-  },
-  button: {
-    fontSize: '21px'
-  }
-}
 
 const Chat: React.FC<IChatProps> = ({ socket, clickRoom, chatRequest }) => {
   const $inputName = useRef<any>(null)
@@ -51,15 +36,19 @@ const Chat: React.FC<IChatProps> = ({ socket, clickRoom, chatRequest }) => {
 
   useEffect((): any => {
     let cleanupFunction = false
-    socket.on('lastMessage', (data: ISocketLastMessage) => {
-      if (!cleanupFunction) {
-        const { lastData, sendFromRoom } = data
+    socket.on('lastMessage', async (data: ISocketLastMessage) => {
+      try {
+        if (!cleanupFunction) {
+          const { lastData, sendFromRoom } = data
 
-        if (clickRoom === sendFromRoom) {
-          setMessages((prev) => {
-            return [...prev, lastData]
-          })
+          if (clickRoom === sendFromRoom) {
+            setMessages((prev) => {
+              return [...prev, lastData]
+            })
+          }
         }
+      } catch (err) {
+        alert('Произошла ошибка')
       }
     })
     return () => (cleanupFunction = true)
@@ -72,22 +61,26 @@ const Chat: React.FC<IChatProps> = ({ socket, clickRoom, chatRequest }) => {
   useEffect(() => {
     run()
     async function run() {
-      if (clickRoom) {
-        let newDayMessage: string = ''
-        const arrMessages = Array.from(
-          await chatRequest(),
-          (elem: IMessageFromRes) => {
-            const day: string = new Date(elem.createdAt).getDate().toString()
+      try {
+        if (clickRoom) {
+          let newDayMessage: string = ''
+          const arrMessages = Array.from(
+            await chatRequest(),
+            (elem: IMessageFromRes) => {
+              const day: string = new Date(elem.createdAt).getDate().toString()
 
-            const result = {
-              ...elem,
-              newDay: newDayMessage !== day ? true : false
+              const result = {
+                ...elem,
+                newDay: newDayMessage !== day ? true : false
+              }
+              newDayMessage = day
+              return result
             }
-            newDayMessage = day
-            return result
-          }
-        )
-        setMessages([...arrMessages])
+          )
+          setMessages([...arrMessages])
+        }
+      } catch (err) {
+        alert('Произошла ошибка')
       }
     }
   }, [clickRoom, chatRequest])
@@ -101,7 +94,6 @@ const Chat: React.FC<IChatProps> = ({ socket, clickRoom, chatRequest }) => {
       </div>
       <form onSubmit={formSendChat} name="formUserData" id="formSendChat">
         <input
-          style={styles.userName}
           id="userName"
           name="userName"
           type="text"
@@ -109,14 +101,13 @@ const Chat: React.FC<IChatProps> = ({ socket, clickRoom, chatRequest }) => {
           ref={$inputName}
         />
         <input
-          style={styles.userMessage}
           id="userMessage"
           name="userMessage"
           type="text"
           placeholder="Напишите сообщение..."
           ref={$inputMessage}
         />
-        <button id="sendMessage" name="sendMessage" style={styles.button}>
+        <button id="sendMessage" name="sendMessage">
           &rsaquo;
         </button>
       </form>

@@ -9,14 +9,18 @@ const Rooms: React.FC<IRoomsProps> = ({ socket, setClickRoom }) => {
 
   useEffect((): any => {
     let cleanupFunction = false
-    socket.on('newRoom', (nameRoom: string) => {
-      if (!cleanupFunction) {
-        setRooms((prev) => {
-          return [
-            ...prev,
-            { id: nanoid(), title: nameRoom, click: false, hover: false }
-          ]
-        })
+    socket.on('newRoom', async (nameRoom: string) => {
+      try {
+        if (!cleanupFunction) {
+          setRooms((prev) => {
+            return [
+              ...prev,
+              { id: nanoid(), title: nameRoom, click: false, hover: false }
+            ]
+          })
+        }
+      } catch (err) {
+        alert('Возникла ошибка')
       }
     })
     return () => (cleanupFunction = true)
@@ -25,29 +29,33 @@ const Rooms: React.FC<IRoomsProps> = ({ socket, setClickRoom }) => {
   useEffect(() => {
     run()
     async function run() {
-      const response = await fetch('/rooms', {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ message: 'allRoom' })
-      })
-
-      const arrNameRooms = await response.json()
-      arrNameRooms.forEach((nameRoom: string, index: number) => {
-        setRooms((prev) => {
-          return [
-            ...prev,
-            {
-              id: nanoid(),
-              title: nameRoom,
-              click: !index ? true : false,
-              hover: false
-            }
-          ]
+      try {
+        const response = await fetch('/rooms', {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify({ message: 'allRoom' })
         })
-      })
-      if (arrNameRooms) setClickRoom(arrNameRooms[0])
+
+        const arrNameRooms = await response.json()
+        arrNameRooms.forEach((nameRoom: string, index: number) => {
+          setRooms((prev) => {
+            return [
+              ...prev,
+              {
+                id: nanoid(),
+                title: nameRoom,
+                click: !index ? true : false,
+                hover: false
+              }
+            ]
+          })
+        })
+        if (arrNameRooms) setClickRoom(arrNameRooms[0])
+      } catch (err) {
+        alert('Возникла ошибка')
+      }
     }
   }, [setClickRoom])
 

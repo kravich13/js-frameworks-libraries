@@ -1,32 +1,35 @@
-import { counterReducer } from './createStore.js'
-import { rootReducer } from './redux/rootReducer.js'
-import { increment, decrement } from './redux/actions.js'
+import { redux } from 'redux'
 
-const $countSpan = document.getElementById('countState')
-const $addBtn = document.getElementById('getAdd')
-const $takeBtn = document.getElementById('getTake')
-const $asyncBtn = document.getElementById('getAsync')
-const $themeBtn = document.getElementById('getTheme')
+console.log('тут')
+// import { counterReducer } from './createStore.js'
+// import { rootReducer } from './redux/rootReducer.js'
+// import { increment, decrement } from './redux/actions.js'
 
-const store = createStore(counterReducer, 0)
+// const $countSpan = document.getElementById('countState')
+// const $addBtn = document.getElementById('getAdd')
+// const $takeBtn = document.getElementById('getTake')
+// const $asyncBtn = document.getElementById('getAsync')
+// const $themeBtn = document.getElementById('getTheme')
 
-$addBtn.addEventListener('click', () => {
-  store.dispatch(increment())
-})
+// const store = createStore(counterReducer, 0)
 
-$takeBtn.addEventListener('click', () => {
-  store.dispatch(decrement())
-})
+// $addBtn.addEventListener('click', () => {
+//   store.dispatch(increment())
+// })
 
-$asyncBtn.addEventListener('click', () => {})
+// $takeBtn.addEventListener('click', () => {
+//   store.dispatch(decrement())
+// })
 
-$themeBtn.addEventListener('click', () => {
-  //   document.body.classList.toggle('dark')
-})
+// $asyncBtn.addEventListener('click', () => {})
 
-store.subscribe(() => {
-  const state = store.getState()
-  $countSpan.textContent = state
-})
+// $themeBtn.addEventListener('click', () => {
+//   //   document.body.classList.toggle('dark')
+// })
 
-store.dispatch({ type: 'INIT_APPLICATION' })
+// store.subscribe(() => {
+//   const state = store.getState()
+//   $countSpan.textContent = state
+// })
+
+// store.dispatch({ type: 'INIT_APPLICATION' })

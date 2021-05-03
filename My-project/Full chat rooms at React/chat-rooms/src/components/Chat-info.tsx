@@ -18,8 +18,12 @@ export const ChatInfo: React.FC<IChatInfoProps> = ({ socket, clickRoom }) => {
   }
 
   useEffect(() => {
-    socket.on('numberOfUsers', (count: number) => {
-      setNumberOfusers(count)
+    socket.on('numberOfUsers', async (count: number) => {
+      try {
+        setNumberOfusers(count)
+      } catch (err) {
+        alert('Произошла ошибка')
+      }
     })
   }, [socket])
 

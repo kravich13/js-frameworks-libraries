@@ -8,15 +8,18 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 mongoose.pluralize(null)
 const MongoClient = require('mongodb').MongoClient
-const url = 'mongodb://localhost:27017/'
-const mongoClient = new MongoClient(url, { useUnifiedTopology: true })
+const MONGODB_URI =
+  'mongodb+srv://Chat:Rfgkzrfgkz1997@cluster0.pyfv2.mongodb.net/ChatRoomsReact?retryWrites=true&w=majority'
 
-const allCollections = {}
-const arrNamesCollections = []
-const connections = []
+mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
+const mongoClient = new MongoClient(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
 
 mongoClient.connect(function (err, client) {
   if (err) {
@@ -34,7 +37,12 @@ mongoClient.connect(function (err, client) {
   })
 })
 
-// app.use('/rooms', require('./routes/rooms'))
+const allCollections = {}
+const arrNamesCollections = []
+const connections = []
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 
 const roomsSchema = new Schema(
   {
@@ -53,14 +61,6 @@ const roomsSchema = new Schema(
   { minimize: false }
 )
 
-try {
-  mongoose.connect('mongodb://localhost:27017/ChatRoomsReact', {
-    useUnifiedTopology: true
-  })
-} catch (err) {
-  console.log(err)
-}
-
 app.post('/rooms', async (req, res) => {
   try {
     if (!req.body) return
@@ -72,7 +72,7 @@ app.post('/rooms', async (req, res) => {
       if (clickRoom) res.json(await allMessages(allCollections[clickRoom]))
     }
   } catch (e) {
-    res.status(500).json({ message: 'Какая-то ошибка, попробуйте позже' })
+    res.status(500).json({ message: 'Возникла ошибка, попробуйте позже' })
   }
 })
 
@@ -129,33 +129,43 @@ async function deleteRoom(collectionName) {
 
 async function allMessages(collectionName) {
   let arr
-  await new Promise((resolve) => {
-    collectionName.find({}, (err, docs) => {
-      if (err) return console.log(`Ошибка поиска в БД: ${err}`)
-      arr = docs
-      resolve()
+
+  try {
+    await new Promise((resolve) => {
+      collectionName.find({}, (err, docs) => {
+        if (err) return console.log(`Ошибка поиска в БД: ${err}`)
+        arr = docs
+        resolve()
+      })
     })
-  })
+  } catch (err) {
+    console.log('Ошибка при загрузке всех сообщений')
+  }
   return arr
 }
 
 async function newMessage(collectionName, user, message) {
   let obj
-  await new Promise((resolve) => {
-    collectionName.create(
-      { user, message, createdAt: new Date() },
-      (err, doc) => {
-        if (err) return console.log('Ошибка в добавлении в БД')
-        obj = {
-          _id: doc._id,
-          user: doc.user,
-          message: doc.message,
-          createdAt: doc.createdAt
+
+  try {
+    await new Promise((resolve) => {
+      collectionName.create(
+        { user, message, createdAt: new Date() },
+        (err, doc) => {
+          if (err) return console.log('Ошибка в добавлении в БД')
+          obj = {
+            _id: doc._id,
+            user: doc.user,
+            message: doc.message,
+            createdAt: doc.createdAt
+          }
+          resolve()
         }
-        resolve()
-      }
-    )
-  })
+      )
+    })
+  } catch (err) {
+    console.log('Ошибка при добавлении нового сообщения')
+  }
   return obj
 }
 

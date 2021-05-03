@@ -4,14 +4,11 @@
   justify-content: center;
   align-items: center;
 }
-#main-section {
-  width: 1050px;
-}
 header {
   background: rgb(255, 123, 0);
   color: rgb(56, 56, 56);
   display: flex;
-  width: 100%;
+  width: 96%;
   justify-content: space-around;
   padding: 10px 2%;
 }
@@ -40,19 +37,29 @@ header ul li a {
   padding: 8px 20px;
 }
 
+.title-about-me {
+  margin-top: 300px;
+  /* background: red; */
+  text-align: center;
+}
+
 /* Стили окна приложения чата */
+#main-section {
+  width: 900px;
+}
+
 #main-window-chat {
   background: rgba(255, 123, 0, 0.7);
   border: 1px solid black;
 }
 #block-rooms-chat {
-  height: 700px;
+  height: 500px;
   display: flex;
 }
 #block-chat {
   display: flex;
   flex-direction: column;
-  width: 775px;
+  /* width: 775px; */
   background: rgba(255, 255, 255, 0.83);
 }
 #block-chat form {
@@ -69,17 +76,27 @@ header ul li a {
   display: flex;
   font-size: 18px;
 }
+
+#block-rooms,
+#chat-info div {
+  width: 250px;
+}
+#chat-info h3,
+#block-chat {
+  /* background: rgb(94, 94, 94); */
+  width: 650px;
+}
+
 #chat-info div {
   border-right: 1px solid rgb(54, 54, 54);
   /* padding: 5px 0; */
-  width: 30%;
+  /* width: 30%; */
   display: flex;
   justify-content: center;
   align-items: center;
 }
 #chat-info h3 {
   padding: 20px 0;
-  width: 775px;
   display: flex;
   justify-content: center;
   font-weight: 600;
@@ -87,14 +104,12 @@ header ul li a {
 
 #block-rooms {
   border-right: 1px solid rgb(54, 54, 54);
-  width: 100%;
 }
 
 .roomsLi {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 302px;
   list-style: none;
   padding: 5px 0;
   font-size: 18px;
@@ -118,6 +133,49 @@ header ul li a {
   color: rgb(36, 36, 36);
   width: 35px;
   font-size: 17px;
-  /* height: 30px; */
-  /* border-radius: 10px; */
+}
+
+#sendMessage {
+  font-size: 21px;
+}
+#userName {
+  width: 150px;
+  font-size: 17px;
+}
+#userMessage {
+  width: 423px;
+  font-size: 17px;
+}
+
+@media all and (max-width: 900px) {
+  #main-section {
+    width: 100%;
+  }
+
+  /* #userName {
+    width: 20%;
+  } */
+  #userMessage {
+    width: 100%;
+  }
+  #sendMessage {
+    width: 10%;
+  }
+  #chat-info div input {
+    width: 80%;
+    /* position: relative; */
+    /* display: flex; */
+    /* width: 100%; */
+  }
+}
+
+@media all and (max-width: 685px) {
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header ul {
+    text-align: center;
+  }
 }
