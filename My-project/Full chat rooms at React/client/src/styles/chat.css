@@ -1,0 +1,28 @@
+#block-chat {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.83);
+}
+#block-chat form {
+  height: 40px;
+  width: 100%;
+  display: flex;
+}
+#chat-window {
+  padding: 5px 10px;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+#sendMessage {
+  width: auto;
+  font-size: 21px;
+}
+#userName {
+  width: 50%;
+  font-size: 17px;
+}
+#userMessage {
+  width: 100%;
+  font-size: 17px;
+}

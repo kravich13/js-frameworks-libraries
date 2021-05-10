@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
+const path = require('path')
 const PORT = process.env.PORT || 5000
 
 const mongoose = require('mongoose')
@@ -43,6 +44,17 @@ const connections = []
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(express.static(path.join(__dirname, 'client/build')))
+
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (request, response) => {
+    response.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+  })
+}
+
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname + 'client/public/index.html'))
+// })
 
 const roomsSchema = new Schema(
   {
@@ -86,12 +98,26 @@ io.on('connection', (socket) => {
   })
 
   socket.on('addMessage', async ({ user, message, clickRoom }) => {
+    const roomMatch = user.match(/\w+/gi)
+
+    if (roomMatch !== null) {
+      if (roomMatch[0] !== user) return
+    } else return
+
+    if (message.string > 1024) return
+
     const lastData = await newMessage(allCollections[clickRoom], user, message)
     io.sockets.emit('lastMessage', { lastData, sendFromRoom: clickRoom })
   })
 
   socket.on('addRoom', (room) => {
     let uniqueRoom = false
+
+    const roomMatch = room.match(/\w+/gi)
+    if (roomMatch !== null) {
+      if (roomMatch[0] !== room) return
+    } else return
+
     arrNamesCollections.forEach((elem) => {
       if (room === elem) return (uniqueRoom = true)
     })
