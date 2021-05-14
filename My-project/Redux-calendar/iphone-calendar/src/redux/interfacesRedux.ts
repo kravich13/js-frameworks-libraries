@@ -24,6 +24,7 @@ interface IBlockTask {
 }
 // ============= tasksReducer =============
 interface ITasksReducer_state {
+  daysTasks: number[]
   tasks: IBlocksTask[]
   dateClickDay: null | number
   notification: string

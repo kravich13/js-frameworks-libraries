@@ -1,0 +1,37 @@
+.dayOfYear,
+.dayWithoutAuth,
+.dayWithAuth {
+  text-align: center;
+}
+.dayOfYear {
+  padding: 1px;
+  font-size: 19px;
+}
+.dayWithoutAuth,
+.dayWithAuth a {
+  font-size: 23px;
+  /* text-decoration: underline; */
+}
+.dayWithoutAuth {
+  padding: 9px;
+}
+.dayWithAuth {
+  font-size: 19px;
+}
+.dayWithAuth a {
+  display: block;
+  padding: 9px;
+}
+.current-day,
+.current-day a {
+  background: red;
+  border-radius: 50%;
+  color: white;
+  font-weight: 600;
+}
+.there-are-tasks {
+  text-decoration: underline 3px #6e9ecf;
+}
+.current-day-withTasks {
+  text-decoration: underline 3px rgb(0, 0, 0);
+}

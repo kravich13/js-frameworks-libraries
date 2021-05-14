@@ -2,6 +2,7 @@ import {
   CHANGE_TASK,
   CREATE_TASK,
   DATA_CLICK_DAY,
+  DAYS_TASKS,
   DELETE_TASK,
   NOTIFICATION_CLEAR,
   TASKS_CURRENT_DAY
@@ -15,6 +16,7 @@ import {
 } from './interfacesRedux'
 
 const initialState: ITasksReducer_state = {
+  daysTasks: [],
   tasks: [],
   dateClickDay: null,
   notification: ''
@@ -39,6 +41,8 @@ export const tasksReducer = (
       return deleteTask(state, payload.id)
     case DATA_CLICK_DAY:
       return { ...state, dateClickDay: payload }
+    case DAYS_TASKS:
+      return { ...state, daysTasks: Array.from(payload) }
     default:
       return state
   }
@@ -61,20 +65,18 @@ function changeTask(
   state: ITasksReducer_state,
   task: IRes_changeTask[]
 ): ITasksReducer_state {
-  const newTask = state.tasks.map(
-    (elem): IBlocksTask => {
-      for (const needBlock of task) {
-        if (elem.id === needBlock.id) {
-          return {
-            ...elem,
-            position: needBlock.position,
-            posLeft: needBlock.posLeft
-          }
+  const newTask = state.tasks.map((elem): IBlocksTask => {
+    for (const needBlock of task) {
+      if (elem.id === needBlock.id) {
+        return {
+          ...elem,
+          position: needBlock.position,
+          posLeft: needBlock.posLeft
         }
       }
-      return elem
     }
-  )
+    return elem
+  })
   return { ...state, tasks: newTask }
 }
 

@@ -1,18 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
+import { daysTasks } from '../redux/actions'
 import { Quarter } from '../components/Quarter'
 import { IMapStateToProps, ICalendar_quarters } from '../interfaces'
 
+const mapDispatchToProps = {
+  daysTasks
+}
 const mapStateToProps = (state: IMapStateToProps) => {
   return {
     authorized: state.auth.authorized
   }
 }
 
-const connector = connect(mapStateToProps)
+const connector = connect(mapStateToProps, mapDispatchToProps)
 type PropsFromRedux = ConnectedProps<typeof connector>
 
-const Calendar: React.FC<PropsFromRedux> = ({ authorized }) => {
+const Calendar: React.FC<PropsFromRedux> = ({ authorized, daysTasks }) => {
   const date: Date = new Date()
   const currentYear: number = date.getFullYear()
   const [quarters] = useState<ICalendar_quarters[]>([
@@ -22,8 +26,13 @@ const Calendar: React.FC<PropsFromRedux> = ({ authorized }) => {
     { id: 4, month: [9, 10, 11] }
   ])
 
+  useEffect(() => {
+    if (!authorized) return
+    daysTasks(authorized)
+  }, [daysTasks, authorized])
+
   return (
-    <section>
+    <div>
       {!authorized && (
         <div id="calendar-auth">
           <p>Вы не авторизировались, основные функции недоступны.</p>
@@ -36,8 +45,8 @@ const Calendar: React.FC<PropsFromRedux> = ({ authorized }) => {
           return <Quarter key={block.id} quarter={block.month} />
         })}
       </div>
-    </section>
+    </div>
   )
 }
 
-export default connect(mapStateToProps)(Calendar)
+export default connect(mapStateToProps, mapDispatchToProps)(Calendar)

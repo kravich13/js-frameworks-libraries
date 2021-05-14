@@ -11,6 +11,7 @@ interface IMapStateToProps {
     clickedMonth: boolean
   }
   tasks: {
+    daysTasks: number[]
     tasks: ITaskList_blocksTask[]
     dateClickDay: Date
     notification: string
@@ -65,6 +66,7 @@ interface IMonth_Moving {
 interface IMonth_objOfDay {
   day: number | string
   fullDate: number | null
+  // haveTasks: boolean
 }
 
 // ============= BlocksTaskS =============

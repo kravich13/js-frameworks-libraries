@@ -1,342 +1,76 @@
+#root,
+.App {
+  height: 100%;
+}
 .App {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-header {
-  background: rgb(255, 123, 0);
-  color: rgb(56, 56, 56);
-  display: flex;
-  width: 96%;
-  justify-content: space-around;
-  padding: 10px 2%;
-  margin-bottom: 20px;
-}
-
-#navbarTitle {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-}
-.MY_CALENDAR {
-  background: rgba(46, 46, 46, 0.555);
-  font-size: 23px;
-  font-weight: 800;
-  text-decoration: none;
-  color: rgb(255, 255, 255);
-  border-radius: 5px;
-  padding: 5px 10px;
-}
-
-.clickAuth {
-  margin: 30px 0;
-}
-
-.MY_CALENDAR:hover {
-  background: rgba(49, 49, 49, 0.521);
-}
-
-header ul {
-  font-size: 19px;
-  display: flex;
-  align-items: center;
-  font-weight: 600;
-}
-header ul li {
-  list-style: none;
-  cursor: pointer;
-  padding: 8px 0;
-}
-header ul li :hover {
-  background: rgba(255, 255, 255, 0.521);
-  border-radius: 7px;
-}
-.login-information :hover {
-  background: rgba(255, 255, 255, 0.521);
-  border-radius: 7px;
-}
-header ul li a,
-.login-information {
-  color: rgb(56, 56, 56);
-  text-decoration: none;
-  padding: 8px 20px;
-}
-
-/* ========== РЕГИСТРАЦИИ ========== */
-#window-registation {
-  background: rgba(21, 39, 105, 0.733);
-  color: white;
-  font-weight: 600;
-  padding: 25px 45px;
-  width: 450px;
-}
-
-#window-registation h2 {
-  font-size: 20px;
-  text-align: center;
-}
-
-#form-sing-up {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-}
-#form-sing-up input {
-  width: 200px;
-}
-#form-sing-up label {
-  width: 50%;
-}
-
-#form-sing-up label p {
-  margin-bottom: 5px;
-}
-
-#create-account {
-  width: 100%;
-  text-align: end;
-}
-
-#login-birthday,
-#singUp-password {
-  justify-content: center;
-  display: flex;
-  width: 100%;
-  margin-bottom: 25px;
-}
-
-.label-right {
-  text-align: end;
-}
-
-.container-singUp {
-  width: 50%;
-  margin-bottom: 20px;
-}
-
-.contSingUp-left label {
-  display: block;
-  text-align: start;
-}
-
-.contSingUp-right {
-  text-align: end;
-  width: 100%;
-}
-.contSingUp-right label {
-  display: block;
-  text-align: end;
-}
-
-#registration-true {
-  margin-top: 20px;
-  display: block;
-  text-align: center;
-}
-
-/* ========== ФОРМА АВТОРИЗАЦИИ ========== */
-#window-autorization {
-  background: rgba(21, 39, 105, 0.733);
-  color: white;
-  font-weight: 600;
-  padding: 25px 45px;
-  width: 450px;
-}
-#window-autorization label {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-}
-#window-autorization h2 {
-  margin-bottom: 20px;
-  text-align: center;
-  font-size: 20px;
-}
-#window-autorization label p {
-  margin-bottom: 5px;
-}
-
-#log-into-account {
-  text-align: end;
-}
-
-/* ========== КАЛЕНДАРЬ ========== */
-.quarters {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-}
-.general-month {
-  display: block;
-  height: auto;
-}
-.general-month a {
-  color: black;
-  text-decoration: none;
-}
-.big-month {
-  padding-top: 145px;
-  width: 490px;
-}
-.big-month h3 {
-  font-size: 24px;
-  text-align: center;
-}
-.container-oneMonth {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  cursor: pointer;
-}
-.month-nope {
-  cursor: default;
-}
-.big-month table {
-  text-align: center;
-  height: 100%;
-}
-
-.container-bigMonth ul {
-  list-style: none;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  font-weight: 600;
-  margin-top: 30px;
-  font-size: 20px;
-}
-.container-bigMonth ul li {
-  width: 100%;
-  text-align: center;
-}
-.regular-month {
-  font-weight: 600;
-}
-.current-month {
-  color: red;
-}
-#container-calendar {
-  padding-top: 10px;
-  width: 520px;
-}
-#container-calendar h1 {
-  color: red;
-  font-size: 23px;
-  font-weight: 600;
-  border-bottom: 1px solid rgb(173, 173, 173);
-}
-#calendar-auth {
-  text-align: center;
-  color: rgb(165, 0, 0);
-  font-weight: 600;
-}
-
-/* ========== ДНИ ========== */
-.dayOfYear,
-.dayWithoutAuth,
-.dayWithAuth {
-  text-align: center;
-}
-.dayOfYear {
-  padding: 1px;
-}
-.dayWithoutAuth {
-  font-size: 19px;
-  padding: 9px;
-}
-.dayWithAuth {
-  font-size: 19px;
-}
-.dayWithAuth a {
-  display: block;
-  padding: 9px;
-}
-.current-day,
-.current-day a {
-  background: red;
-  border-radius: 50%;
-  color: white;
-  font-weight: 600;
-}
-/* ========== ДНИ ========== */
-
-#block-addTask {
-  width: 250px;
-}
-#task-addTitle {
-  width: 234px;
-}
-#block-addTask form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#block-addTask form label {
-  display: flex;
-  flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
+
+section {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   width: 100%;
 }
 
-#block-addTask form label,
-#task-addTitle,
-#task-hiddenForm {
-  margin-bottom: 10px;
-}
-#task-save {
-  width: 130px;
-}
-#block-allTasks {
-  position: relative;
-}
-#task-list {
-  padding: 10px;
-}
-.block-time-toDo {
-  display: flex;
-  list-style: none;
-  height: 59px;
-  border-top: 1px solid grey;
-  position: relative;
-}
-.time-toDo {
-  font-size: 16px;
-  font-weight: 200;
-  font-family: 'Open Sans';
-  width: 50px;
-  text-align: center;
-}
-.container-toDo {
-  width: 200px;
-}
+@media all and (max-width: 630px) {
+  /* MONTHS */
+  section {
+    align-items: center;
+  }
+  #container-calendar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+  }
+  .quarters {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid grey;
+  }
+  .general-month {
+    width: 80%;
+  }
+  #container-calendar h1 {
+    font-size: 2em;
+  }
+  .general-month {
+    margin-bottom: 1em;
+  }
+  .month-nope .regular-month {
+    font-size: 2em;
+  }
+  .regular-month {
+    font-size: 1.5em;
+  }
+  .dayOfYear,
+  .container-bigMonth ul li {
+    font-size: 1.4em;
+  }
+  .dayWithoutAuth,
+  .dayWithAuth a {
+    font-size: 1.6em;
+  }
 
-.blocksTasksTitle {
-  font-size: 14px;
-  padding: 0 5px;
-  width: 87%;
-}
-.deleteTask {
-  align-self: flex-start;
-  text-align: center;
-  width: 13%;
-  background: #cf6e6e;
-}
-.leftTaskBorder {
-  width: 3px;
-  background: #6e9ecf;
-}
-.blockTask {
-  display: flex;
-  position: absolute;
-  background: #e2ecf5;
-  width: 200px;
-  z-index: 1;
-}
-.half-blockTask {
-  width: 100px;
+  /* HEADER && FOOTER */
+  header ul {
+    font-size: 1.3em;
+  }
+  footer ul {
+    font-size: 1.3em;
+  }
+
+  /* TASK-LIST */
+  #container-task-list {
+    width: 90%;
+  }
+  #container-task-list h3 {
+    font-size: 1.3em;
+  }
 }

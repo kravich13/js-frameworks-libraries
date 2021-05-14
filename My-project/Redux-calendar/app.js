@@ -1,3 +1,4 @@
+const validator = require('validator')
 const express = require('express')
 const app = express()
 const server = require('http').createServer(app)
@@ -55,7 +56,10 @@ const usersTasks = new Schema(
   { versionKey: false }
 )
 
-mongoose.connect('mongodb://localhost:27017/calendar', {
+const MONGODB_URI =
+  'mongodb+srv://Chat:Rfgkzrfgkz1997@cluster0.pyfv2.mongodb.net/Calendar?retryWrites=true&w=majority'
+
+mongoose.connect(MONGODB_URI, {
   useUnifiedTopology: true,
   useNewUrlParser: true
 })
@@ -75,13 +79,15 @@ app.post('/sing-up', async (req, res) => {
   // ========== VALIDATION OF DATA FROM OF THE CLIENT ==========
   const { login, birthday, password, passwordConfirm } = req.body
 
-  const loginBirthday = login.length > 3 && birthday.length === 10
-  const passCorrect = password.length >= 8 && passwordConfirm === password
+  const loginValid = validator.isLength(login, { min: 3, max: 21 })
+  const passValid = validator.isLength(password, { min: 8, max: 48 })
+  const passConfirmValid = validator.equals(password, passwordConfirm)
+  const birthdayValid = validator.isDate(birthday)
 
   // ========== SENDIND DATA TO THE CLIENT ==========
 
   // Data of the client TRUE
-  if (loginBirthday && passCorrect) {
+  if (loginValid && passValid && passConfirmValid && birthdayValid) {
     const userExists = await filtering_login(login)
 
     // New user
@@ -105,7 +111,11 @@ app.post('/login', async (req, res) => {
   }
 
   const { name, password } = req.body
-  if (name.length < 3 && password.length < 8) return_data('Неверные данные')
+
+  const nameValid = validator.isLength(name, { min: 3, max: 21 })
+  const passwordValid = validator.isLength(password, { min: 8, max: 48 })
+
+  if (!nameValid && !passwordValid) return_data('Неверные данные')
 
   const autoLogin = await login_details_match(name, password)
 
@@ -179,6 +189,18 @@ app.post('/tasks', async (req, res) => {
   }
 })
 
+app.post('/daysTasks', async (req, res) => {
+  if (!req.body) res.json({ message: 'Возникла ошибка при запросе' })
+
+  const userValid = validator.isLength(req.body.user, { min: 3, max: 21 })
+  if (!userValid) res.json({ message: 'Некорректные данные' })
+  // ПРОВЕРИТЬ СУЩЕСТВУЕТ ЛИ ТАКОЙ ЮЗЕР
+
+  const countDays = await unique_day_task(req.body.user)
+
+  res.json(countDays)
+})
+
 server.listen(PORT, () => console.log('Сервер запущен'))
 
 // ========== FUNCTIONS TO WORK WITH THE DATABASE  ==========
@@ -195,6 +217,7 @@ async function all_tasks({ user, timestamp }) {
       resolve()
     })
   })
+
   return tasks
 }
 
@@ -324,4 +347,33 @@ async function login_details_match(login, password) {
     })
   })
   return data
+}
+
+async function unique_day_task(user) {
+  const arrTimestamp = []
+
+  await new Promise((resolve) => {
+    UsersTasks.findOne({ user }, (err, doc) => {
+      if (err) return
+
+      const arrayDay = new Set()
+
+      for (let elem of doc.tasks) {
+        const day = new Date(elem.timestamp).toLocaleDateString('en-US', {
+          day: 'numeric'
+        })
+
+        if (!arrayDay.has(day)) arrTimestamp.push(elem.timestamp)
+        arrayDay.add(day)
+      }
+      resolve()
+    })
+  })
+
+  arrTimestamp.forEach((elem, index, array) => {
+    const date = new Date(elem)
+    return (array[index] = date.setDate(date.getDate() - 1))
+  })
+
+  return arrTimestamp
 }

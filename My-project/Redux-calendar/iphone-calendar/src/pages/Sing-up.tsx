@@ -25,20 +25,20 @@ const SingUp: React.FC<PropsFromRedux> = ({
   req_clearMessage,
   hidden_navbar
 }) => {
-  const $login = useRef<any>(null)
-  const $birthday = useRef<any>(null)
-  const $password = useRef<any>(null)
-  const $passwordConfirm = useRef<any>(null)
+  const $login = useRef<HTMLInputElement>(null)
+  const $birthday = useRef<HTMLInputElement>(null)
+  const $password = useRef<HTMLInputElement>(null)
+  const $passwordConfirm = useRef<HTMLInputElement>(null)
 
   const singUpForm = (event: React.FormEvent<HTMLFormElement>): any => {
     event.preventDefault()
 
-    const login: string = $login.current.value
-    const birthday: string = $birthday.current.value
-    const password: string = $password.current.value
-    const passwordConfirm: string = $passwordConfirm.current.value
+    const login: string = $login.current!.value
+    const birthday: string = $birthday.current!.value
+    const password: string = $password.current!.value
+    const passwordConfirm: string = $passwordConfirm.current!.value
 
-    if (login.length < 3) return ($login.current.placeholder = 'Короткое имя')
+    if (login.length < 3) return ($login.current!.placeholder = 'Короткое имя')
     if (!birthday) return alert('Неправильная дата рождения')
 
     if (password.length < 8) return alert('Короткий пароль')
@@ -69,8 +69,10 @@ const SingUp: React.FC<PropsFromRedux> = ({
   }, [eventSingUpAuth, clearEvents])
 
   return (
-    <React.Fragment>
-      <MyLogo />
+    <div id="container-auth-login">
+      <div id="auth-login-MyLogo">
+        <MyLogo />
+      </div>
 
       <div id="window-registation">
         <h2>Создать аккаунт</h2>
@@ -109,7 +111,7 @@ const SingUp: React.FC<PropsFromRedux> = ({
         <span>Уже зарегистрированы? </span>
         <NavLink to="/login">Вход</NavLink>
       </label>
-    </React.Fragment>
+    </div>
   )
 }
 

@@ -31,18 +31,19 @@ const Login: React.FC<PropsFromRedux> = ({
   req_clearMessage,
   hidden_navbar
 }) => {
-  const $userName = useRef<any>(null)
-  const $userPassword = useRef<any>(null)
+  const $userName = useRef<HTMLInputElement>(null)
+  const $userPassword = useRef<HTMLInputElement>(null)
 
   const loginSubmit = (event: React.ChangeEvent<HTMLFormElement>): any => {
     event.preventDefault()
 
-    const name: string = $userName.current.value
-    const password: string = $userPassword.current.value
+    const name: string = $userName.current!.value
+    const password: string = $userPassword.current!.value
 
-    if (name.length < 3) return ($userName.current.placeholder = 'Короткое имя')
+    if (name.length < 3)
+      return ($userName.current!.placeholder = 'Короткое имя')
     if (password.length < 8)
-      return ($userPassword.current.value = 'Короткий пароль')
+      return ($userPassword.current!.value = 'Короткий пароль')
 
     req_auth({ name, password })
   }
@@ -72,8 +73,11 @@ const Login: React.FC<PropsFromRedux> = ({
   }
 
   return (
-    <React.Fragment>
-      <MyLogo />
+    <div id="container-auth-login">
+      <div id="auth-login-MyLogo">
+        <MyLogo />
+      </div>
+
       <UserAuthorized authorized={authorized} />
       <form id="window-autorization" onSubmit={loginSubmit}>
         <h2>Вход</h2>
@@ -98,7 +102,7 @@ const Login: React.FC<PropsFromRedux> = ({
 
         <NavLink to="/sing-up">Регистрация</NavLink>
       </label>
-    </React.Fragment>
+    </div>
   )
 }
 

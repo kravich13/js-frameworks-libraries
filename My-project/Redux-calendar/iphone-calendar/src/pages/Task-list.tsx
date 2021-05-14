@@ -50,10 +50,10 @@ const TaskList: React.FC<PropsFromRedux> = ({
   const [hours, setHours] = useState<string[]>([])
   const [taskHidden, setTaskHidden] = useState<boolean>(true)
   const [openDay, setOpenDay] = useState<string>('None')
-  const $addTitle = useRef<any>(null)
-  const $startTask = useRef<any>(null)
-  const $endTask = useRef<any>(null)
-  const $blocksTime = useRef<any[]>([])
+  const $addTitle = useRef<HTMLInputElement>(null)
+  const $startTask = useRef<HTMLInputElement>(null)
+  const $endTask = useRef<HTMLInputElement>(null)
+  const $blocksTime = useRef<HTMLLIElement[]>([])
 
   const date: Date = new Date()
   const currentHrs: string | number =
@@ -110,15 +110,15 @@ const TaskList: React.FC<PropsFromRedux> = ({
   const formAddTask = (event: React.ChangeEvent<HTMLFormElement>): void => {
     event.preventDefault()
 
-    const addTitle: string = $addTitle.current.value
+    const addTitle: string = $addTitle.current!.value
     if (addTitle.length < 2) {
-      $addTitle.current.value = ''
-      $addTitle.current.placeholder = 'Меньше двух символов'
+      $addTitle.current!.value = ''
+      $addTitle.current!.placeholder = 'Меньше двух символов'
       return
     }
 
-    const dateStart: Date = $startTask.current.valueAsDate
-    const dateEnd: Date = $endTask.current.valueAsDate
+    const dateStart: Date | null = $startTask.current!.valueAsDate
+    const dateEnd: Date | null = $endTask.current!.valueAsDate
 
     if (!dateStart) return alert('Не указано начальное время')
     if (!dateEnd) return alert('Не указано конечное время')
@@ -325,10 +325,13 @@ const TaskList: React.FC<PropsFromRedux> = ({
     // }
   }
 
+  const classesTimeBlock: string[] = ['block-time-toDo']
+
   return (
-    <React.Fragment>
+    <div id="container-task-list">
+      {!authorized && <div>Вы не авторизировались, функционал недоступен.</div>}
       {authorized && (
-        <React.Fragment>
+        <div id="container-auth-task-list">
           <h3 style={{ margin: '30px' }}>{openDay}</h3>
           <button
             id="task-hiddenForm"
@@ -351,11 +354,17 @@ const TaskList: React.FC<PropsFromRedux> = ({
             <BlocksTask blocks={blocksTask} fn_delTask={fn_delTask} />
             <ul id="task-list">
               {hours.map((elem, index: number) => {
+                if (index === hours.length - 1) {
+                  classesTimeBlock.push('end-time-toDo')
+                }
+
                 return (
                   <li
-                    className="block-time-toDo"
+                    className={classesTimeBlock.join(' ')}
                     key={index}
-                    ref={(el) => ($blocksTime.current[index] = el)}
+                    ref={(el: HTMLLIElement) =>
+                      ($blocksTime.current[index] = el)
+                    }
                   >
                     <h3 id={`task${index}`} className="time-toDo">
                       {elem}
@@ -366,10 +375,9 @@ const TaskList: React.FC<PropsFromRedux> = ({
               })}
             </ul>
           </div>
-        </React.Fragment>
+        </div>
       )}
-      <div>Вы не авторизировались, функционал недоступен.</div>
-    </React.Fragment>
+    </div>
   )
 }
 

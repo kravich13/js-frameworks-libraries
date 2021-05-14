@@ -13,7 +13,9 @@ import {
   IMonth_Moving
 } from '../interfaces'
 
-const mapDispatchToProps: IMonth_DispatchProps = { change_monthNumber }
+const mapDispatchToProps: IMonth_DispatchProps = {
+  change_monthNumber
+}
 const connector = connect(null, mapDispatchToProps)
 type PropsFromRedux = ConnectedProps<typeof connector>
 type Props = PropsFromRedux & IClickMonth_passedProps
@@ -24,7 +26,8 @@ const Month: React.FC<Props> = ({
   authorized,
   change_monthNumber
 }) => {
-  const [clickForYear, setClickForYear] = useState(false)
+  const [stateWeeks, setStateWeeks] = useState<IMonth_stateWeeks[]>([])
+  const [clickForYear, setClickForYear] = useState<boolean>(false)
   const titleH3: string[] = ['regular-month']
   const generalClasses: string[] = ['general-month']
   const containerOneMonth: string[] = ['container-oneMonth']
@@ -38,6 +41,14 @@ const Month: React.FC<Props> = ({
     'Su'
   ])
   let classTD: string = 'dayOfYear'
+  const currentMonth: number = new Date().getMonth()
+
+  const year: number = new Date().getFullYear()
+  const date: Date = new Date(year, monthNumber + 1, 0)
+  const currentMonthTitle: string = date.toLocaleString('en', { month: 'long' })
+  const firstDayOfMonth: number = new Date(year, monthNumber, 0).getDay()
+  const numberOfMonth: number =
+    33 - new Date(date.getFullYear(), date.getMonth(), 33).getDate()
 
   if (clickedMonth) {
     // Перекинуть на /month
@@ -47,17 +58,7 @@ const Month: React.FC<Props> = ({
     classTD = authorized ? 'dayWithAuth' : 'dayWithoutAuth'
   }
 
-  const [stateWeeks, setStateWeeks] = useState<IMonth_stateWeeks[]>([])
-
-  const currentMonth: number = new Date().getMonth()
   if (currentMonth === monthNumber) titleH3.push('current-month')
-
-  const year: number = new Date().getFullYear()
-  const date: Date = new Date(year, monthNumber + 1, 0)
-  const currentMonthTitle: string = date.toLocaleString('en', { month: 'long' })
-  const firstDayOfMonth: number = new Date(year, monthNumber, 0).getDay()
-  const numberOfMonth: number =
-    33 - new Date(date.getFullYear(), date.getMonth(), 33).getDate()
 
   useEffect((): void => {
     const arrWeeks: IMonth_arrWeeks = {
@@ -101,10 +102,11 @@ const Month: React.FC<Props> = ({
 
     function readyState(value: number | string): IMonth_objOfDay {
       const numberDay: number = value ? +value : -1
+      const fullDate: number | null =
+        numberDay >= 0 ? +new Date(year, monthNumber, numberDay) : null
       return {
         day: value,
-        fullDate:
-          numberDay >= 0 ? +new Date(year, monthNumber, numberDay) : null
+        fullDate: fullDate
       }
     }
   }, [firstDayOfMonth, numberOfMonth, currentMonth, monthNumber, year])
@@ -114,6 +116,7 @@ const Month: React.FC<Props> = ({
     if (flag) return <Redirect to="/month" />
     return null
   }
+
   return (
     <div
       className={generalClasses.join(' ')}

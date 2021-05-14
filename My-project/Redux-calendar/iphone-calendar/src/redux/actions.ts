@@ -10,7 +10,8 @@ import {
   DATA_CLICK_DAY,
   LOG_OUT,
   TASKS_CURRENT_DAY,
-  NOTIFICATION_CLEAR
+  NOTIFICATION_CLEAR,
+  DAYS_TASKS
 } from './types'
 import {
   IBlocksTask,
@@ -35,94 +36,155 @@ export function clear_nofificationTasks(task: string = ''): IAction {
 }
 export function tasks_currentDay(task: ITasks_currentDay): Function {
   return async (dispatch: Function) => {
-    const res = await fetch('/tasks', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-        'Action-type': 'allTasks'
-      },
-      body: JSON.stringify(task)
-    })
-    const json: IBlocksTask = await res.json()
-    dispatch({ type: TASKS_CURRENT_DAY, payload: json })
+    try {
+      const res = await fetch('/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+          'Action-type': 'allTasks'
+        },
+        body: JSON.stringify(task)
+      })
+      const json: IBlocksTask = await res.json()
+      dispatch({ type: TASKS_CURRENT_DAY, payload: json })
+    } catch (err) {
+      dispatch({
+        type: NOTIFICATION_CLEAR,
+        payload: 'Возникла ошибка при загрузке'
+      })
+    }
   }
 }
 
 export function createTask(task: IBlocksTask): Function {
   return async (dispatch: Function) => {
-    const res = await fetch('/tasks', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-        'Action-type': 'createTask'
-      },
-      body: JSON.stringify(task)
-    })
-    const json: IRes_createTask = await res.json()
+    try {
+      const res = await fetch('/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+          'Action-type': 'createTask'
+        },
+        body: JSON.stringify(task)
+      })
+      const json: IRes_createTask = await res.json()
 
-    dispatch({ type: CREATE_TASK, payload: json })
+      dispatch({ type: CREATE_TASK, payload: json })
+    } catch (err) {
+      dispatch({
+        type: NOTIFICATION_CLEAR,
+        payload: 'Возникла ошибка при создании'
+      })
+    }
   }
 }
 
 export function changeTask(task: ITaskList_req_change): Function {
   return async (dispatch: Function) => {
-    const res = await fetch('/tasks', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-        'Action-type': 'changeTask'
-      },
-      body: JSON.stringify(task)
-    })
-    const json: IRes_changeTask[] = await res.json()
+    try {
+      const res = await fetch('/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+          'Action-type': 'changeTask'
+        },
+        body: JSON.stringify(task)
+      })
+      const json: IRes_changeTask[] = await res.json()
 
-    dispatch({ type: CHANGE_TASK, payload: json })
+      dispatch({ type: CHANGE_TASK, payload: json })
+    } catch (err) {
+      dispatch({
+        type: NOTIFICATION_CLEAR,
+        payload: 'Возникла ошибка при измении'
+      })
+    }
   }
 }
 
 export function deleteTask(task: IActions_deleteTask): Function {
   return async (dispatch: Function) => {
-    const res = await fetch('/tasks', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-        'Action-type': 'deleteTask'
-      },
-      body: JSON.stringify(task)
-    })
-    const json: ITaskList_res_change = await res.json()
+    try {
+      const res = await fetch('/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+          'Action-type': 'deleteTask'
+        },
+        body: JSON.stringify(task)
+      })
+      const json: ITaskList_res_change = await res.json()
 
-    dispatch({ type: DELETE_TASK, payload: json })
+      dispatch({ type: DELETE_TASK, payload: json })
+    } catch (err) {
+      dispatch({
+        type: NOTIFICATION_CLEAR,
+        payload: 'Возникла ошибка при удалении'
+      })
+    }
+  }
+}
+
+export function daysTasks(task: string) {
+  return async (dispatch: Function) => {
+    try {
+      const res = await fetch('/daysTasks', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({ user: task })
+      })
+      const json: number[] = await res.json()
+
+      dispatch({ type: DAYS_TASKS, payload: json })
+    } catch (err) {
+      dispatch({ type: DAYS_TASKS, payload: [] })
+    }
   }
 }
 
 export function req_singUp(task: IActions_req_singUp): Function {
   return async (dispatch: Function) => {
-    const res = await fetch('/sing-up', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify(task)
-    })
-    const json: IActions_res_singUp = await res.json()
+    try {
+      const res = await fetch('/sing-up', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify(task)
+      })
+      const json: IActions_res_singUp = await res.json()
 
-    dispatch({ type: SING_UP, payload: json.message })
+      dispatch({ type: SING_UP, payload: json.message })
+    } catch (err) {
+      dispatch({
+        type: NOTIFICATION_CLEAR,
+        payload: 'Возникла ошибка при регистрации'
+      })
+    }
   }
 }
 
 export function req_auth(task: IActions_req_auth): Function {
   return async (dispatch: Function) => {
-    const res = await fetch('/login', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify(task)
-    })
-    const json: IActions_res_auth = await res.json()
+    try {
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify(task)
+      })
+      const json: IActions_res_auth = await res.json()
 
-    dispatch({ type: AUTOLOGIN, payload: json })
+      dispatch({ type: AUTOLOGIN, payload: json })
+    } catch (err) {
+      dispatch({
+        type: NOTIFICATION_CLEAR,
+        payload: 'Возникла ошибка при авторизации'
+      })
+    }
   }
 }
 
