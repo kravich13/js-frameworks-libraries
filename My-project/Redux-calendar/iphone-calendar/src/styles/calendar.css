@@ -3,16 +3,11 @@
   justify-content: space-between;
   padding: 10px 0;
 }
-.general-month {
-  display: block;
-  height: auto;
-}
 .general-month a {
   color: black;
   text-decoration: none;
 }
 .big-month {
-  padding-top: 145px;
   width: 490px;
 }
 .big-month h3 {

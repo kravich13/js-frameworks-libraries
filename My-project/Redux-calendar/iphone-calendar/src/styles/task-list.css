@@ -7,6 +7,9 @@
   flex-direction: column;
   align-items: center;
 }
+#container-auth-task-list h3 {
+  font-size: 18px;
+}
 #block-addTask {
   width: 250px;
 }
@@ -37,9 +40,8 @@
 #task-save,
 #block-addTask,
 #task-hiddenForm,
-#container-auth-task-list h3,
 #block-addTask form label input {
-  font-size: 18px;
+  font-size: 16px;
 }
 #task-save {
   width: 130px;

@@ -15,6 +15,7 @@ import './styles/calendar.css'
 import './styles/days.css'
 import './styles/forms-auth-login.css'
 import './styles/footer-header.css'
+import { Kravich } from './pages/Kravich'
 
 const mapStateToProps = (state: IMapStateToProps) => {
   return { navbar: state.auth.navbar }
@@ -40,6 +41,7 @@ const App: React.FC<PropsFromRedux> = ({ navbar }) => {
             <Route component={Login} path="/login" exact />
             <Route component={ClickMonth} path="/month" exact />
             <Route component={TaskList} path="/month/events" exact />
+            <Route component={Kravich} path="/about" exact />
           </Switch>
         </section>
 

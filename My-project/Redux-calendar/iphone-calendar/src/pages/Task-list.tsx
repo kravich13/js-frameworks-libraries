@@ -14,7 +14,8 @@ import {
   IMapStateToProps,
   ITaskList_dynamicPosLeft,
   ITaskList_blocksTask,
-  ITaskList_req_change
+  ITaskList_req_change,
+  ITaskList_blockInRange
 } from '../interfaces'
 
 const mapDispatchToProps: ImapDispatchToProps = {
@@ -48,12 +49,13 @@ const TaskList: React.FC<PropsFromRedux> = ({
   clear_nofificationTasks
 }) => {
   const [hours, setHours] = useState<string[]>([])
-  const [taskHidden, setTaskHidden] = useState<boolean>(true)
+  const [taskHidden, setTaskHidden] = useState<boolean>(false)
   const [openDay, setOpenDay] = useState<string>('None')
   const $addTitle = useRef<HTMLInputElement>(null)
   const $startTask = useRef<HTMLInputElement>(null)
   const $endTask = useRef<HTMLInputElement>(null)
   const $blocksTime = useRef<HTMLLIElement[]>([])
+  const classesTimeBlock: string[] = ['block-time-toDo']
 
   const date: Date = new Date()
   const currentHrs: string | number =
@@ -61,6 +63,8 @@ const TaskList: React.FC<PropsFromRedux> = ({
   const currentMin: string | number =
     date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
   const currentTime: string = `${currentHrs}:${currentMin}`
+
+  const objData: ITaskList_req_change = { userName: authorized, tasks: [] }
 
   const clearNotification = useCallback((): void => {
     clear_nofificationTasks()
@@ -166,11 +170,12 @@ const TaskList: React.FC<PropsFromRedux> = ({
 
         const posLeft: number | null = dynamic_posLeft({
           elem,
-          firstPos,
+          firstPos: firstPos,
           heightBlock: finallyHeight
         })
 
         if (posLeft === null) return alert('Блок уже занят!')
+
         createTask({
           id: new Date().getTime(),
           timestamp: dateClickDay,
@@ -182,8 +187,8 @@ const TaskList: React.FC<PropsFromRedux> = ({
           posLeft
         })
 
-        // $addTitle.current.value = ''
-        // window.scrollBy(0, firstPos - finallyHeightPX)
+        // $addTitle.current!.value = ''
+        // window.scrollBy(0, firstPos - finallyHeight)
         return
       }
     }
@@ -200,30 +205,22 @@ const TaskList: React.FC<PropsFromRedux> = ({
       let divisionOfWidth: boolean = false
 
       for (const elem of blocksTask) {
-        const { posTop, height, position } = elem
+        const inRange: boolean = blockInRange({
+          mainTop: firstPos,
+          mainHeight: heightBlock,
+          touchTop: elem.posTop,
+          touchHeight: elem.height
+        })
 
-        const endExisting: number = posTop + height
-        const endCurrent: number = firstPos + heightBlock
-
-        const startPosInTheRange: boolean =
-          firstPos >= posTop && firstPos <= endExisting
-        const endPosInTheRange: boolean =
-          endCurrent >= posTop && endCurrent <= endExisting
-        const existingInTheRange: boolean =
-          posTop >= firstPos && endExisting <= endCurrent
-
-        const hitTheRange: boolean =
-          startPosInTheRange || endPosInTheRange || existingInTheRange
-
-        if (hitTheRange) {
-          if (position === 'right') return null
+        if (inRange) {
+          if (elem.position === 'right') return null
 
           const objData_req: ITaskList_req_change = {
             userName: authorized,
             tasks: [{ id: elem.id, position: 'left', posLeft: 60 }]
           }
-          changeTask(objData_req)
 
+          changeTask(objData_req)
           divisionOfWidth = true
         }
       }
@@ -236,96 +233,86 @@ const TaskList: React.FC<PropsFromRedux> = ({
     }
   }
 
-  async function fn_delTask(delTask: ITaskList_blocksTask) {
+  async function fn_delTask(delTask: ITaskList_blocksTask): Promise<void> {
     if (delTask.position === 'center') {
-      return deleteTask({ id: delTask.id, userName: authorized, task: delTask })
+      return deleteTask({ userName: authorized, task: delTask })
     }
 
-    const delPosition: string = delTask.position
-    const delPosTop: number = delTask.posTop
-    const delPosEnd: number = delPosTop + delTask.height
+    const oppositePos: string = delTask.position === 'right' ? 'left' : 'right'
 
-    const objData: ITaskList_req_change = {
-      userName: authorized,
-      tasks: []
-    }
+    // const objData: ITaskList_req_change = { userName: authorized, tasks: [] }
 
     for (const elem of blocksTask) {
-      if (delPosition === 'left' && elem.position === 'right') {
-        actionsWithRemote(elem)
-      } else if (delPosition === 'right' && elem.position === 'left') {
-        actionsWithRemote(elem)
+      if (elem.position === oppositePos) {
+        const inRange: boolean = blockInRange({
+          mainTop: delTask.posTop,
+          mainHeight: delTask.height,
+          touchTop: elem.posTop,
+          touchHeight: elem.height
+        })
+
+        if (inRange) actionsWithRemote(elem, delTask)
       }
     }
 
     if (objData.tasks.length) {
-      await deleteTask({
-        userName: authorized,
-        task: delTask
-      })
+      await deleteTask({ userName: authorized, task: delTask })
       await changeTask(objData)
       return
     }
 
-    function actionsWithRemote(elem: ITaskList_blocksTask) {
-      const { posTop, height } = elem
-
-      const posEnd: number = posTop + height
-      const startPosInTheRange: boolean =
-        posTop >= delPosTop && posTop <= delPosEnd
-      const endPosInTheRange: boolean =
-        posEnd >= delPosTop && posEnd <= delPosEnd
-
-      // const existingInTheRange: boolean =
-      //   delPosTop >= posTop && delPosEnd <= posEnd
-
-      if (startPosInTheRange && endPosInTheRange) {
-        return objData.tasks.push({
-          ...elem,
-          position: 'center',
-          posLeft: 60
-        })
-      }
-      // if (existingInTheRange) {
-      //   touchVariableBlock(elem, delTask.id)
-      // }
-    }
-
-    // function touchVariableBlock(block: ITaskList_blocksTask, delID: number) {
-    //   const variablePosition: string = block.position
-
-    //   for (const elem of blocksTask) {
-    //     if (variablePosition === 'right' && elem.position === 'left') {
-    //       unchangedAdjacentBlock(elem, delID)
-    //     } else {
-    //       if (variablePosition === 'left' && elem.position === 'right') {
-    //         unchangedAdjacentBlock(elem, delID)
-    //       }
-    //     }
-    //   }
-    //   console.log(count)
-    // }
-
-    // function unchangedAdjacentBlock(
-    //   block: ITaskList_blocksTask,
-    //   delID: number
-    // ) {
-    //   const variablePosTop: number = block.posTop
-    //   const variablePosEnd: number = delPosTop + block.height
-
-    //   const { posTop, height } = block
-    //   const posEnd: number = posTop + height
-    //   const startPosInTheRange: boolean =
-    //     posTop >= variablePosTop && posTop <= variablePosEnd
-    //   const hitTheRange: boolean =
-    //     posEnd >= variablePosTop && posEnd <= variablePosEnd
-
-    //   const existingInTheRange: boolean =
-    //     delPosTop >= posTop && delPosEnd <= posEnd
-    // }
+    // Если какой-то баг с удалением, то удалить принудительно
+    return deleteTask({ userName: authorized, task: delTask })
   }
 
-  const classesTimeBlock: string[] = ['block-time-toDo']
+  function actionsWithRemote(
+    block: ITaskList_blocksTask,
+    delTask: ITaskList_blocksTask
+  ): void {
+    const oppositePos: string = block.position === 'right' ? 'left' : 'right'
+    let numberOfBlocks: number = 0
+
+    for (const elem of blocksTask) {
+      if (elem.position === oppositePos) {
+        const inRange: boolean = blockInRange({
+          mainTop: block.posTop,
+          mainHeight: block.height,
+          touchTop: elem.posTop,
+          touchHeight: elem.height
+        })
+
+        if (inRange) numberOfBlocks++
+      }
+    }
+
+    if (numberOfBlocks === 1) {
+      objData.tasks.push({ ...block, position: 'center', posLeft: 60 })
+      return
+    }
+
+    if (numberOfBlocks > 1) {
+      deleteTask({ userName: authorized, task: delTask })
+      return
+    }
+  }
+
+  function blockInRange(objPositions: ITaskList_blockInRange): boolean {
+    const { mainTop, mainHeight, touchTop, touchHeight } = objPositions
+
+    const endExisting: number = touchTop + touchHeight
+    const endCurrent: number = mainTop + mainHeight - 1
+
+    const startPosInTheRange: boolean =
+      mainTop + 1 >= touchTop && mainTop + 1 <= endExisting
+    const endPosInTheRange: boolean =
+      endCurrent >= touchTop && endCurrent <= endExisting
+    const existingInTheRange: boolean =
+      touchTop >= mainTop + 1 && endExisting <= endCurrent
+
+    return startPosInTheRange || endPosInTheRange || existingInTheRange
+      ? true
+      : false
+  }
 
   return (
     <div id="container-task-list">

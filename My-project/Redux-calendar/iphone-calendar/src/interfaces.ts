@@ -43,10 +43,16 @@ interface ITaskList_req_change {
   userName: string
   tasks: ITaskList_req_blocks[]
 }
+interface ITaskList_blockInRange {
+  mainTop: number
+  mainHeight: number
+  touchTop: number
+  touchHeight: number
+}
 
 // ============= Login || Navbar || TransitionTasks =============
 interface IComponent_UserAuthorized {
-  authorized: string | undefined
+  authorized?: string
 }
 
 // ============= Month =============
@@ -87,7 +93,7 @@ interface IBlockTask_Props {
 // ============= Day =============
 interface IDayProps {
   elem: IMonth_objOfDay
-  authorized: string | undefined
+  authorized?: string
   classTD: string
   setDate_Day: Function
 }
@@ -96,7 +102,7 @@ interface IDay_DispatchProps {
 }
 
 interface IFormAddTaskProps {
-  formAddTask: any
+  formAddTask: Function
   addTitle: any
   currentTime: string
   startTask: any
@@ -112,7 +118,7 @@ interface IQuarterProps {
 
 interface IWeekProps {
   week: IMonth_objOfDay[]
-  authorized: string | undefined
+  authorized?: string
   classTD: string
 }
 
@@ -144,6 +150,7 @@ export type {
   IMonth_Moving,
   ITaskList_blocksTask,
   ITaskList_req_change,
+  ITaskList_blockInRange,
   IBlocksTasks_Props,
   IBlockTask_DispatchProps,
   IBlockTask_Props,

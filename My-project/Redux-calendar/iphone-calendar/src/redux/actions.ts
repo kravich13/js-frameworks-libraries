@@ -35,7 +35,7 @@ export function clear_nofificationTasks(task: string = ''): IAction {
   }
 }
 export function tasks_currentDay(task: ITasks_currentDay): Function {
-  return async (dispatch: Function) => {
+  return async (dispatch: Function): Promise<void> => {
     try {
       const res = await fetch('/tasks', {
         method: 'POST',
@@ -57,7 +57,7 @@ export function tasks_currentDay(task: ITasks_currentDay): Function {
 }
 
 export function createTask(task: IBlocksTask): Function {
-  return async (dispatch: Function) => {
+  return async (dispatch: Function): Promise<void> => {
     try {
       const res = await fetch('/tasks', {
         method: 'POST',
@@ -80,7 +80,7 @@ export function createTask(task: IBlocksTask): Function {
 }
 
 export function changeTask(task: ITaskList_req_change): Function {
-  return async (dispatch: Function) => {
+  return async (dispatch: Function): Promise<void> => {
     try {
       const res = await fetch('/tasks', {
         method: 'POST',
@@ -103,7 +103,7 @@ export function changeTask(task: ITaskList_req_change): Function {
 }
 
 export function deleteTask(task: IActions_deleteTask): Function {
-  return async (dispatch: Function) => {
+  return async (dispatch: Function): Promise<void> => {
     try {
       const res = await fetch('/tasks', {
         method: 'POST',
@@ -126,7 +126,7 @@ export function deleteTask(task: IActions_deleteTask): Function {
 }
 
 export function daysTasks(task: string) {
-  return async (dispatch: Function) => {
+  return async (dispatch: Function): Promise<void> => {
     try {
       const res = await fetch('/daysTasks', {
         method: 'POST',
@@ -143,9 +143,15 @@ export function daysTasks(task: string) {
     }
   }
 }
+export function remove_daysTasks() {
+  return {
+    type: DAYS_TASKS,
+    payload: []
+  }
+}
 
 export function req_singUp(task: IActions_req_singUp): Function {
-  return async (dispatch: Function) => {
+  return async (dispatch: Function): Promise<void> => {
     try {
       const res = await fetch('/sing-up', {
         method: 'POST',
@@ -167,7 +173,7 @@ export function req_singUp(task: IActions_req_singUp): Function {
 }
 
 export function req_auth(task: IActions_req_auth): Function {
-  return async (dispatch: Function) => {
+  return async (dispatch: Function): Promise<void> => {
     try {
       const res = await fetch('/login', {
         method: 'POST',

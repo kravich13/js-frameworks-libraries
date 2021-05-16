@@ -60,6 +60,9 @@ const Navbar: React.FC<PropsFromRedux> = ({
         <MyLogo />
       </div>
       <ul id="container-url">
+        <li onClick={() => hidden_navbar(false)}>
+          <NavLink to="/about">О проекте</NavLink>
+        </li>
         <UserAuthorized authorized={authorized} />
       </ul>
     </header>
