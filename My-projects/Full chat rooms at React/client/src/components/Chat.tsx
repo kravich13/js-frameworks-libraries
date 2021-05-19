@@ -13,7 +13,9 @@ const Chat: React.FC<IChatProps> = ({ socket, clickRoom, chatRequest }) => {
   const $chatWindow = useRef<HTMLDivElement>(null)
   const [messages, setMessages] = useState<IMessage[]>([])
 
-  const formSendChat = (event: React.ChangeEvent<HTMLFormElement>): any => {
+  const formSendChat = (
+    event: React.ChangeEvent<HTMLFormElement>
+  ): string | void => {
     event.preventDefault()
 
     const nickname: string = $inputName.current!.value
@@ -53,7 +55,7 @@ const Chat: React.FC<IChatProps> = ({ socket, clickRoom, chatRequest }) => {
     elem.placeholder = text
   }
 
-  useEffect((): any => {
+  useEffect((): void | any => {
     let cleanupFunction = false
     socket.on('lastMessage', async (data: ISocketLastMessage) => {
       try {
@@ -70,7 +72,7 @@ const Chat: React.FC<IChatProps> = ({ socket, clickRoom, chatRequest }) => {
         alert('Произошла ошибка')
       }
     })
-    return () => (cleanupFunction = true)
+    return (): boolean => (cleanupFunction = true)
   }, [socket, setMessages, clickRoom])
 
   useEffect((): void => {

@@ -6,7 +6,9 @@ export const ChatInfo: React.FC<IChatInfoProps> = ({ socket, clickRoom }) => {
     return localStorage.getItem('numberOfUsers') ?? ''
   })
 
-  const enterRoom = (event: React.KeyboardEvent<HTMLInputElement>): any => {
+  const enterRoom = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ): string | void => {
     if (event.code === 'Enter') {
       const et: any = event.target
 

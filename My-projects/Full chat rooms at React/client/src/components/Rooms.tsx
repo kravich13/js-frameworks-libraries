@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid'
 
 const Rooms: React.FC<IRoomsProps> = ({ socket, setClickRoom }) => {
   const [rooms, setRooms] = useState<IRoom[]>([])
-  const $previousRef = useRef<any>(null)
+  const $previousRef = useRef<HTMLLIElement | null>(null)
 
   useEffect((): any => {
     let cleanupFunction = false

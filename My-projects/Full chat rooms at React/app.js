@@ -144,9 +144,10 @@ async function syncCollection(nameTable) {
   allCollections[nameTable] = mongoose.model(nameTable, roomsSchema)
   try {
     await allCollections[nameTable].createCollection()
-    console.log(`Коллекция ${nameTable} успешно синхронизирована с БД.`)
+    // console.log(`Коллекция ${nameTable} успешно синхронизирована с БД.`)
   } catch (err) {
     console.log(`Ошибка синхронизации коллекции: ${err}`)
+    return
   }
 }
 

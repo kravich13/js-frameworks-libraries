@@ -1,5 +1,5 @@
 import React from 'react'
-import { BlockTask } from '../components/BlockTask'
+import { BlockTask } from './BlockTask'
 import { IBlocksTasks_Props } from '../interfaces'
 
 export const BlocksTask: React.FC<IBlocksTasks_Props> = ({

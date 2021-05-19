@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from 'react'
 import Rooms from '../components/Rooms'
 import Chat from '../components/Chat'
 import { ChatInfo } from '../components/Chat-info'
-import { io } from 'socket.io-client'
+import { io, Socket } from 'socket.io-client'
 import { IMessage } from '../interfaces'
 
-const socket: any = io()
+const socket: Socket = io()
 
 const ChatRoom: React.FC = () => {
   const $mainWindow = useRef<HTMLDivElement>(null)
@@ -13,8 +13,8 @@ const ChatRoom: React.FC = () => {
   const [heightWindow, setHeightWindow] = useState<string>('0px')
 
   useEffect((): void => {
-    const $divInfoHeight: number = document.getElementById('chat-info')!
-      .offsetHeight
+    const $divInfoHeight: number =
+      document.getElementById('chat-info')!.offsetHeight
     const needHeight: number =
       $mainWindow.current!.offsetHeight - $divInfoHeight - 5
     setHeightWindow(`${needHeight}px`)

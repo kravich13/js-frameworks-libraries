@@ -26,6 +26,13 @@ export const Kravich: React.FC = () => {
           </ul>
         </li>
       </ul>
+      <a
+        target="_blank"
+        rel="noreferrer"
+        href="https://github.com/kravich13/node-js/tree/master/My-projects/Full%20chat%20rooms%20at%20React"
+      >
+        Этот проект на github.
+      </a>
     </div>
   )
 }

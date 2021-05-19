@@ -3,7 +3,7 @@ import React from 'react'
 export const Kravich: React.FC = () => {
   return (
     <div className="navbar-a about-project">
-      <h3>Немного о полном календаре с задачами на дне: </h3>
+      <h3>Немного о полном календаре с задачами на день: </h3>
       <ul>
         <li>
           Описание:
@@ -31,6 +31,13 @@ export const Kravich: React.FC = () => {
           </ul>
         </li>
       </ul>
+      <a
+        target="_blank"
+        rel="noreferrer"
+        href="https://github.com/kravich13/node-js/tree/master/My-projects/Redux-calendar"
+      >
+        Этот проект на github.
+      </a>
     </div>
   )
 }
