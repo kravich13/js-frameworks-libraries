@@ -1,0 +1,51 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.main-list {
+  text-align: center;
+}
+.navbar-a {
+  margin: 10px;
+  width: 600px;
+}
+.about-project h3 {
+  font-size: 17px;
+  font-weight: 600;
+}
+.about-project ul {
+  margin-left: 50px;
+  margin-bottom: 10px;
+}
+
+@media all and (max-width: 900px) {
+  #main-section {
+    width: 100%;
+  }
+
+  /* #userName {
+    width: 20%;
+  } */
+  #userMessage {
+    width: 100%;
+  }
+  #sendMessage {
+    width: 10%;
+  }
+  #chat-info div input {
+    width: 80%;
+  }
+}
+
+@media all and (max-width: 685px) {
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header ul {
+    text-align: center;
+  }
+}

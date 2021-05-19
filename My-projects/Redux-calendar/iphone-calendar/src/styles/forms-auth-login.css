@@ -1,0 +1,107 @@
+/* ========== ФОРМА ЛОГИНА ========== */
+#container-auth-login {
+  display: flex;
+  flex-direction: column;
+}
+#auth-login-MyLogo {
+  text-align: center;
+  margin: 50px 0;
+}
+
+/* ========== ФОРМА РЕГИСТРАЦИИ ========== */
+#window-registation {
+  background: rgba(21, 39, 105, 0.733);
+  color: white;
+  font-weight: 600;
+  padding: 25px 45px;
+  width: 450px;
+}
+
+#window-registation h2 {
+  font-size: 20px;
+  text-align: center;
+}
+
+#form-sign-up {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+#form-sign-up input {
+  width: 200px;
+}
+#form-sign-up label {
+  width: 50%;
+}
+
+#form-sign-up label p {
+  margin-bottom: 5px;
+}
+
+#create-account {
+  width: 100%;
+  text-align: end;
+}
+
+#login-birthday,
+#signUp-password {
+  justify-content: center;
+  display: flex;
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+.label-right {
+  text-align: end;
+}
+
+.container-signUp {
+  width: 50%;
+  margin-bottom: 20px;
+}
+
+.contSignUp-left label {
+  display: block;
+  text-align: start;
+}
+
+.contSignUp-right {
+  text-align: end;
+  width: 100%;
+}
+.contSignUp-right label {
+  display: block;
+  text-align: end;
+}
+
+#registration-true {
+  margin-top: 20px;
+  display: block;
+  text-align: center;
+}
+
+#window-autorization {
+  background: rgba(21, 39, 105, 0.733);
+  color: white;
+  font-weight: 600;
+  padding: 25px 45px;
+  width: 450px;
+}
+#window-autorization label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+#window-autorization h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 20px;
+}
+#window-autorization label p {
+  margin-bottom: 5px;
+}
+
+#log-into-account {
+  text-align: end;
+}

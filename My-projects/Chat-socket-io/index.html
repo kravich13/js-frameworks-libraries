@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chat</title>
+
+    <style>
+        body {
+            /* display: flex; */
+            /* flex-direction: column; */
+            /* align-items: center; */
+            background: rgb(224, 224, 224);
+            /* background-image: url("winter.jpg"); */
+        }
+        .viewing {
+            width: 400px;
+            height: 700px;
+            background: wheat;
+        }
+        #chat {
+            padding: 20px;
+            height: 700px;
+            width: 1130px;
+            color: rgb(255, 255, 255);
+            font-size: 19px;
+            /* background:linear-gradient(#008cffc2, #442222d7); */
+            background: rgba(122, 41, 41, 0.63);
+            overflow-x: hidden;
+            word-wrap: break-word;
+            border: 3px solid rgb(165, 0, 0);
+            border-radius: 5px;
+        }
+        #chat div {
+            display: inline-block;
+            background: rgba(255, 0, 0, 0.548);
+            background: rgba(0, 0, 0, 0.45);
+            color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 5px 20px;
+            margin-bottom: 5px;
+        }
+        
+        #chat div a {
+            color: tomato;
+        }
+        
+        #chat div p iframe {
+            width: 560px;
+            height: 315px;
+        }
+        #nickname, #chatMessage, #sendMessage {
+            padding: 10px 20px;
+            color: rgb(206, 206, 206);
+            background: rgb(43, 43, 43);
+            border: 2px solid rgb(165, 0, 0);
+            margin-top: 25px;
+            font-size: 19px;
+            border-radius: 20px;
+        }
+        #overview {
+            padding: 5px;
+            color: rgb(206, 206, 206);
+            background: rgb(43, 43, 43);
+            border: 2px solid rgb(165, 0, 0);
+            margin-top: 25px;
+            font-size: 19px;
+            border-radius: 20px;
+        }
+        #nickname {
+            text-align: center;
+            width: 150px;
+        }
+        #chatMessage {
+            width: 400px;
+        }
+        #sendMessage {
+            font-size: 19px;
+            width: 85px;
+        }
+    </style>
+
+</head>
+<body>
+    
+    <div id="chat"></div>
+    <input id="overview" type="file">
+    <input id="nickname" type="text" value="Ваш ник">
+    <input id="chatMessage" type="text" value="Ваше сообщение">
+    <button id="sendMessage">></button>
+        
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/Chat-socket-io/socket.io-stream.js"></script>
+    <script>
+        const socket = io.connect('/foo');
+
+        const $chat = document.getElementById("chat")
+        const $inputFile = document.getElementById("overview")
+        const $inputNick = document.getElementById("nickname")
+        const $inputMessage = document.getElementById("chatMessage")
+        const $button = document.getElementById("sendMessage")
+        
+        let current = -1
+        
+        let urlImg = ""
+        let pdfFile
+        
+        
+        
+        
+        $button.addEventListener("click", function (event) {
+            
+            let nick = $inputNick.value
+            let message = $inputMessage.value
+
+            
+            // если есть pdf файл
+            if (pdfFile) {
+                socket.emit("addMessage", {nick: nick, message: message, pdfFile: pdfFile})
+
+                pdfFile = null
+                $inputFile.value = ""
+                $inputMessage.value = ""
+                return
+            }
+
+            // если есть добавленное изображение
+            if (urlImg.length > 0) {
+                
+                socket.emit("addMessage", {nick: nick, message: message, urlImg: urlImg})
+
+                console.log(pdfFile)
+
+                urlImg = ""
+                $inputFile.value = ""
+                $inputMessage.value = ""
+                return
+            }
+
+            ss(socket).emit("addMessage", stream, {nick: nick, message: message})
+
+            // отправка сообщения серверу в виде объекта
+            // socket.emit("addMessage", {nick: nick, message: message})
+
+            
+
+            $inputMessage.value = ""
+
+        })
+
+        $inputMessage.addEventListener("keydown", function (event) {
+            if (event.code === "Enter") {
+                const e = new Event("click", {bubbles: true})
+                $button.dispatchEvent(e)
+            }
+        })
+
+        $inputFile.addEventListener("change", function (event) {
+            
+            // file - и есть объект blob
+            let file = this.files[0]
+            let reader = new FileReader()
+
+
+            // если формат изображений
+            switch (file.type) {
+                case "image/jpeg":
+                case "image/png":
+                case "image/bmp":
+                case "image/gif":
+                    // преобразование blob в url адрес
+                    reader.readAsDataURL(file)
+                    break
+                case "application/pdf":
+                    // преобразование blob в ArrayBuffer
+                    reader.readAsArrayBuffer(file)
+                    break
+                default: 
+                    break
+            }
+            
+            reader.onload = function () {
+                // urlImg = reader.result
+                pdfFile = reader.result
+            }   
+
+            reader.onerror = function () {
+                console.log(reader.error)
+            }
+        })
+
+        socket.on("getMessage",function (newMessage) {
+            // console.log(newMessage) // вся история сообщений
+
+
+            // если нет сообщений - выйти
+            if (newMessage.length === 0) {
+                return
+            }
+
+            let $p = document.createElement("p")
+            let $div = document.createElement("div")
+            let $br = document.createElement("br")
+
+            
+            // если есть сообщения (с 0)
+            if (newMessage.length) {
+        
+                
+                // если есть новое сообщение - отрисовать
+                if (newMessage.length === current + 1) {
+                    current = newMessage.length
+
+                    let nick = newMessage[newMessage.length - 1].nick
+                    let message = newMessage[newMessage.length - 1].message
+                    let userUrlImg = newMessage[newMessage.length - 1].urlImg
+                    let userpdfFile = newMessage[newMessage.length - 1].pdfFile
+
+
+
+
+                    // если есть ссылка на картинку в ответе
+                    if (userUrlImg) {
+                        
+                        let $img = document.createElement("img")
+                        $img.style.width = "700px"
+                        $img.style.height = "450px"
+                        $br = document.createElement("br")
+                        $div = document.createElement("div")
+                        $p = document.createElement("p")
+                        
+                        // 1) строка - ник
+                        $p.textContent = `${nick}:`
+                        $div.append($p)
+                        $div.append($br)
+
+                        // 2) строка - картинка
+                        $img.src = userUrlImg
+                        $div.append($img)
+                        $div.append($br)
+                        
+                        // 3) строка - сообщение
+                        $p = document.createElement("p")
+                        $p.textContent = message
+                        $div.append($p)
+
+
+                        $chat.append($div) 
+                        $chat.append($br)
+                        $chat.scrollBy(0, chat.scrollHeight)
+                        return
+                    }
+                    
+                    // если есть pdf файл
+                    if (userpdfFile) {
+
+                        // преобразование ArrayBuffer в файл
+
+                        // console.log(userpdfFile)
+
+
+                        let view = new Uint8Array(userpdfFile)
+                        // console.log(view.length)
+
+                        let blob = new Blob([view], {type: "application/pdf"})
+
+                        let reader = new FileReader()
+                        reader.readAsDataURL(blob)
+
+                        reader.onload = function() {
+                            let urlAdress = reader.result
+
+                            let $a = document.createElement("a")
+                            $br = document.createElement("br")
+                            $div = document.createElement("div")
+                            $p = document.createElement("p")
+                            
+                            // 1) строка - ник
+                            $p.textContent = `${nick}:`
+                            $div.append($p)
+                            $div.append($br)
+
+                            // 2) строка - файл
+                            $a.download = "test.pdf"
+                            $a.href = `${urlAdress}`
+                            $a.textContent = "Загрузить файл"
+                            $div.append($a)
+                            $div.append($br)
+                            $chat.append($div) 
+                            $chat.append($br)
+                            $chat.scrollBy(0, chat.scrollHeight)
+                        }
+
+                        return 
+                    }
+
+
+                    // надо доделать
+                    function dataRendering (ArrTagName) {
+
+                        if (!ArrTagName) return
+
+                        const $pTag = ArrTagName[0]
+
+                        $div = document.createElement("div")
+                        $br = document.createElement("br")
+                        $p = document.createElement(`${$pTag}`)
+                        $p.textContent = `${nick}: ${message}`
+                        $div.append($p)
+                        $chat.append($div) 
+                        $chat.append($br)
+                        $chat.scrollBy(0, chat.scrollHeight)
+                    }
+
+                    // если сообщение равно ссылке
+                    let str = message
+                    let regexp = /(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*/gi
+                    const link = str.match(regexp)
+
+                    if (str.match(regexp) != null) {
+
+                        $br = document.createElement("br")
+                        $p = document.createElement("p")
+                        $div = document.createElement("div")
+                        $p.innerHTML = `${nick}: <a href="${link[0]}">${link[0]}</a>`
+
+                        $div.append($p)
+                        $chat.append($div) 
+                        $chat.append($br)
+                        $chat.scrollBy(0, chat.scrollHeight)
+
+                        dataRendering(["p"])
+                        return
+                    }
+                
+
+                    // обычная строка
+                    dataRendering(["p"])
+
+                    return
+                }
+                
+                // если сообщения не добавлялись - выход
+                if (newMessage.length === current) {
+                    return
+                }
+
+                // если есть сообщения в истории - отрисовать
+                current = newMessage.length
+
+                newMessage.forEach( (elem) => {
+                    
+                    // если есть ссылка на картинку в ответе
+                    if (elem.urlImg) {
+                        let $img = document.createElement("img")
+                        $img.style.width = "700px"
+                        $img.style.height = "450px"
+                        $br = document.createElement("br")
+                        $div = document.createElement("div")
+                        $p = document.createElement("p")
+                        
+                        // 1) строка - ник
+                        $p.textContent = `${elem.nick}:`
+                        $div.append($p)
+                        $div.append($br)
+
+                        // 2) строка - картинка
+                        $img.src = elem.urlImg
+                        $div.append($img)
+                        $div.append($br)
+                        
+                        // 3) строка - сообщение
+                        $p = document.createElement("p")
+                        $p.textContent = elem.message
+                        $div.append($p)
+
+
+                        $chat.append($div) 
+                        $chat.append($br)
+                        return
+                    }
+
+
+                    // если это ссылка
+                    let str = elem.message
+                    let regexp = /^(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*/gi
+                    const link = str.match(regexp)
+
+                    if (str.match(regexp) != null) {
+                        $br = document.createElement("br")
+                        $p = document.createElement("p")
+                        $div = document.createElement("div")
+
+                        $p.innerHTML = `${elem.nick}: <a href="${link[0]}">${link[0]}</a>`
+
+                        $div.append($p)
+                        $chat.append($div) 
+                        $chat.append($br)
+                        $chat.scrollBy(0, chat.scrollHeight)
+                        return
+                    }
+
+                    $br = document.createElement("br")
+                    $p = document.createElement("p")
+                    $div = document.createElement("div")
+                    $p.textContent = `${elem.nick}: ${elem.message}`
+                    $div.append($p)
+                    $chat.append($div) 
+                    $chat.append($br)
+                })
+                
+
+                $chat.scrollBy(0, chat.scrollHeight)
+                
+                return
+            }
+            
+        })
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+#container-task-list {
+  display: flex;
+  flex-direction: column;
+}
+#container-auth-task-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#container-auth-task-list h3 {
+  font-size: 18px;
+}
+#block-addTask {
+  width: 250px;
+}
+#task-addTitle {
+  width: 234px;
+}
+#block-addTask form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#block-addTask form label {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 18px;
+}
+
+#block-addTask form label,
+#task-addTitle,
+#task-hiddenForm {
+  margin-bottom: 10px;
+}
+
+#task-save,
+#block-addTask,
+#task-hiddenForm,
+#block-addTask form label input {
+  font-size: 16px;
+}
+#task-save {
+  width: 130px;
+}
+#block-allTasks {
+  position: relative;
+}
+#task-list {
+  padding: 10px;
+}
+.block-time-toDo {
+  display: flex;
+  list-style: none;
+  height: 59px;
+  border-top: 1px solid grey;
+  position: relative;
+}
+.end-time-toDo {
+  border-bottom: 1px solid grey;
+}
+.time-toDo {
+  font-size: 18px;
+  font-weight: 200;
+  font-family: 'Open Sans';
+  width: 50px;
+  text-align: center;
+}
+.container-toDo {
+  width: 200px;
+}
+
+.blocksTasksTitle {
+  font-size: 16px;
+  padding: 0 5px;
+  width: 87%;
+}
+.deleteTask {
+  align-self: flex-start;
+  text-align: center;
+  width: 13%;
+  background: #cf6e6e;
+}
+.deleteTask:hover {
+  cursor: pointer;
+}
+.leftTaskBorder {
+  width: 3px;
+  background: #6e9ecf;
+}
+.blockTask {
+  display: flex;
+  position: absolute;
+  background: #e2ecf5;
+  width: 200px;
+  z-index: 1;
+}
+.half-blockTask {
+  width: 100px;
+}

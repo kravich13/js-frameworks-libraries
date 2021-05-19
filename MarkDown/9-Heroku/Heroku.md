@@ -111,7 +111,9 @@ Heroku projects
         })
     }
 
-    res.sendFile(path.resolve(__dirname, 'client', 'public', 'index.html'))
+    app.get('*', (req, res) => {
+      res.sendFile(path.resolve(__dirname, 'client', 'public', 'index.html'))
+    })
     ```
     * Если динамический процесс React в папке Build существует - то рендерить файл на лету.
     * Если его нет - показать статичный файл.
