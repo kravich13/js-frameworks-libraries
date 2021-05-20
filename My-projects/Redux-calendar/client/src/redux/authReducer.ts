@@ -1,12 +1,15 @@
 import {
-  SIGN_UP,
-  AUTOLOGIN,
   HIDDEN_NAVBAR,
   MONTH_NUMBER,
   CLICK_MONTH,
-  LOG_OUT
+  LOG_OUT,
+  LOGIN_OR_SINGUP
 } from './types'
-import { IAuthReducer_state, IAction } from './interfacesRedux'
+import {
+  IAuthReducer_state,
+  IAction,
+  IActions_res_auth
+} from './interfacesRedux'
 
 const initialState: IAuthReducer_state = {
   eventSignUpAuth: '',
@@ -26,26 +29,10 @@ export const authReducer = (
   const { type, payload } = action
 
   switch (type) {
-    case SIGN_UP:
-      return { ...state, eventSignUpAuth: payload }
-    case AUTOLOGIN:
-      localStorage.setItem(
-        'userData',
-        JSON.stringify({
-          login: payload.login,
-          token: payload.token
-        })
-      )
-      return {
-        ...state,
-        authorized: JSON.stringify({
-          login: payload.login,
-          token: payload.token
-        }),
-        userName: payload.login,
-        eventSignUpAuth: payload.message
-      }
+    case LOGIN_OR_SINGUP:
+      return login_or_singUp(state, payload)
     case LOG_OUT: {
+      localStorage.setItem('userData', '')
       return { ...state, authorized: payload }
     }
     case HIDDEN_NAVBAR:
@@ -56,5 +43,28 @@ export const authReducer = (
       return { ...state, clickedMonth: payload }
     default:
       return state
+  }
+}
+
+function login_or_singUp(
+  state: IAuthReducer_state,
+  payload: IActions_res_auth
+): IAuthReducer_state {
+  if (!payload.login && !payload.token) {
+    return { ...state, eventSignUpAuth: payload.message }
+  }
+
+  const resToString: string = JSON.stringify({
+    login: payload.login,
+    token: payload.token
+  })
+
+  localStorage.setItem('userData', resToString)
+
+  return {
+    ...state,
+    authorized: resToString,
+    userName: payload.login,
+    eventSignUpAuth: payload.message
   }
 }

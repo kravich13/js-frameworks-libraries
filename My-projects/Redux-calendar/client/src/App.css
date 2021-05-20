@@ -34,17 +34,19 @@ section {
   margin-bottom: 10px;
 }
 
-@media all and (max-width: 630px) {
+@media all and (max-width: 660px) {
   /* MONTHS */
   section {
     align-items: center;
+  }
+  #fullCalendar {
+    width: 90%;
   }
   #container-calendar {
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    width: 100%;
   }
   .quarters {
     display: flex;
@@ -52,13 +54,11 @@ section {
     align-items: center;
     border-bottom: 1px solid grey;
   }
-  .general-month {
-    width: 80%;
-  }
   #container-calendar h1 {
     font-size: 2em;
   }
   .general-month {
+    padding-bottom: 10px;
     margin-bottom: 1em;
   }
   .month-nope .regular-month {

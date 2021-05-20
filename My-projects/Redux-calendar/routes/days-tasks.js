@@ -7,14 +7,17 @@ router.post(
   '/daysTasks',
   [check('user').isLength({ min: 3, max: 21 })],
   async (req, res) => {
-    if (!req.body) res.json({ message: 'Возникла ошибка при запросе' })
+    try {
+      const matches = matchedData(req)
+      if (!matches) res.json({ message: 'Некорректные данные' })
 
-    const matches = matchedData(req)
-    if (!matches) res.json({ message: 'Некорректные данные' })
+      const countDays = await Work_DB.unique_day_task(req.body.user)
 
-    const countDays = await Work_DB.unique_day_task(req.body.user)
-
-    res.json(countDays)
+      return res.json(countDays)
+    } catch (err) {
+      console.log(err)
+      return res.json({ message: 'Возникла ошибка при запросе' })
+    }
   }
 )
 

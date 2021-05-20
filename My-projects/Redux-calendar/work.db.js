@@ -7,7 +7,7 @@ const {
 } = require('./schemas/schemas.mongoose')
 
 const MONGODB_URI =
-  'mongodb+srv://Chat:Rfgkzrfgkz1997@cluster0.pyfv2.mongodb.net/Calendar?retryWrites=true&w=majority'
+  'mongodb+srv://Chat:null@cluster0.pyfv2.mongodb.net/Calendar?retryWrites=true&w=majority'
 
 mongoose.connect(MONGODB_URI, {
   useUnifiedTopology: true,

@@ -131,7 +131,6 @@ const Month: React.FC<Props> = ({
         <h3 className={titleH3.join(' ')}>{currentMonthTitle}</h3>
 
         <div className="container-bigMonth">
-          {/* Если /month - дорисовать дни недели*/}
           {clickedMonth && (
             <ul>
               {daysOfWeek.map((elem: string, index: number) => {

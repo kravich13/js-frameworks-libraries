@@ -40,7 +40,7 @@ const Calendar: React.FC<PropsFromRedux> = ({
   }, [daysTasks, remove_daysTasks, authorized, userName])
 
   return (
-    <div>
+    <div id="fullCalendar">
       {!authorized && (
         <div id="calendar-auth">
           <p>Вы не авторизировались, основные функции недоступны.</p>

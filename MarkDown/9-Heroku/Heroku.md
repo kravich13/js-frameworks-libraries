@@ -74,6 +74,7 @@ Heroku projects
    git init
    git add .
    git commit -m "true"
+   heroku git:remote -a dry-anchorage-87272
    git push heroku master
    ```
 4. Вводим `heroku open` чтобы узнать ссылку на проект и заходим.

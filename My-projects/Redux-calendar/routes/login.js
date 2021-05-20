@@ -12,20 +12,21 @@ router.post(
     check('password').isLength({ min: 8, max: 48 })
   ],
   async (req, res) => {
-    if (!req.body) {
-      return return_data('Неверный формат запроса, попробуйте ещё раз')
+    try {
+      const matches = matchedData(req)
+      if (!matches) return_data('Неверные данные')
+
+      const { name, password } = req.body
+
+      const autoLogin = await Work_DB.login_details_match(name, password)
+
+      if (!autoLogin) return return_data('Неверное имя пользователя или пароль')
+
+      const token = jwt.sign({ name }, secret, { expiresIn: '1h' })
+      return return_data('Вы успешно авторизировались!', autoLogin, token)
+    } catch (err) {
+      return return_data('Возникла ошибка')
     }
-
-    const matches = matchedData(req)
-    if (!matches) return_data('Неверные данные')
-
-    const { name, password } = req.body
-
-    const autoLogin = await Work_DB.login_details_match(name, password)
-    if (!autoLogin) return_data('Неверное имя пользователя или пароль')
-
-    const token = jwt.sign({ name }, secret, { expiresIn: '1' })
-    return_data('Вы успешно авторизировались!', autoLogin, token)
 
     function return_data(message, login = '', token = '') {
       res.json({ message, login, token })

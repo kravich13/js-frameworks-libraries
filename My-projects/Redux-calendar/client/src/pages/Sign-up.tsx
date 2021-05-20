@@ -1,9 +1,13 @@
 import React, { useCallback, useEffect, useRef } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Redirect } from 'react-router-dom'
 import { connect, ConnectedProps } from 'react-redux'
 import { req_signUp, req_clearMessage, hidden_navbar } from '../redux/actions'
 import MyLogo from '../components/MyLogo'
-import { ImapDispatchToProps, IMapStateToProps } from '../interfaces'
+import {
+  IComponent_UserAuthorized,
+  ImapDispatchToProps,
+  IMapStateToProps
+} from '../interfaces'
 
 const mapDispatchToProps: ImapDispatchToProps = {
   req_signUp,
@@ -12,6 +16,7 @@ const mapDispatchToProps: ImapDispatchToProps = {
 }
 const mapStateToProps = (state: IMapStateToProps) => {
   return {
+    authorized: state.auth.authorized,
     eventSignUpAuth: state.auth.eventSignUpAuth
   }
 }
@@ -20,6 +25,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps)
 type PropsFromRedux = ConnectedProps<typeof connector>
 
 const SignUp: React.FC<PropsFromRedux> = ({
+  authorized,
   eventSignUpAuth,
   req_signUp,
   req_clearMessage,
@@ -40,7 +46,10 @@ const SignUp: React.FC<PropsFromRedux> = ({
     const password: string = $password.current!.value
     const passwordConfirm: string = $passwordConfirm.current!.value
 
-    if (login.length < 3) return ($login.current!.placeholder = 'Короткое имя')
+    if (login.length < 3) {
+      $login.current!.value = ''
+      return ($login.current!.placeholder = 'Короткое имя')
+    }
     if (!birthday) return alert('Неправильная дата рождения')
 
     if (password.length < 8) return alert('Короткий пароль')
@@ -53,6 +62,7 @@ const SignUp: React.FC<PropsFromRedux> = ({
       password,
       passwordConfirm
     })
+    $login.current!.placeholder = 'Введите логин'
   }
 
   const clearEvents = useCallback((): void => {
@@ -68,13 +78,24 @@ const SignUp: React.FC<PropsFromRedux> = ({
 
     alert(eventSignUpAuth)
     clearEvents()
-  }, [eventSignUpAuth, clearEvents])
+
+    if (authorized) hidden_navbar(false)
+  }, [eventSignUpAuth, clearEvents, hidden_navbar, authorized])
+
+  function UserAuthorized({
+    authorized
+  }: IComponent_UserAuthorized): null | JSX.Element {
+    if (!authorized) return null
+    return <Redirect to="/" />
+  }
 
   return (
     <div id="container-auth-login">
       <div id="auth-login-MyLogo">
         <MyLogo />
       </div>
+
+      <UserAuthorized authorized={authorized} />
 
       <div id="window-registation">
         <h2>Создать аккаунт</h2>

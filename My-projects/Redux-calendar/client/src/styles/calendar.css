@@ -3,6 +3,9 @@
   justify-content: space-between;
   padding: 10px 0;
 }
+.general-month {
+  margin: 0 15px;
+}
 .general-month a {
   color: black;
   text-decoration: none;
@@ -51,8 +54,8 @@
   color: red;
 }
 #container-calendar {
-  padding-top: 10px;
-  width: 600px;
+  padding: 10px;
+  /* width: 600px; */
 }
 #container-calendar h1 {
   color: red;

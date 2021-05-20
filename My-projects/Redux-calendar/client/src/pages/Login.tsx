@@ -36,17 +36,23 @@ const Login: React.FC<PropsFromRedux> = ({
 
   const loginSubmit = (
     event: React.ChangeEvent<HTMLFormElement>
-  ): string | undefined => {
+  ): string | void => {
     event.preventDefault()
 
     const name: string = $userName.current!.value
     const password: string = $userPassword.current!.value
 
-    if (name.length < 3)
+    if (name.length < 3) {
+      $userName.current!.value = ''
       return ($userName.current!.placeholder = 'Короткое имя')
-    if (password.length < 8)
-      return ($userPassword.current!.value = 'Короткий пароль')
+    }
+    if (password.length < 8) {
+      alert('Короткий пароль')
+      $userPassword.current!.value = ''
+      return
+    }
 
+    $userName.current!.placeholder = 'Введите имя'
     req_auth({ name, password })
   }
 

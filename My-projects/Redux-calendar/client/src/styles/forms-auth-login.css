@@ -8,6 +8,11 @@
   margin: 50px 0;
 }
 
+input[type='text']::placeholder {
+  color: rgb(255, 0, 0);
+  font-weight: 600;
+}
+
 /* ========== ФОРМА РЕГИСТРАЦИИ ========== */
 #window-registation {
   background: rgba(21, 39, 105, 0.733);

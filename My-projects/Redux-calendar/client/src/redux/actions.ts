@@ -2,8 +2,7 @@ import {
   CHANGE_TASK,
   CREATE_TASK,
   DELETE_TASK,
-  SIGN_UP,
-  AUTOLOGIN,
+  LOGIN_OR_SINGUP,
   HIDDEN_NAVBAR,
   MONTH_NUMBER,
   CLICK_MONTH,
@@ -18,7 +17,6 @@ import {
   ITasks_currentDay,
   IActions_deleteTask,
   IActions_req_signUp,
-  IActions_res_signUp,
   IAction,
   IActions_req_auth,
   IActions_res_auth,
@@ -160,9 +158,9 @@ export function req_signUp(task: IActions_req_signUp): Function {
         },
         body: JSON.stringify(task)
       })
-      const json: IActions_res_signUp = await res.json()
+      const json: IActions_res_auth = await res.json()
 
-      dispatch({ type: SIGN_UP, payload: json.message })
+      dispatch({ type: LOGIN_OR_SINGUP, payload: json })
     } catch (err) {
       dispatch({
         type: NOTIFICATION_CLEAR,
@@ -184,7 +182,7 @@ export function req_auth(task: IActions_req_auth): Function {
       })
       const json: IActions_res_auth = await res.json()
 
-      dispatch({ type: AUTOLOGIN, payload: json })
+      dispatch({ type: LOGIN_OR_SINGUP, payload: json })
     } catch (err) {
       dispatch({
         type: NOTIFICATION_CLEAR,
@@ -195,8 +193,6 @@ export function req_auth(task: IActions_req_auth): Function {
 }
 
 export function log_out(task: string = ''): IAction {
-  localStorage.setItem('userData', '')
-
   return {
     type: LOG_OUT,
     payload: task
@@ -205,8 +201,12 @@ export function log_out(task: string = ''): IAction {
 
 export function req_clearMessage(task: string): IAction {
   return {
-    type: SIGN_UP,
-    payload: task
+    type: LOGIN_OR_SINGUP,
+    payload: {
+      message: task,
+      login: '',
+      token: ''
+    }
   }
 }
 

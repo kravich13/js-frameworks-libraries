@@ -1,7 +1,11 @@
 const express = require('express')
 const app = express()
+const path = require('path')
 const server = require('http').createServer(app)
 const PORT = process.env.PORT || 5000
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client/build')))
@@ -9,13 +13,9 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
   })
 }
-
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'client', 'public', 'index.html'))
 })
-
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
 
 app.post('/sign-up', require('./routes/sign-up'))
 app.post('/login', require('./routes/login'))
