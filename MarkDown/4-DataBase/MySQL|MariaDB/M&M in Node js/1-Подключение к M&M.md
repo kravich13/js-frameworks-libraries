@@ -31,7 +31,7 @@ const connection = mysql.createConnection({
     host: "localhost",
     user: "root",
     database: "metanit",
-    password: "rfgkzrfgkz"
+    password: "MYPASSWORD"
 })
 ```
 
@@ -142,7 +142,7 @@ const connection = mysql.createConnection({
     host: "localhost",
     user: "root",
     database: "metanit",
-    password: "rfgkzrfgkz"
+    password: "MYPASSWORD"
 }).promise()
 
 

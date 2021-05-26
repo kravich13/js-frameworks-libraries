@@ -1,11 +1,10 @@
-const mysql = require("mysql2")
-
+const mysql = require('mysql2')
 
 // const connection = mysql.createConnection({
 //     host: "localhost",
 //     user: "root",
 //     database: "nodejs",
-//     password: "rfgkzrfgkz"
+//     password: "MYPASSWORD"
 // })
 
 // connection.query("CREATE DATABASE nodejs",
@@ -28,9 +27,6 @@ const mysql = require("mysql2")
 //     console.log(results)
 // })
 
-
-
-
 //  WHERE
 // const sql = `SELECT * FROM Users WHERE Name = ? AND Age = ?`
 // const filter = ["Anna", 26]
@@ -44,17 +40,17 @@ const mysql = require("mysql2")
 
 // connection.end()
 
-
-
 // Пулы
 
-const pool = mysql.createPool({
+const pool = mysql
+  .createPool({
     connectionLimit: 5,
-    host: "localhost",
-    user: "root",
-    database: "nodejs",
-    password: "rfgkzrfgkz"
-}).promise()
+    host: 'localhost',
+    user: 'root',
+    database: 'nodejs',
+    password: 'MYPASSWORD',
+  })
+  .promise()
 
 // const sql = "INSERT INTO users (name, age) VALUES(?, ?)"
 // const data = ["Vlad", 23]
@@ -64,7 +60,7 @@ const pool = mysql.createPool({
 
 //   console.log(results)
 // })
- 
+
 // // получение объектов
 // pool.query("SELECT * FROM users", function (err, results) {
 //     if (err) return console.log(err)
@@ -72,27 +68,19 @@ const pool = mysql.createPool({
 //     console.log(results)
 // })
 
-
-pool.execute("UPDATE users SET age=age+1 WHERE name=?", ["Stan"]) // изменение объектов
-    .then(result => { 
-      console.log(result[0])
-      return pool.execute("SELECT * FROM users") // получение объектов
-    })
-    .then(result => {
-      console.log(result[0])
-      pool.end()
-    })
-    .then( () => {
-      console.log("Пул закрыт.")
-    })
-    .catch( function (err) {
-      console.log(err.message)
-})
-
-
-
-
-
-
-
-
+pool
+  .execute('UPDATE users SET age=age+1 WHERE name=?', ['Stan']) // изменение объектов
+  .then((result) => {
+    console.log(result[0])
+    return pool.execute('SELECT * FROM users') // получение объектов
+  })
+  .then((result) => {
+    console.log(result[0])
+    pool.end()
+  })
+  .then(() => {
+    console.log('Пул закрыт.')
+  })
+  .catch(function (err) {
+    console.log(err.message)
+  })

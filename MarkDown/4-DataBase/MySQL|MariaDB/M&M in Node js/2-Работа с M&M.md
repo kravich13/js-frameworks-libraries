@@ -17,7 +17,7 @@
 const connection = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "rfgkzrfgkz"
+    password: "MYPASSWORD"
 })
 
 connection.query("CREATE DATABASE nodejs",
@@ -37,7 +37,7 @@ const connection = mysql.createConnection({
     host: "localhost",
     user: "root",
     database: "nodejs",
-    password: "rfgkzrfgkz"
+    password: "MYPASSWORD"
 })
 
 const sql = `CREATE TABLE IF NOT EXISTS Users(
@@ -105,7 +105,7 @@ const pool = mysql.createPool({
     host: "localhost",
     user: "root",
     database: "nodejs",
-    password: "rfgkzrfgkz"
+    password: "MYPASSWORD"
 })
 ```
 
@@ -147,7 +147,7 @@ const pool = mysql.createPool({
     host: "localhost",
     user: "root",
     database: "nodejs",
-    password: "rfgkzrfgkz"
+    password: "MYPASSWORD"
 }).promise()
 
 

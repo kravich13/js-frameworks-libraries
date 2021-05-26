@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 mongoose.pluralize(null)
 const MongoClient = require('mongodb').MongoClient
 const MONGODB_URI =
-  'mongodb+srv://Chat:Rfgkzrfgkz1997@cluster0.pyfv2.mongodb.net/ChatRoomsReact?retryWrites=true&w=majority'
+  'mongodb+srv://Chat:MYPASSWORD@cluster0.pyfv2.mongodb.net/ChatRoomsReact?retryWrites=true&w=majority'
 
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,

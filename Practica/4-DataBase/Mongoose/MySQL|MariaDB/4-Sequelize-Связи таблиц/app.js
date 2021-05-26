@@ -1,12 +1,11 @@
-const Sequelize = require("sequelize")
-const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
-    dialect: "mysql",
-    host: "localhost",
-    define: {
-        timestamps: false
-    }
+const Sequelize = require('sequelize')
+const sequelize = new Sequelize('nodejs', 'root', 'MYPASSWORD', {
+  dialect: 'mysql',
+  host: 'localhost',
+  define: {
+    timestamps: false,
+  },
 })
-
 
 // const Product = sequelize.define("Product", {
 //     Id: {
@@ -25,7 +24,6 @@ const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
 //     }
 // })
 
-
 // const Company = sequelize.define("Company", {
 //     Id: {
 //         type: Sequelize.INTEGER,
@@ -38,17 +36,14 @@ const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
 //         allowNull: false
 //     }
 // })
-// связывает таблицу Company с таблицей Product 
+// связывает таблицу Company с таблицей Product
 // Company.hasMany(Product, { onDelete: "cascade" })
-
 
 // sequelize.sync({ force: true })
 // .then( () => {
 //     console.log("Таблица была создана.")
 // })
-// .catch(err => console.log(err))  
-
-
+// .catch(err => console.log(err))
 
 // Company.create( { Name: "Apple"}).then(res => {
 
@@ -61,7 +56,6 @@ const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
 
 // }).catch(err => console.log(err))
 
-
 // Company.findByPk(1).then(company => {
 //     if (!company) return console.log("Company not found.")
 
@@ -70,12 +64,6 @@ const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
 //     .catch(err => console.log(err))
 
 // }).catch(err => console.log(err))
-
-
-
-
-
-
 
 // const Leader = sequelize.define("Leader", {
 //     Id: {
@@ -89,7 +77,6 @@ const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
 //         allowNull: false
 //     }
 // })
-
 
 // const Subordinate = sequelize.define("Subordinate", {
 //     Id: {
@@ -110,7 +97,6 @@ const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
 //     console.log("Tables have been created")
 // }).catch(err => console.log(err))
 
-
 // // Добавили лидера
 // Leader.create({ Name: "Vlad Kravich"})
 // .then(lead => {
@@ -122,7 +108,6 @@ const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
 //     })
 // }).catch(err => console.log(err))
 
-
 // Leader.findByPk(1).then(lead => {
 //     if (!lead) return console.log("Coach not found")
 
@@ -131,7 +116,6 @@ const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
 //         // Vlad Kravich - SFA
 //     })
 // })
-
 
 // Leader.findAll({
 //     attributes: ["Name"], // включаем столбец name из таблицы coaches
@@ -145,11 +129,6 @@ const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
 //         // Vlad Kravich - SFA
 //       }
 // })
-
-
-
-
-
 
 // лидерка
 // const Liderka = sequelize.define("Liderka", {
@@ -194,12 +173,12 @@ const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
 // })
 
 // // связывает первую со второй через третью
-// Liderka.belongsToMany(Subordinate, {through: Term}) 
+// Liderka.belongsToMany(Subordinate, {through: Term})
 // // связывает вторую с первой через третью
 // Subordinate.belongsToMany(Liderka, {through: Term})
 
 // sequelize.sync({force:true}).then( () => {
- 
+
 //     console.log("Tables have been created")
 // }).catch(err => console.log(err))
 
@@ -210,7 +189,6 @@ const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
 // Liderka.create({ Name: "SFA"})
 // Liderka.create({ Name: "LVA"})
 // Liderka.create({ Name: "CityHall"})
-
 
 // Liderka.findOne({ where: { Name: "SFA"}})
 // .then(lead => {
@@ -224,7 +202,6 @@ const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
 //   })
 // })
 
-
 // Liderka.findOne({ where: { Name: "SFA"}})
 // .then(lead => {
 //   if (!lead) return
@@ -236,16 +213,14 @@ const sequelize = new Sequelize("nodejs", "root", "rfgkzrfgkz", {
 //   })
 // })
 
+Liderka.findOne({ where: { Name: 'SFA' } }).then((lead) => {
+  if (!lead) return
 
-Liderka.findOne({where: {Name: "SFA"}})
-.then(lead => {
-    if(!lead) return
-
-    lead.getSubordinates().then(subs => {
-        for (sub of subs) {
-            console.log(`Ранг: ${sub.Rank}, Срок: ${sub.Term.NumbOfDays}`)
-        }
-    })
+  lead.getSubordinates().then((subs) => {
+    for (sub of subs) {
+      console.log(`Ранг: ${sub.Rank}, Срок: ${sub.Term.NumbOfDays}`)
+    }
+  })
 })
 
 // Liderka.findOne({where: {Name: "SFA"}})
@@ -259,6 +234,3 @@ Liderka.findOne({where: {Name: "SFA"}})
 //     }
 //   })
 // })
-
-
-
