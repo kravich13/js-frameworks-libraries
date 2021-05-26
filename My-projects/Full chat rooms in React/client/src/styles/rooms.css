@@ -1,0 +1,9 @@
+#block-rooms-chat {
+  display: flex;
+}
+
+@media all and (max-width: 650px) {
+  #block-rooms {
+    display: none;
+  }
+}

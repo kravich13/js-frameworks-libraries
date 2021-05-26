@@ -1,0 +1,148 @@
+#root,
+.App {
+  height: 100%;
+}
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+section {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.navbar-a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+  width: 600px;
+}
+.about-project h3 {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.about-project ul {
+  margin-left: 45px;
+  margin-bottom: 10px;
+}
+
+@media all and (max-width: 660px) {
+  /* MONTHS */
+  section {
+    align-items: center;
+  }
+  #fullCalendar {
+    width: 90%;
+  }
+  #container-calendar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+  .quarters {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid grey;
+  }
+  #container-calendar h1 {
+    font-size: 1.8em;
+  }
+  .general-month {
+    padding-bottom: 10px;
+    margin-bottom: 1em;
+  }
+  .month-nope .regular-month {
+    font-size: 1.8em;
+  }
+  .regular-month {
+    font-size: 1.5em;
+  }
+  .dayOfYear {
+    font-size: 1.5em;
+  }
+  .container-bigMonth ul li {
+    font-size: 1.1em;
+  }
+  .dayWithoutAuth,
+  .dayWithAuth a {
+    font-size: 1.2em;
+  }
+
+  /* HEADER && FOOTER */
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header ul li {
+    margin-top: 5px;
+  }
+  header ul li,
+  footer ul li {
+    font-size: 1.1em;
+  }
+  #container-url li {
+    display: flex;
+    text-align: center;
+    padding: 0;
+  }
+
+  #container-url li a {
+    padding: 10px;
+  }
+  /* TASK-LIST */
+  #container-task-list {
+    width: 90%;
+  }
+  #container-task-list h3 {
+    font-size: 1.3em;
+  }
+}
+
+@media all and (max-width: 550px) {
+  #container-auth-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+  }
+  #window-registation,
+  #window-autorization {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    padding: 20px;
+  }
+  #form-sign-up label {
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: left;
+  }
+  #form-sign-up input {
+    width: 95%;
+  }
+  #create-account {
+    margin-top: 10px;
+    text-align: right;
+  }
+  #login-birthday,
+  #signUp-password {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .navbar-a {
+    font-size: 1.1em;
+  }
+}

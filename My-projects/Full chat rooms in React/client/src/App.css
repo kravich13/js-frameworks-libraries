@@ -1,0 +1,116 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.main-list {
+  text-align: center;
+}
+
+#main-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.navbar-a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+  width: 600px;
+}
+.about-project h3 {
+  margin: 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+.about-project ul {
+  margin-left: 50px;
+  margin-bottom: 10px;
+}
+
+@media all and (max-width: 900px) {
+  #main-section {
+    width: 100%;
+  }
+
+  /* #userName {
+    width: 20%;
+  } */
+  #userMessage {
+    width: 100%;
+  }
+  #sendMessage {
+    width: 10%;
+  }
+  #chat-info div input {
+    width: 80%;
+  }
+}
+
+@media all and (max-width: 750px) {
+  header h2,
+  header ul li,
+  header ul li a {
+    display: flex;
+    text-align: center;
+  }
+}
+
+@media all and (max-width: 650px) {
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header ul {
+    text-align: center;
+  }
+  header ul li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  footer ul li {
+    font-size: 1.1em;
+  }
+
+  .navbar-a,
+  .navbar-a h3,
+  .navbar-a p {
+    font-size: 1.1em;
+    width: 90%;
+  }
+  .navbar-a ul li {
+    font-size: 1.05em;
+  }
+
+  #chat-info h3,
+  #block-chat {
+    width: 100%;
+  }
+
+  #container-url {
+    display: none;
+  }
+}
+
+@media all and (max-width: 420px) {
+  header ul {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+  }
+  header ul li {
+    padding: 0;
+  }
+  #main-section {
+    display: flex;
+    align-items: center;
+  }
+  #block-chat {
+    height: 100%;
+  }
+}

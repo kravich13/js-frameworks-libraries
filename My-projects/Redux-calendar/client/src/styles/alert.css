@@ -1,0 +1,16 @@
+#container-notifications {
+  position: fixed;
+  background: rgb(255, 172, 172);
+  padding: 4px 10px;
+  border-radius: 13px;
+  top: 6.7%;
+  text-align: center;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+@media all and (max-width: 550px) {
+  #container-notifications {
+    top: 15%;
+  }
+}

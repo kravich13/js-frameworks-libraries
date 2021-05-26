@@ -1,0 +1,32 @@
+#chat-info {
+  display: flex;
+  font-size: 18px;
+}
+
+#block-rooms,
+#container-addRoom {
+  width: 250px;
+}
+#chat-info h3,
+#block-chat {
+  width: 650px;
+}
+
+#container-addRoom {
+  border-right: 1px solid rgb(54, 54, 54);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#chat-info h3 {
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  font-weight: 600;
+}
+
+@media all and (max-width: 650px) {
+  #container-addRoom {
+    display: none;
+  }
+}
