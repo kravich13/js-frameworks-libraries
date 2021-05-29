@@ -16,7 +16,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>
 type Props = PropsFromRedux & IDayProps
 
 const Day: React.FC<Props> = ({ elem, authorized, classTD, setDate_Day }) => {
-  const { daysTasks, birthday } = useSelector((state: IMapStateToProps) => {
+  const { birthday, daysTasks } = useSelector((state: IMapStateToProps) => {
     return { daysTasks: state.tasks.daysTasks, birthday: state.tasks.birthday }
   })
   const { fullDate, day } = elem
@@ -32,11 +32,11 @@ const Day: React.FC<Props> = ({ elem, authorized, classTD, setDate_Day }) => {
   }
 
   if (birthday) {
+    const options: Intl.DateTimeFormatOptions = {
+      month: 'numeric',
+      day: 'numeric',
+    }
     if (new Date(birthday).getMonth() === dayElem.getMonth()) {
-      const options: Intl.DateTimeFormatOptions = {
-        month: 'numeric',
-        day: 'numeric',
-      }
       const elemDate: string = new Date(fullDate!).toLocaleString('en', options)
       const birthDate: string = new Date(birthday).toLocaleString('en', options)
       if (elemDate === birthDate) {
@@ -46,25 +46,20 @@ const Day: React.FC<Props> = ({ elem, authorized, classTD, setDate_Day }) => {
     }
   }
 
-  daysTasks.forEach((elem: number): number | undefined => {
-    if (fullDate === elem) {
-      if (dayElem.toLocaleDateString() === currentDay) {
-        title = 'В сегодняшнем дне есть задачи'
-        return classes.push('current-day-withTasks')
-      }
-
-      title = 'Имются задачи'
-      return classes.push('there-are-tasks')
-    }
-  })
+  if (`${fullDate}` in daysTasks) {
+    const tasksToday: boolean = dayElem.toLocaleDateString() === currentDay
+    title = tasksToday ? 'В сегодняшнем дне есть задачи' : 'Имеются задачи'
+    classes.push(tasksToday ? 'current-day-withTasks' : 'there-are-tasks')
+  }
 
   function TransitionTasks({
     authorized,
   }: IComponent_UserAuthorized): JSX.Element {
-    if (!authorized || !day) {
-      return <React.Fragment>{day}</React.Fragment>
-    }
-    return <NavLink to="/month/events">{day}</NavLink>
+    return !authorized || !day ? (
+      <React.Fragment>{day}</React.Fragment>
+    ) : (
+      <NavLink to="/month/events">{day}</NavLink>
+    )
   }
 
   function clickDay(): void {

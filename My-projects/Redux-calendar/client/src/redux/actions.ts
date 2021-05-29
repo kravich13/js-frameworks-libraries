@@ -27,6 +27,7 @@ import {
   ITaskList_res_change,
   IActions_resDayTasks,
   IActions_res_dayTasks,
+  IObjTasksDays,
 } from './interfacesRedux'
 
 let timerID: ReturnType<typeof setTimeout>
@@ -146,7 +147,15 @@ export function req_daysTasks(task: string) {
       })
       const json: IActions_resDayTasks = await res.json()
 
-      dispatch(res_daysTasks(json))
+      const objTasksDays: IObjTasksDays = {}
+      json.countDays.forEach((elem) => (objTasksDays[elem] = elem))
+
+      dispatch(
+        res_daysTasks({
+          daysTasks: objTasksDays,
+          userBirthday: json.userBirthday,
+        })
+      )
     } catch (err) {
       dispatch(res_daysTasks())
     }
@@ -157,7 +166,7 @@ export function res_daysTasks(data: IActions_res_dayTasks | null = null) {
   return {
     type: DAYS_TASKS,
     payload: {
-      countDays: !data ? [] : data.countDays,
+      daysTasks: !data ? {} : data.daysTasks,
       userBirthday: !data ? data : data.userBirthday,
     },
   }

@@ -14,7 +14,7 @@ import {
 } from './interfacesRedux'
 
 const initialState: ITasksReducer_state = {
-  daysTasks: [],
+  daysTasks: {},
   tasks: [],
   dateClickDay: localStorage.getItem('dateClickDay') ?? null,
   birthday: null,
@@ -41,7 +41,7 @@ export const tasksReducer = (
     case DAYS_TASKS:
       return {
         ...state,
-        daysTasks: Array.from(payload.countDays),
+        daysTasks: Object.assign(payload.daysTasks),
         birthday: payload.userBirthday,
       }
     default:

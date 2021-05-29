@@ -63,8 +63,8 @@ const Month: React.FC<Props> = ({
   }
 
   useEffect((): void => {
-    // Если на большом месяце и массив тасков пуст
-    if (clickedMonth && !daysTasks!.length) {
+    // Если на большом месяце и дни тасков пусты
+    if (clickedMonth && !Object.keys(daysTasks).length) {
       req_daysTasks(userName)
     }
   }, [userName, clickedMonth, daysTasks, req_daysTasks])

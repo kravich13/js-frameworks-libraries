@@ -24,7 +24,7 @@ interface IBlockTask {
 }
 // ============= tasksReducer =============
 interface ITasksReducer_state {
-  daysTasks: number[]
+  daysTasks: IObjTasksDays
   tasks: IBlocksTask[]
   dateClickDay: null | string
   birthday: null | string
@@ -32,6 +32,9 @@ interface ITasksReducer_state {
 interface IActions_resDayTasks {
   countDays: number[]
   userBirthday: string
+}
+interface IObjTasksDays {
+  [key: number]: number
 }
 // ============= authReducer =============
 interface IAuthReducer_state {
@@ -76,7 +79,7 @@ interface IActions_deleteTask {
   task: IBlockTask[]
 }
 interface IActions_res_dayTasks {
-  countDays: number[]
+  daysTasks: IObjTasksDays
   userBirthday: null | string
 }
 interface IActions_req_signUp {
@@ -112,6 +115,7 @@ export type {
   ITaskList_res_change,
   IActions_deleteTask,
   IActions_resDayTasks,
+  IObjTasksDays,
   IActions_req_signUp,
   IActions_res_signUp,
   IActions_req_auth,
