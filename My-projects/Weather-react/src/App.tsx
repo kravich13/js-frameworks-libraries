@@ -1,15 +1,18 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import { connect, ConnectedProps } from 'react-redux'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import './App.css'
 import { MyCards } from './pages/MyCards'
 import { Navbar } from './components/Navbar'
 import WindowSearch from './pages/Window-search'
-import { getAllCities, searchForMatches } from './redux/actions'
+import { getAllCities } from './redux/actions'
+import { ImapDispatchToProps } from './interfaces'
 
-const mapDispatchToProps = { getAllCities, searchForMatches }
+const mapDispatchToProps: ImapDispatchToProps = { getAllCities }
+const connector = connect(null, mapDispatchToProps)
+type PropsFromRedux = ConnectedProps<typeof connector>
 
-const App: React.FC<any> = ({ getAllCities }) => {
+const App: React.FC<PropsFromRedux> = ({ getAllCities }) => {
   useEffect(() => getAllCities(), [getAllCities])
 
   return (

@@ -1,0 +1,6 @@
+export const GET_ALL_CITIES: string = 'GET_ALL_CITIES'
+export const SEARCH_FOR_MATCHES: string = 'SEARCH_FOR_MATCHES'
+export const CLICKED_ITEM: string = 'CLICKED_ITEM'
+export const ITEM_SELECTION_ARROW: string = 'ITEM_SELECTION_ARROW'
+export const ENTERED_CITIES: string = 'ENTERED_CITIES'
+export const ZEROING_SEARCH_DATA: string = 'ZEROING_SEARCH_DATA'
