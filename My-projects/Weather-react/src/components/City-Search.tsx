@@ -13,6 +13,7 @@ export const CitySearch: React.FC<ICitySearch_Props> = ({
     event: React.ChangeEvent<HTMLFormElement>
   ): void => {
     event.preventDefault()
+
     if ($textField.current!.value.length < 2) return
     enteredCity({ id: clickedItem.id, title: clickedItem.title })
   }
@@ -29,7 +30,7 @@ export const CitySearch: React.FC<ICitySearch_Props> = ({
   }
 
   useEffect((): void => {
-    if (clickedItem.default) return
+    if (clickedItem.default) return // the first elem from search
 
     $textField.current!.value = clickedItem.title
     $textField.current!.focus()

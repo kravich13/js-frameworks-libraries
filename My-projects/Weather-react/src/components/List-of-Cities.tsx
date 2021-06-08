@@ -6,10 +6,6 @@ import { FoundCity } from './Found-City'
 export const ListOfSities: React.FC<IListOfCity_Props> = ({
   enteredCityMatches,
 }) => {
-  //       //   const res = await fetch(
-  //       //     'https://api.openweathermap.org/data/2.5/weather?q=kiev&appid=540f066413819eb44d83e625b723cf60'
-  //       //   )
-  //   }, [])
   return (
     <Container fixed maxWidth="xs">
       <div>

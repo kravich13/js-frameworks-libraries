@@ -1,23 +1,25 @@
 import {
   ICitiesRed_ClickedItem,
-  ICitiesRed_CommonFields,
   ICitiesRed_EnteredCityMatches,
   ICitiesRed_InitialState,
 } from './interfacesRedux'
 import {
+  DELETE_CITY,
   CLICKED_ITEM,
   ENTERED_CITIES,
   GET_ALL_CITIES,
   ITEM_SELECTION_ARROW,
   SEARCH_FOR_MATCHES,
+  UPDATE_WEATHER_DATA,
   ZEROING_SEARCH_DATA,
 } from './types'
 
 const initialState: ICitiesRed_InitialState = {
   citiesWithCountry: [],
   enteredCityMatches: [],
-  savedCities: [],
-  enteredCities: [],
+  enteredCities: localStorage.preservedCity
+    ? JSON.parse(localStorage.preservedCity)
+    : [],
   clickedItem: { id: null, title: '', default: false },
 }
 
@@ -29,7 +31,9 @@ export const citiesReducer = (
 
   switch (type) {
     case GET_ALL_CITIES:
-      return { ...state, citiesWithCountry: Array.from(payload) }
+      return { ...state, citiesWithCountry: payload }
+    case UPDATE_WEATHER_DATA:
+      return updatedWeather(state, payload)
     case SEARCH_FOR_MATCHES:
       return searchForMatches(state, payload)
     case CLICKED_ITEM:
@@ -38,11 +42,13 @@ export const citiesReducer = (
       return item_selection_arrow(state, payload)
     case ENTERED_CITIES:
       return enteredCities(state, payload)
+    case DELETE_CITY:
+      return deleteCity(state, payload)
     case ZEROING_SEARCH_DATA:
       return {
         ...state,
         enteredCityMatches: [],
-        clickedItem: Object.assign({ id: null, title: '', default: false }),
+        clickedItem: { id: null, title: '', default: false },
       }
     default:
       return state
@@ -85,8 +91,8 @@ function searchForMatches(
 
   return {
     ...state,
-    enteredCityMatches: Array.from(foundMatches),
-    clickedItem: Object.assign(activeElem),
+    enteredCityMatches: foundMatches,
+    clickedItem: activeElem,
   }
 }
 
@@ -103,12 +109,8 @@ function clicked_item(
 
   return {
     ...state,
-    enteredCityMatches: Array.from(newState),
-    clickedItem: Object.assign({
-      id: payload.id,
-      title: payload.title,
-      default: false,
-    }),
+    enteredCityMatches: newState,
+    clickedItem: { id: payload.id, title: payload.title, default: false },
   }
 }
 
@@ -137,21 +139,21 @@ function item_selection_arrow(
       currentIndex++
     }
 
-    const requiredElem = enteredCityMatches[currentIndex]
+    const { id, title } = enteredCityMatches[currentIndex]
 
     const newState = enteredCityMatches.map((elem) => {
       if (elem.selected) return { ...elem, selected: false }
-      return elem.id === requiredElem.id ? { ...elem, selected: true } : elem
+      return elem.id === id ? { ...elem, selected: true } : elem
     })
 
     return {
       ...state,
-      enteredCityMatches: Array.from(newState),
-      clickedItem: Object.assign({
-        id: requiredElem.id,
-        title: requiredElem.title,
+      enteredCityMatches: newState,
+      clickedItem: {
+        id,
+        title,
         default: false,
-      }),
+      },
     }
   }
   return state
@@ -159,18 +161,58 @@ function item_selection_arrow(
 
 function enteredCities(
   state: ICitiesRed_InitialState,
-  payload: ICitiesRed_CommonFields
+  payload: any
 ): ICitiesRed_InitialState {
   const { enteredCities } = state
+  const { task, weatherOfCity } = payload
 
-  const thereIsSame = enteredCities.some((elem): boolean => {
-    return payload.id === elem.id ?? false
-  })
+  if (!task?.id || !weatherOfCity) return state
 
-  if (thereIsSame || !payload.id) return state
+  const thereIsSame = enteredCities.some((elem) => task.id === elem.id)
+  if (thereIsSame) return state
 
-  return {
-    ...state,
-    enteredCities: enteredCities.concat({ ...payload, added: false }),
+  const addedData: any = {
+    ...task,
+    temp: Math.round(weatherOfCity.main.temp),
+    icon: weatherOfCity.weather[0].icon,
   }
+
+  localStorage.setItem(
+    'preservedCity',
+    JSON.stringify(enteredCities.concat([addedData]))
+  )
+
+  return { ...state, enteredCities: enteredCities.concat([addedData]) }
+}
+
+function updatedWeather(
+  state: ICitiesRed_InitialState,
+  payload: any
+): ICitiesRed_InitialState {
+  const { enteredCities } = state
+  const { task, weatherOfCity } = payload
+  if (!task?.id && !weatherOfCity) return state
+
+  const newState = enteredCities.map((elem) => {
+    if (elem.id !== task.id) return elem
+
+    return {
+      ...elem,
+      temp: Math.round(weatherOfCity.main.temp),
+      icon: weatherOfCity.weather[0].icon,
+    }
+  })
+  return { ...state, enteredCities: newState }
+}
+
+function deleteCity(
+  state: ICitiesRed_InitialState,
+  payload: any
+): ICitiesRed_InitialState {
+  const { enteredCities } = state
+  const newState = enteredCities.filter((elem) => elem.id !== payload.id)
+
+  localStorage.setItem('preservedCity', JSON.stringify(newState))
+
+  return { ...state, enteredCities: newState }
 }
