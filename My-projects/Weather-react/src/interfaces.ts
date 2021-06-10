@@ -1,4 +1,5 @@
 import {
+  IAllWeatherData_Result,
   ICitiesRed_ClickedItem,
   ICitiesRed_EnteredCities,
   ICitiesRed_EnteredCityMatches,
@@ -11,7 +12,7 @@ export interface ImapStateToProps {
     savedCities: []
     enteredCities: ICitiesRed_EnteredCities[]
     clickedItem: ICitiesRed_ClickedItem
-    clickedItemDetails: null | any
+    clickedItemDetails: null | IAllWeatherData_Result
   }
 }
 export interface ImapDispatchToProps {
@@ -24,6 +25,7 @@ export interface ICitySearch_Props {
   item_selection_arrow: Function
   enteredCity: Function
   searchForMatches: Function
+  clearSearch: Function
 }
 
 // ============= LIST-OF-CITY =============
@@ -44,4 +46,9 @@ export interface ICardCity_Props {
 // ============= FOUND-CITY =============
 export interface IFounedCity_Props {
   stateCity: ICitiesRed_EnteredCityMatches
+}
+
+// ============= LIST-OF-TEMP =============
+export interface IListOfTemp_Props {
+  hoursTemp: number[]
 }

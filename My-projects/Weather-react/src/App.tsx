@@ -7,6 +7,8 @@ import WindowSearch from './pages/Window-search'
 import { getAllCities, getSavedCities } from './redux/actions'
 import { ImapDispatchToProps } from './interfaces'
 import DetailedCity from './pages/Detailed-City'
+import { Kravich } from './pages/Kravich'
+import { Footer } from './components/Footer'
 
 const mapDispatchToProps: ImapDispatchToProps = {
   getAllCities,
@@ -28,8 +30,11 @@ const App: React.FC<PropsFromRedux> = ({ getAllCities, getSavedCities }) => {
 
         <Switch>
           <Route component={WindowSearch} path="/" exact />
+          <Route component={Kravich} path="/about" exact />
           <Route component={DetailedCity} path="/detailinfo" exact />
         </Switch>
+
+        <Footer />
       </BrowserRouter>
     </div>
   )

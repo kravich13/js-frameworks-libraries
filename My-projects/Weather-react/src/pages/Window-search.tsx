@@ -1,3 +1,4 @@
+import { Container, makeStyles } from '@material-ui/core'
 import React, { memo, useMemo } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { CitySearch } from '../components/City-Search'
@@ -8,12 +9,25 @@ import {
   searchForMatches,
   item_selection_arrow,
   enteredCity,
+  clearSearch,
 } from '../redux/actions'
+
+const useStyles = makeStyles({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: 20,
+    height: '100%',
+  },
+})
 
 const mapDispatchToProps: ImapDispatchToProps = {
   searchForMatches,
   item_selection_arrow,
   enteredCity,
+  clearSearch,
 }
 const mapStateToProps = (state: ImapStateToProps) => {
   return {
@@ -35,20 +49,23 @@ const WindowSearch: React.FC<PropsFromRedux> = ({
   enteredCities,
   item_selection_arrow,
   enteredCity,
+  clearSearch,
 }) => {
+  const classes = useStyles()
   const listCard = useMemo(() => enteredCities, [enteredCities])
 
   return (
-    <React.Fragment>
+    <Container className={classes.root}>
       <CitySearch
         searchForMatches={searchForMatches}
         clickedItem={clickedItem}
         item_selection_arrow={item_selection_arrow}
         enteredCity={enteredCity}
+        clearSearch={clearSearch}
       />
       <ListOfSities enteredCityMatches={enteredCityMatches} />
       <MemoListEnteredCities enteredCities={listCard} />
-    </React.Fragment>
+    </Container>
   )
 }
 

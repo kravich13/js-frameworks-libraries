@@ -4,7 +4,7 @@ export interface ICitiesRed_InitialState {
   enteredCityMatches: ICitiesRed_EnteredCityMatches[]
   enteredCities: ICitiesRed_EnteredCities[]
   clickedItem: ICitiesRed_ClickedItem
-  clickedItemDetails: null | any
+  clickedItemDetails: null | IAllWeatherData_Result
 }
 
 export interface ICitiesRed_Action {
@@ -42,7 +42,13 @@ export interface IAllWeatherData_Result {
   temp: number
   wind: number
   pressure: string
-  hoursTemp: string
+  hoursTemp: number[]
+}
+
+export interface IallWeatherData_Payload {
+  task: ICitiesRed_CommonFields
+  weatherOfCity: any
+  hours24Temp: number[]
 }
 
 // ============= ACTIONS =============

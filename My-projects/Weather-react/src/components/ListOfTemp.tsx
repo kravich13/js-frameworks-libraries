@@ -1,18 +1,26 @@
-import { List, makeStyles } from '@material-ui/core'
+import { Container, makeStyles } from '@material-ui/core'
 import React from 'react'
+import { IListOfTemp_Props } from '../interfaces'
 import { Temp } from './Temp'
 
 const useStyles = makeStyles({
-  root: { display: 'flex', width: '60%' },
+  root: {
+    position: 'relative',
+    display: 'flex',
+    width: 798,
+    height: 200,
+    borderLeft: '3px solid lightgrey',
+    borderRight: '3px solid lightgrey',
+  },
 })
 
-export const ListOfTemp: React.FC<any> = ({ hoursTemp, index }) => {
+export const ListOfTemp: React.FC<IListOfTemp_Props> = ({ hoursTemp }) => {
   const classes = useStyles()
   return (
-    <List className={classes.root}>
-      {hoursTemp.map((elem: any, index: number) => {
-        return <Temp key={index} title={elem} index={index + 1} />
+    <Container className={classes.root}>
+      {hoursTemp.map((elem, index: number) => {
+        return <Temp key={index} title={elem} index={index} />
       })}
-    </List>
+    </Container>
   )
 }

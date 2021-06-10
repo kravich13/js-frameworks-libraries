@@ -7,6 +7,7 @@ import {
   ICitiesRed_InitialState,
   ICitiesRed_CommonFields,
   IAllWeatherData_Result,
+  IallWeatherData_Payload,
 } from './interfacesRedux'
 import {
   DELETE_CITY,
@@ -221,7 +222,10 @@ function deleteCity(
   return { ...state, enteredCities: newState }
 }
 
-function allWeatherData(state: any, payload: any) {
+function allWeatherData(
+  state: ICitiesRed_InitialState,
+  payload: IallWeatherData_Payload
+): ICitiesRed_InitialState {
   const { task, weatherOfCity, hours24Temp } = payload
 
   if (!task?.id || !weatherOfCity.length) return state

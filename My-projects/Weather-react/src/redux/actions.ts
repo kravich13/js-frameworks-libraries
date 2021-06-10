@@ -45,7 +45,7 @@ export function getAllCities(): Function {
   }
 }
 
-export function getSavedCities() {
+export function getSavedCities(): Function {
   return async function (dispatch: Function): Promise<void | void> {
     try {
       const dataExists: string | undefined = localStorage.preservedCity
@@ -78,9 +78,9 @@ export function enteredCity(task: ICitiesRed_CommonFields): Function {
       const weatherOfCity: any[] = await getWeatherOfCity([task])
 
       dispatch({ type: ENTERED_CITIES, payload: { task, weatherOfCity } })
-      dispatch({ type: ZEROING_SEARCH_DATA })
+      dispatch(clearSearch())
     } catch (err) {
-      dispatch({ type: ZEROING_SEARCH_DATA })
+      dispatch(clearSearch())
     }
   }
 }
@@ -100,7 +100,7 @@ export function updatedWeather(task: ICitiesRed_CommonFields): Function {
   }
 }
 
-export function detailedInformation(task: ICitiesRed_CommonFields) {
+export function detailedInformation(task: ICitiesRed_CommonFields): Function {
   return async function (dispatch: Function): Promise<void> {
     try {
       const weatherOfCity: any[] = await getWeatherOfCity([task])
@@ -135,7 +135,7 @@ async function hourlyWeatherData(
     if (res.status !== 200) return []
 
     const resJson = await res.json()
-    const result: any = []
+    const result: number[] = []
 
     resJson.list.forEach((elem: any, index: number) => {
       if (index > 11) return
@@ -160,6 +160,10 @@ export function deleteCity(task: ICitiesRed_CommonFields) {
   return { type: DELETE_CITY, payload: task }
 }
 
+export function clearSearch() {
+  return { type: ZEROING_SEARCH_DATA, payload: '' }
+}
+
 async function getWeatherOfCity(
   data: ICitiesRed_EnteredCities[] | ICitiesRed_CommonFields[]
 ): Promise<any[]> {
@@ -168,7 +172,7 @@ async function getWeatherOfCity(
 
     const weatherOfCities: any = []
 
-    for await (const dataCity of data) {
+    for (const dataCity of data) {
       const cityExtraction: RegExpMatchArray | null =
         dataCity.title.match(/[ -a-z]*,/i)
       if (!cityExtraction) continue
