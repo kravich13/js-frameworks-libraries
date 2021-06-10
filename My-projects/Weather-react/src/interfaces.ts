@@ -11,6 +11,7 @@ export interface ImapStateToProps {
     savedCities: []
     enteredCities: ICitiesRed_EnteredCities[]
     clickedItem: ICitiesRed_ClickedItem
+    clickedItemDetails: null | any
   }
 }
 export interface ImapDispatchToProps {

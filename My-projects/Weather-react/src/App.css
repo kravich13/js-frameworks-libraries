@@ -35,3 +35,13 @@
   margin: 10px 0;
   font-weight: 600;
 }
+
+.button-of-cards {
+  z-index: 2;
+}
+
+#detailed-information div {
+  display: flex;
+  justify-content: center;
+  /* background: rgb(146, 255, 96); */
+}

@@ -15,7 +15,7 @@ export const Navbar: React.FC = () => {
           <List>
             <li>
               <NavLink to="/cards" title="Saved sities">
-                My saved cities
+                About fulfilled conditions
               </NavLink>
             </li>
           </List>

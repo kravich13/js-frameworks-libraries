@@ -2,18 +2,24 @@ import React, { useEffect } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import './App.css'
-import { MyCards } from './pages/MyCards'
 import { Navbar } from './components/Navbar'
 import WindowSearch from './pages/Window-search'
-import { getAllCities } from './redux/actions'
+import { getAllCities, getSavedCities } from './redux/actions'
 import { ImapDispatchToProps } from './interfaces'
+import DetailedCity from './pages/Detailed-City'
 
-const mapDispatchToProps: ImapDispatchToProps = { getAllCities }
+const mapDispatchToProps: ImapDispatchToProps = {
+  getAllCities,
+  getSavedCities,
+}
 const connector = connect(null, mapDispatchToProps)
 type PropsFromRedux = ConnectedProps<typeof connector>
 
-const App: React.FC<PropsFromRedux> = ({ getAllCities }) => {
-  useEffect(() => getAllCities(), [getAllCities])
+const App: React.FC<PropsFromRedux> = ({ getAllCities, getSavedCities }) => {
+  useEffect(() => {
+    getAllCities()
+    getSavedCities()
+  }, [getAllCities, getSavedCities])
 
   return (
     <div className="App">
@@ -22,7 +28,7 @@ const App: React.FC<PropsFromRedux> = ({ getAllCities }) => {
 
         <Switch>
           <Route component={WindowSearch} path="/" exact />
-          <Route component={MyCards} path="/cards" exact />
+          <Route component={DetailedCity} path="/detailinfo" exact />
         </Switch>
       </BrowserRouter>
     </div>

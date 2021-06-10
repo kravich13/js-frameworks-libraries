@@ -1,7 +1,12 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { NavLink } from 'react-router-dom'
 import { ICardCity_Props } from '../interfaces'
-import { changeEnteredCity, updatedWeather } from '../redux/actions'
+import {
+  deleteCity,
+  updatedWeather,
+  detailedInformation,
+} from '../redux/actions'
 
 export const CardCity: React.FC<ICardCity_Props> = ({ stateCity }) => {
   const dispatch = useDispatch()
@@ -11,22 +16,34 @@ export const CardCity: React.FC<ICardCity_Props> = ({ stateCity }) => {
   return (
     <li>
       <div className="cardCities">
-        <p>
-          {title}
-          <img
-            src={`http://openweathermap.org/img/w/${icon}.png`}
-            alt="Weather icon"
-          />
-          <span>
-            {signToTemp}
-            {temp}°C
-          </span>
-        </p>
+        <NavLink
+          to="/detailinfo"
+          title="See detailed information"
+          onClick={() => dispatch(detailedInformation({ id, title }))}
+        >
+          <p>
+            {title}
+            <img
+              src={`http://openweathermap.org/img/w/${icon}.png`}
+              alt="Weather icon"
+            />
+            <span>
+              {signToTemp}
+              {temp}°C
+            </span>
+          </p>
+        </NavLink>
         <div>
-          <button onClick={() => dispatch(updatedWeather({ id, title }))}>
+          <button
+            onClick={() => dispatch(updatedWeather({ id, title }))}
+            className="button-of-cards"
+          >
             Обновить данные о погоде
           </button>
-          <button onClick={() => dispatch(changeEnteredCity({ id, title }))}>
+          <button
+            onClick={() => dispatch(deleteCity({ id, title }))}
+            className="button-of-cards"
+          >
             Удалить
           </button>
         </div>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo, useMemo } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { CitySearch } from '../components/City-Search'
 import { ListOfSities } from '../components/List-of-Cities'
@@ -26,6 +26,8 @@ const mapStateToProps = (state: ImapStateToProps) => {
 const connector = connect(mapStateToProps, mapDispatchToProps)
 type PropsFromRedux = ConnectedProps<typeof connector>
 
+const MemoListEnteredCities = memo(ListEnteredCities)
+
 const WindowSearch: React.FC<PropsFromRedux> = ({
   enteredCityMatches,
   clickedItem,
@@ -34,6 +36,8 @@ const WindowSearch: React.FC<PropsFromRedux> = ({
   item_selection_arrow,
   enteredCity,
 }) => {
+  const listCard = useMemo(() => enteredCities, [enteredCities])
+
   return (
     <React.Fragment>
       <CitySearch
@@ -43,7 +47,7 @@ const WindowSearch: React.FC<PropsFromRedux> = ({
         enteredCity={enteredCity}
       />
       <ListOfSities enteredCityMatches={enteredCityMatches} />
-      <ListEnteredCities enteredCities={enteredCities} />
+      <MemoListEnteredCities enteredCities={listCard} />
     </React.Fragment>
   )
 }
