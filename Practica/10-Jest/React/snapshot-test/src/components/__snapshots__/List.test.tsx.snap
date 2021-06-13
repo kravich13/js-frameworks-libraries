@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders when there are not items 1`] = `<ol />`;
+
+exports[`renders when there are three items 1`] = `
+<ol>
+  <li>
+    Vlad
+  </li>
+  <li>
+    Max
+  </li>
+  <li>
+    Kravich
+  </li>
+</ol>
+`;
