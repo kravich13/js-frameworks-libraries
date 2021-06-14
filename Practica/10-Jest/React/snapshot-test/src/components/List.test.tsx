@@ -1,5 +1,4 @@
 import renderer from 'react-test-renderer'
-
 import { List } from './List'
 
 it('renders when there are not items', () => {
@@ -8,7 +7,7 @@ it('renders when there are not items', () => {
   expect(tree).toMatchSnapshot()
 })
 
-it.skip('renders when there are three items', () => {
+it('renders when there are three items', () => {
   const tree = renderer
     .create(<List list={['Vlad', 'Max', 'Kravich']} />)
     .toJSON()

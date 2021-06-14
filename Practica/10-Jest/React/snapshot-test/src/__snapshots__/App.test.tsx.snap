@@ -1,60 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ApDSADSADSAp renders correctly 1`] = `
-<div
-  className="App"
->
-  <ol>
-    <li>
-      Vlad
-    </li>
-    <li>
-      Max
-    </li>
-    <li>
-      Kravich
-    </li>
-  </ol>
-</div>
-`;
-
 exports[`App other renders correctly 1`] = `
-<div
-  className="App"
->
-  <ol>
-    <li>
-      Vlad
-    </li>
-    <li>
-      Max
-    </li>
-    <li>
-      Kravich
-    </li>
-  </ol>
-</div>
-`;
-
-exports[`App renders correctly 1`] = `
-<div
-  className="App"
->
-  <ol>
-    <li>
-      Vlad
-    </li>
-    <li>
-      Max
-    </li>
-    <li>
-      Kravich
-    </li>
-  </ol>
-</div>
-`;
-
-exports[`renders correctly 1`] = `
 <div
   className="App"
 >

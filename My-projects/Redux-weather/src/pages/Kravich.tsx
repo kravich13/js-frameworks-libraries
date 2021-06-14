@@ -13,8 +13,14 @@ export const Kravich: React.FC = () => {
   return (
     <Container className={classes.root}>
       <Typography variant="body1">
-        Выполнил все пункты по ТЗ, вопросы лишь по material-UI т.к. библиотека
-        большая и на освоение и правильной структуры требуется время.
+        Выполнил все пункты ТЗ по реализации. Вопросы к правильному
+        использованию Material-ui т.к. до этого проекта писал всё на обычном
+        css.
+      </Typography>
+      <Typography variant="body1">
+        Reject + react-testing-library в процессе. Осталось лишь это, но
+        требуется время на изучение и применение на практике (ранее опыта не
+        имел).
       </Typography>
       <Typography variant="body1">
         Благодарю за возможность попрактиковаться с React-Redux (нравится эта

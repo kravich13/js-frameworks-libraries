@@ -20,7 +20,7 @@ import {
 
 const useStyles = makeStyles({
   root: {
-    width: 350,
+    width: 400,
     background: '#bbdefb',
     border: '1px solid #424242',
     marginBottom: 10,

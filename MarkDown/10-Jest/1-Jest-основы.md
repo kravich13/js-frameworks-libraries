@@ -14,6 +14,8 @@
     - [*Общий вид*](#общий-вид)
   - [Async](#async)
     - [*Done*](#done)
+  - [Mock](#mock)
+    - [*Тестовый пример*](#тестовый-пример)
 
 
 # jest
@@ -293,5 +295,85 @@ test('return kravich', (done) => {
     }
   }
   just_fn('kravich')
+})
+```
+***
+
+## Mock
+
+Mock функции позволяют изменять существующие данные и работают как компоненты высшего порядка в реакте. 
+
+Только они обладают своим функционалом и у mock есть свои методы. 
+
+### *Тестовый пример*
+
+```js
+function map(arr, cb) {
+  const result = []
+
+  for (let i = 0; i < arr.length; i++) {
+    // На каждой итерации вызываем калбек с элементом массива
+    result.push(cb(arr[i]))
+  }
+
+  return result
+}
+
+module.exports = { map }
+```
+
+```js
+const { map } = require('./mock')
+
+describe('map function', () => {
+  let arr
+
+    // 1) Перед каждой операцией выполняем перезапись:
+  beforeEach(() => {
+
+    // 1.1) массива
+    // 1.2) мок функции с коллбеком
+    // 1.3) вызов функции
+
+    arr = [1, 2, 3, 5]
+    fn = jest.fn((x) => x ** 2)
+    map(arr, fn)
+  })
+
+  test('should callback', () => {
+    // 2) Mock функция вызвана
+    expect(fn).toBeCalled()
+  })
+
+  test('should callback 4 each', () => {
+
+    // 3) Mock функция вызвана 4 раза (4 elem in arr)
+    expect(fn).toBeCalledTimes(4)
+    expect(fn.mock.calls.length).toBe(4)
+  })
+
+  test('should returns', () => {
+    // 4) Mock действительно вернул модифицированные данные
+    expect(fn.mock.results[0].value).toBe(1)
+    expect(fn.mock.results[1].value).toBe(4)
+    expect(fn.mock.results[2].value).toBe(9)
+    expect(fn.mock.results[3].value).toBe(25)
+  })
+
+  test('should fn work', () => {
+    // 5) Mock в первом вызове вернёт 100
+    // Mock в первом вызове вернёт 200
+    // Mock во всех остальных вернёт 300
+
+    fn
+      .mockReturnValueOnce(100)
+      .mockReturnValueOnce(200)
+      .mockReturnValue(300)
+
+    expect(fn()).toEqual(100)
+    expect(fn()).toEqual(200)
+    expect(fn()).toEqual(300)
+    expect(fn()).toEqual(300)
+  })
 })
 ```
