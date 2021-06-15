@@ -1,3 +1,13 @@
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import { NavLink } from 'react-router-dom'
+import {
+  deleteCity,
+  updatedWeather,
+  detailedInformation,
+} from '../redux/actions'
+import DeleteIcon from '@material-ui/icons/Delete'
+import AutorenewOutlinedIcon from '@material-ui/icons/AutorenewOutlined'
 import {
   Button,
   Card,
@@ -6,17 +16,8 @@ import {
   Container,
   makeStyles,
 } from '@material-ui/core'
-import React from 'react'
-import { useDispatch } from 'react-redux'
-import { NavLink } from 'react-router-dom'
+import { ClassNameMap } from '@material-ui/styles'
 import { ICardCity_Props } from '../interfaces'
-import DeleteIcon from '@material-ui/icons/Delete'
-import AutorenewOutlinedIcon from '@material-ui/icons/AutorenewOutlined'
-import {
-  deleteCity,
-  updatedWeather,
-  detailedInformation,
-} from '../redux/actions'
 
 const useStyles = makeStyles({
   root: {
@@ -47,10 +48,12 @@ const useStyles = makeStyles({
 })
 
 export const CardCity: React.FC<ICardCity_Props> = ({ stateCity }) => {
-  const classes = useStyles()
-  const dispatch = useDispatch()
+  const classes: ClassNameMap<string> = useStyles()
+  const dispatch: Function = useDispatch()
+
   const { id, title, temp, icon } = stateCity
-  const signToTemp: string = temp > 0 ? '+' : temp < 0 ? '-' : ''
+  const titleTemp: string =
+    temp > 0 ? `+${temp}` : temp < 0 ? `-${temp}` : `${temp}`
 
   return (
     <Card className={classes.root}>
@@ -66,10 +69,7 @@ export const CardCity: React.FC<ICardCity_Props> = ({ stateCity }) => {
               src={`http://openweathermap.org/img/w/${icon}.png`}
               alt="Weather icon"
             />
-            <p className={classes.title}>
-              {signToTemp}
-              {temp}°C
-            </p>
+            <p className={classes.title}>{titleTemp}°C</p>
           </Container>
         </NavLink>
         <CardActions className={classes.cardActions}>

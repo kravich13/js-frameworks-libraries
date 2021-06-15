@@ -1,4 +1,5 @@
 import {
+  IAllWeatherData_Obj,
   IAllWeatherData_Result,
   ICitiesRed_ClickedItem,
   ICitiesRed_EnteredCities,
@@ -50,5 +51,14 @@ export interface IFounedCity_Props {
 
 // ============= LIST-OF-TEMP =============
 export interface IListOfTemp_Props {
-  hoursTemp: number[]
+  hoursTemp: IAllWeatherData_Obj[]
+}
+
+// ============= TEMP =============
+
+export interface ITemp_Props {
+  temp: number
+  index: number
+  fullDate: string
+  parentHeight: number
 }

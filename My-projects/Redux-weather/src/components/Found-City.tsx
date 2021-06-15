@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { IFounedCity_Props } from '../interfaces'
 import { enteredCity } from '../redux/actions'
+import { IFounedCity_Props } from '../interfaces'
 
 export const FoundCity: React.FC<IFounedCity_Props> = ({ stateCity }) => {
   const dispatch: Function = useDispatch()

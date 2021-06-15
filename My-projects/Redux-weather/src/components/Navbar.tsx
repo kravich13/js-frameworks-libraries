@@ -1,3 +1,6 @@
+import React from 'react'
+import { NavLink } from 'react-router-dom'
+import { ClassNameMap } from '@material-ui/styles'
 import {
   AppBar,
   Container,
@@ -5,15 +8,13 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core'
-import React from 'react'
-import { NavLink } from 'react-router-dom'
 
 const useStyles = makeStyles({
   root: { display: 'flex', justifyContent: 'space-between' },
 })
 
 export const Navbar: React.FC = () => {
-  const classes = useStyles()
+  const classes: ClassNameMap<string> = useStyles()
   return (
     <AppBar position="static">
       <Container fixed>

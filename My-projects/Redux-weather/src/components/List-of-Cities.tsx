@@ -1,7 +1,8 @@
-import { Container, List, makeStyles } from '@material-ui/core'
 import React from 'react'
-import { IListOfCity_Props } from '../interfaces'
 import { FoundCity } from './Found-City'
+import { Container, List, makeStyles } from '@material-ui/core'
+import { ClassNameMap } from '@material-ui/styles'
+import { IListOfCity_Props } from '../interfaces'
 
 const useStyles = makeStyles({
   root: {
@@ -12,7 +13,7 @@ const useStyles = makeStyles({
 export const ListOfSities: React.FC<IListOfCity_Props> = ({
   enteredCityMatches,
 }) => {
-  const classes = useStyles()
+  const classes: ClassNameMap<string> = useStyles()
   return (
     <Container fixed maxWidth="xs">
       <List className={classes.root}>

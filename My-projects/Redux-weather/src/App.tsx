@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import './App.css'
+import { getAllCities, getSavedCities } from './redux/actions'
 import { Navbar } from './components/Navbar'
 import WindowSearch from './pages/Window-search'
-import { getAllCities, getSavedCities } from './redux/actions'
-import { ImapDispatchToProps } from './interfaces'
-import DetailedCity from './pages/Detailed-City'
 import { Kravich } from './pages/Kravich'
+import DetailedCity from './pages/Detailed-City'
 import { Footer } from './components/Footer'
+import { ImapDispatchToProps } from './interfaces'
+import './App.css'
 
 const mapDispatchToProps: ImapDispatchToProps = {
   getAllCities,
@@ -18,7 +18,7 @@ const connector = connect(null, mapDispatchToProps)
 type PropsFromRedux = ConnectedProps<typeof connector>
 
 const App: React.FC<PropsFromRedux> = ({ getAllCities, getSavedCities }) => {
-  useEffect(() => {
+  useEffect((): void => {
     getAllCities()
     getSavedCities()
   }, [getAllCities, getSavedCities])

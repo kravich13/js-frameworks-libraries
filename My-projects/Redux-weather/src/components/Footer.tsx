@@ -1,5 +1,6 @@
-import { Container, makeStyles, Typography } from '@material-ui/core'
 import React from 'react'
+import { Container, makeStyles, Typography } from '@material-ui/core'
+import { ClassNameMap } from '@material-ui/styles'
 
 const useStyles = makeStyles({
   root: {
@@ -17,7 +18,7 @@ const useStyles = makeStyles({
 })
 
 export const Footer: React.FC = () => {
-  const classes = useStyles()
+  const classes: ClassNameMap<string> = useStyles()
   return (
     <footer style={{ background: '#3f51b1' }}>
       <Container className={classes.root}>

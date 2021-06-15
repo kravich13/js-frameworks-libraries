@@ -1,5 +1,6 @@
-import { makeStyles, TextField, Typography } from '@material-ui/core'
 import React, { useEffect, useRef } from 'react'
+import { makeStyles, TextField, Typography } from '@material-ui/core'
+import { ClassNameMap } from '@material-ui/styles'
 import { ICitySearch_Props } from '../interfaces'
 
 const useStyles = makeStyles({
@@ -14,7 +15,7 @@ export const CitySearch: React.FC<ICitySearch_Props> = ({
   enteredCity,
   clearSearch,
 }) => {
-  const classes = useStyles()
+  const classes: ClassNameMap<string> = useStyles()
   const $textField = useRef<HTMLInputElement>(null)
   const { id, title } = clickedItem
 

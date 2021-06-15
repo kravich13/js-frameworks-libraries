@@ -1,6 +1,6 @@
 import React from 'react'
-import { IListEnteredCity_Props } from '../interfaces'
 import { CardCity } from './CardCity'
+import { IListEnteredCity_Props } from '../interfaces'
 
 export const ListEnteredCities: React.FC<IListEnteredCity_Props> = ({
   enteredCities,

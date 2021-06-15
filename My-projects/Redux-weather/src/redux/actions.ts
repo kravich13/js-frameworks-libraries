@@ -1,4 +1,5 @@
 import {
+  IAllWeatherData_Obj,
   ICitiesRed_CommonFields,
   ICitiesRed_EnteredCities,
   IGetAllCities_Coincidence,
@@ -104,47 +105,17 @@ export function detailedInformation(task: ICitiesRed_CommonFields): Function {
   return async function (dispatch: Function): Promise<void> {
     try {
       const weatherOfCity: any[] = await getWeatherOfCity([task])
-      const hours24Temp: number[] = await hourlyWeatherData(task)
+      const threeHourInterval: IAllWeatherData_Obj[] = await hourlyWeatherData(
+        task
+      )
 
       dispatch({
         type: DETAILED_INFORMATION,
-        payload: { task, weatherOfCity, hours24Temp },
+        payload: { task, weatherOfCity, threeHourInterval },
       })
     } catch (err) {
       return
     }
-  }
-}
-
-async function hourlyWeatherData(
-  data: ICitiesRed_CommonFields
-): Promise<number[]> {
-  try {
-    if (!data) return []
-
-    const cityExtraction: RegExpMatchArray | null =
-      data.title.match(/[ -a-z]*,/i)
-    if (!cityExtraction) return []
-
-    const cityName: string = cityExtraction[0]
-
-    const res: Response = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&appid=540f066413819eb44d83e625b723cf60`
-    )
-
-    if (res.status !== 200) return []
-
-    const resJson = await res.json()
-    const result: number[] = []
-
-    resJson.list.forEach((elem: any, index: number) => {
-      if (index > 11) return
-      result.push(Math.round(elem.main.temp))
-    })
-
-    return result
-  } catch (err) {
-    return []
   }
 }
 
@@ -186,6 +157,47 @@ async function getWeatherOfCity(
     }
 
     return weatherOfCities
+  } catch (err) {
+    return []
+  }
+}
+
+async function hourlyWeatherData(
+  data: ICitiesRed_CommonFields
+): Promise<IAllWeatherData_Obj[]> {
+  try {
+    if (!data) return []
+
+    const cityExtraction: RegExpMatchArray | null =
+      data.title.match(/[ -a-z]*,/i)
+    if (!cityExtraction) return []
+
+    const cityName: string = cityExtraction[0]
+
+    const res: Response = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&appid=540f066413819eb44d83e625b723cf60`
+    )
+
+    if (res.status !== 200) return []
+
+    const resJson = await res.json()
+    if (!Array.isArray(resJson.list)) return []
+
+    const result: IAllWeatherData_Obj[] = []
+
+    resJson.list.forEach((elem: any, index: number) => {
+      if (index > 11) return
+
+      const obj: IAllWeatherData_Obj = {
+        temp: Math.round(elem.main.temp),
+        fullDate: elem.dt_txt,
+      }
+
+      // result.push(Math.round(elem.main.temp))
+      result.push(obj)
+    })
+
+    return result
   } catch (err) {
     return []
   }

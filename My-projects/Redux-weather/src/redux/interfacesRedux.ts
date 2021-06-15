@@ -42,13 +42,18 @@ export interface IAllWeatherData_Result {
   temp: number
   wind: number
   pressure: string
-  hoursTemp: number[]
+  intervalData: IAllWeatherData_Obj[]
 }
 
 export interface IallWeatherData_Payload {
   task: ICitiesRed_CommonFields
   weatherOfCity: any
-  hours24Temp: number[]
+  threeHourInterval: IAllWeatherData_Obj[]
+}
+
+export interface IAllWeatherData_Obj {
+  temp: number
+  fullDate: string
 }
 
 // ============= ACTIONS =============

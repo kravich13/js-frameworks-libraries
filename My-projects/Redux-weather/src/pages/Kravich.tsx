@@ -1,31 +1,84 @@
-import { Container, makeStyles, Typography } from '@material-ui/core'
 import React from 'react'
+import { Container, List, makeStyles, Typography } from '@material-ui/core'
+import { ClassNameMap } from '@material-ui/styles'
 
 const useStyles = makeStyles({
   root: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     padding: 20,
-    '& p': { textAlign: 'center' },
+    '& h5': {},
+    '& div': { maxWidth: 800 },
+    '& ul': {
+      fontSize: 17,
+      listStyle: 'inside',
+      paddingLeft: 25,
+      paddingTop: 3,
+      '& ul': {
+        listStyle: 'circle',
+        marginLeft: 25,
+        '& li': { marginBottom: 3 },
+      },
+    },
   },
+  shortDescription: { paddingBottom: 10 },
 })
 
 export const Kravich: React.FC = () => {
-  const classes = useStyles()
+  const classes: ClassNameMap<string> = useStyles()
   return (
     <Container className={classes.root}>
-      <Typography variant="body1">
-        Выполнил все пункты ТЗ по реализации. Вопросы к правильному
-        использованию Material-ui т.к. до этого проекта писал всё на обычном
-        css.
-      </Typography>
-      <Typography variant="body1">
-        Reject + react-testing-library в процессе. Осталось лишь это, но
-        требуется время на изучение и применение на практике (ранее опыта не
-        имел).
-      </Typography>
-      <Typography variant="body1">
-        Благодарю за возможность попрактиковаться с React-Redux (нравится эта
-        парочка) и попробовать новые технологии.
-      </Typography>
+      <Container>
+        <Typography variant="h5" className={classes.shortDescription}>
+          Тестовое задание для React Dev
+        </Typography>
+        <Typography variant="body1" className={classes.shortDescription}>
+          Задача: Реализовать SPA, показывающее погоду в выбранных городах.
+        </Typography>
+        <Typography variant="body1">Тех. задание:</Typography>
+
+        <List>
+          <li>
+            Необходимо вывести список городов “карточками”. Карточка должна
+            содержать следующий функционал:
+            <List>
+              <li>Краткая информация о погоде в городе</li>
+              <li>
+                При клике на карточку вывести детальную информацию / переход на
+                страницу с детальной информацией
+              </li>
+              <li>
+                На каждой карточке города должна присутствовать кнопка: обновить
+                данные о погоде сейчас. При ее нажатии должно происходить
+                обновление погоды данного города
+              </li>
+              <li>
+                Должна быть возможность добавлять / удалять города. При
+                добавлении нового города происходит запрос на получение текущей
+                погоды и вывод его на экран.
+              </li>
+            </List>
+          </li>
+          <li>
+            Данные хранить локально в LocalStorage.
+            <List>
+              <li>
+                При перезагрузке страницы должен сохраниться список городов,
+                ранее введенных пользователем, а данные о погоде должны быть
+                обновлены.
+              </li>
+            </List>
+          </li>
+        </List>
+        <Typography variant="body1">Будет плюсом:</Typography>
+        <List>
+          <li>
+            На странице с подробным представлением реализоватьположение блока
+            стемпературой, на основе величины значения. Для этогоделать
+            дополнительныйзапрос на получение почасового прогноза на
+            текущийдень.
+          </li>
+        </List>
+      </Container>
     </Container>
   )
 }

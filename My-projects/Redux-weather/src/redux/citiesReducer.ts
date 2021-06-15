@@ -226,23 +226,25 @@ function allWeatherData(
   state: ICitiesRed_InitialState,
   payload: IallWeatherData_Payload
 ): ICitiesRed_InitialState {
-  const { task, weatherOfCity, hours24Temp } = payload
+  const { task, weatherOfCity, threeHourInterval } = payload
 
   if (!task?.id || !weatherOfCity.length) return state
 
   const { main, weather, wind } = weatherOfCity[0]
+
+  const arrTemp: number[] = threeHourInterval.map(({ temp }) => temp)
 
   const result: IAllWeatherData_Result = {
     title: task.title,
     icon: weather[0].icon,
     weather: weather[0].main,
     weatherDesc: weather[0].description,
-    high: Math.max(...hours24Temp) ?? 0,
-    low: Math.min(...hours24Temp) ?? 0,
-    temp: hours24Temp[0] ?? 0,
+    high: Math.max(...arrTemp) ?? 0,
+    low: Math.min(...arrTemp) ?? 0,
+    temp: threeHourInterval[0].temp ?? 0,
     wind: wind.speed,
     pressure: main.pressure,
-    hoursTemp: hours24Temp,
+    intervalData: threeHourInterval,
   }
 
   return { ...state, clickedItemDetails: result }

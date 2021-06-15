@@ -1,3 +1,6 @@
+import React from 'react'
+import { connect, ConnectedProps } from 'react-redux'
+import { ListOfTemp } from '../components/ListOfTemp'
 import {
   Card,
   CardContent,
@@ -5,9 +8,6 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core'
-import React from 'react'
-import { connect, ConnectedProps } from 'react-redux'
-import { ListOfTemp } from '../components/ListOfTemp'
 import { ImapStateToProps } from '../interfaces'
 
 const useStyles = makeStyles({
@@ -44,7 +44,8 @@ const DetailedCity: React.FC<PropsFromRedux> = ({ data }) => {
   const { title, icon, weather, weatherDesc, high, low, temp, wind, pressure } =
     data
 
-  const signToTemp: string = temp > 0 ? '+' : temp < 0 ? '-' : ''
+  const titleTemp: string =
+    temp > 0 ? `+${temp}` : temp < 0 ? `-${temp}` : `${temp}`
   return (
     <Container className={classes.root}>
       <Card className={classes.cardInfo}>
@@ -79,10 +80,7 @@ const DetailedCity: React.FC<PropsFromRedux> = ({ data }) => {
             </Typography>
           </Container>
           <Container className={classes.generalStyles}>
-            <Typography variant="h5">
-              {signToTemp}
-              {temp}
-            </Typography>
+            <Typography variant="h5">{titleTemp}°C</Typography>
           </Container>
           <Container className={classes.generalStyles}>
             <Typography variant="body1" className={classes.pAll}>
@@ -99,7 +97,7 @@ const DetailedCity: React.FC<PropsFromRedux> = ({ data }) => {
       </Card>
 
       <Container>
-        <ListOfTemp hoursTemp={data.hoursTemp} />
+        <ListOfTemp hoursTemp={data.intervalData} />
       </Container>
     </Container>
   )
