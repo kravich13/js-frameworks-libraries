@@ -20,7 +20,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
     justifyContent: 'flex-start',
     padding: 20,
-    height: '100%',
+    height: 'auto',
   },
 })
 
@@ -58,11 +58,11 @@ const WindowSearch: React.FC<PropsFromRedux> = ({
   return (
     <Container className={classes.root}>
       <CitySearch
-        searchForMatches={searchForMatches}
         clickedItem={clickedItem}
         item_selection_arrow={item_selection_arrow}
         enteredCity={enteredCity}
         clearSearch={clearSearch}
+        searchForMatches={searchForMatches}
       />
       <ListOfSities enteredCityMatches={enteredCityMatches} />
       <MemoListEnteredCities enteredCities={listCard} />

@@ -12,9 +12,11 @@ import { ImapStateToProps } from '../interfaces'
 
 const useStyles = makeStyles({
   root: {
+    height: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
     padding: 20,
   },
   cardInfo: {

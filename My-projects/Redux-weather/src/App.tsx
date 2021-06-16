@@ -28,11 +28,13 @@ const App: React.FC<PropsFromRedux> = ({ getAllCities, getSavedCities }) => {
       <BrowserRouter>
         <Navbar />
 
-        <Switch>
-          <Route component={WindowSearch} path="/" exact />
-          <Route component={Kravich} path="/about" exact />
-          <Route component={DetailedCity} path="/detailinfo" exact />
-        </Switch>
+        <section>
+          <Switch>
+            <Route component={WindowSearch} path="/" exact />
+            <Route component={Kravich} path="/about" exact />
+            <Route component={DetailedCity} path="/detailinfo" exact />
+          </Switch>
+        </section>
 
         <Footer />
       </BrowserRouter>

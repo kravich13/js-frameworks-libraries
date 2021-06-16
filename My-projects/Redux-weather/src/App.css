@@ -1,15 +1,18 @@
+.App {
+  display: flex;
+  flex-direction: column;
+}
+
+section {
+  flex: 1 0 auto;
+}
+
 .city-lighting:hover {
   background: rgba(255, 99, 71, 0.144);
 }
 .selected-city {
   font-weight: 500;
   background: rgba(255, 99, 71, 0.5);
-}
-
-.App {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 }
 
 img {

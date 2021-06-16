@@ -193,7 +193,6 @@ async function hourlyWeatherData(
         fullDate: elem.dt_txt,
       }
 
-      // result.push(Math.round(elem.main.temp))
       result.push(obj)
     })
 

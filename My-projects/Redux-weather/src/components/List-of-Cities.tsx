@@ -4,11 +4,7 @@ import { Container, List, makeStyles } from '@material-ui/core'
 import { ClassNameMap } from '@material-ui/styles'
 import { IListOfCity_Props } from '../interfaces'
 
-const useStyles = makeStyles({
-  root: {
-    textAlign: 'center',
-  },
-})
+const useStyles = makeStyles({ root: { textAlign: 'center' } })
 
 export const ListOfSities: React.FC<IListOfCity_Props> = ({
   enteredCityMatches,

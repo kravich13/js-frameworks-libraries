@@ -15,7 +15,10 @@ export const FoundCity: React.FC<IFounedCity_Props> = ({ stateCity }) => {
   }
 
   return (
-    <li className={classes.join(' ')} onClick={(): void => clickLi(id, title)}>
+    <li
+      className={classes.join(' ')}
+      onMouseDown={(): void => clickLi(id, title)}
+    >
       {title}
     </li>
   )

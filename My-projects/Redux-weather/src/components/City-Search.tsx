@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { makeStyles, TextField, Typography } from '@material-ui/core'
 import { ClassNameMap } from '@material-ui/styles'
 import { ICitySearch_Props } from '../interfaces'
@@ -17,6 +17,7 @@ export const CitySearch: React.FC<ICitySearch_Props> = ({
 }) => {
   const classes: ClassNameMap<string> = useStyles()
   const $textField = useRef<HTMLInputElement>(null)
+  const [inputValue, setInputValue] = useState<string>('')
   const { id, title } = clickedItem
 
   const submitForm: React.FormEventHandler = (
@@ -24,19 +25,8 @@ export const CitySearch: React.FC<ICitySearch_Props> = ({
   ): void => {
     event.preventDefault()
 
-    if ($textField.current!.value.length < 2) return
+    if (inputValue.length < 2) return
     enteredCity({ id, title })
-  }
-
-  const keyDown: React.KeyboardEventHandler = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ): void => {
-    const code: string = event.code
-
-    if (code === 'ArrowUp' || code === 'ArrowDown') {
-      event.preventDefault()
-      item_selection_arrow(code)
-    }
   }
 
   useEffect((): void => {
@@ -47,6 +37,20 @@ export const CitySearch: React.FC<ICitySearch_Props> = ({
     // $textField.current!.select()
   }, [clickedItem])
 
+  const keyDownInput = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+    const code: string = event.code
+
+    if (code === 'ArrowUp' || code === 'ArrowDown') {
+      event.preventDefault()
+      item_selection_arrow(code)
+    }
+  }
+
+  const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setInputValue((prev) => (prev = event.target.value))
+    searchForMatches(event.target.value)
+  }
+
   return (
     <form onSubmit={submitForm}>
       <label>
@@ -56,10 +60,8 @@ export const CitySearch: React.FC<ICitySearch_Props> = ({
         <TextField
           label="Search"
           color="secondary"
-          onChange={(event: React.ChangeEvent<HTMLInputElement>): void =>
-            searchForMatches(event.target.value)
-          }
-          onKeyDown={keyDown}
+          onChange={onChangeInput}
+          onKeyDown={keyDownInput}
           onFocus={(event): void => event.target.select()}
           onBlur={(): void => clearSearch()}
           inputRef={$textField}
