@@ -3,6 +3,8 @@
     - [***Установка в новый проект:***](#установка-в-новый-проект)
     - [***Установка в существующий проект:***](#установка-в-существующий-проект)
   - [Основные функции TS в React](#основные-функции-ts-в-react)
+  - [Нестандартные ситуации](#нестандартные-ситуации)
+    - [Fix formElements](#fix-formelements)
   - [Роуты](#роуты)
     - [***Переадресация:***](#переадресация)
 
@@ -44,6 +46,20 @@ npm i --save typescript @types/node @types/react @types/react-dom @types/jest
 5. `const [flag, setFlag] = useState<string>('')` - указание типа в **useState**
 6. `ref.current!.value = ''` - `!` гарантирует **TS** наличие поля у объекта ключа `value` 
 7. `React.createContext<any>({})` - для `createContext` нужно передать пустой объект.
+***
+
+## Нестандартные ситуации
+
+### Fix formElements
+
+Чтобы получить данные `value` элементов формы без `useRef` - используется следующая конструкция: 
+
+```tsx
+const et = event.target as HTMLFormElement
+const $userName = et.elements.namedItem('username') as HTMLFormElement
+console.log($userName.value) // всегда будет такое поле
+```
+
 ***
 
 ## Роуты

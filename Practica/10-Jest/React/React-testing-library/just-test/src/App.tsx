@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './App.css'
+import { List } from './components/List'
 
 const getUser = (): Promise<string> => Promise.resolve('Max')
 
@@ -28,10 +29,22 @@ const App: React.FC = () => {
         <img alt="нет картинки"></img>
         <label htmlFor="search" />
         <input type="text" placeholder="Текст..." defaultValue="13" />
-        <button onClick={(): void => setPState(true)}>Нажми</button>
+        <button
+          data-testid="buttonApp-click"
+          onClick={(): void => setPState(true)}
+        >
+          Нажми
+        </button>
       </div>
 
       <div className="async-test">{user && <h2>Logged in as {user}</h2>}</div>
+
+      <div className="approval">
+        <p className="classTest">Привет</p>
+        <p id="kravich1">Ку</p>
+      </div>
+
+      <List />
     </div>
   )
 }
