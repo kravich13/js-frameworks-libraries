@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink, useHistory } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { connect, ConnectedProps } from 'react-redux'
 import { hidden_navbar, log_out } from '../redux/actions'
 import MyLogo from './MyLogo'
@@ -26,10 +26,11 @@ const Navbar: React.FC<PropsFromRedux> = ({
   log_out,
   hidden_navbar,
 }) => {
-  const history: any = useHistory()
+  // const history = useHistory()
 
-  function handleClick(where: string, hiddenNav: boolean) {
-    history.push(where)
+  function handleClick(where: string, hiddenNav: boolean = false): void {
+    // history.push(where)
+    // console.log(history)
     hidden_navbar(hiddenNav)
   }
 
@@ -53,10 +54,10 @@ const Navbar: React.FC<PropsFromRedux> = ({
 
     return (
       <React.Fragment>
-        <li onClick={() => handleClick('login', true)}>
+        <li onClick={() => handleClick('/login', true)}>
           <NavLink to="/login">Вход</NavLink>
         </li>
-        <li onClick={() => handleClick('sign-up', true)}>
+        <li onClick={() => handleClick('/sign-up', true)}>
           <NavLink to="/sign-up">Регистрация</NavLink>
         </li>
       </React.Fragment>
@@ -69,10 +70,7 @@ const Navbar: React.FC<PropsFromRedux> = ({
         <MyLogo />
       </div>
       <ul id="container-url">
-        <li
-          onClick={() => handleClick('about', false)}
-          title="Посмотреть информацию"
-        >
+        <li onClick={() => handleClick('/about')} title="Посмотреть информацию">
           <NavLink to="/about">О проекте</NavLink>
         </li>
         <UserAuthorized authorized={authorized} />
