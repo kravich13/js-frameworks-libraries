@@ -58,75 +58,75 @@ describe('fireEvents', () => {
   })
 })
 
-// describe('fire events', () => {
-//   it('checkbox click', () => {
-//     const handleChange = jest.fn()
-//     const { container } = render(
-//       <input type="checkbox" onChange={handleChange} />
-//     )
-//     const checkbox: ChildNode | null = container.firstChild
+describe('fire events', () => {
+  it('checkbox click', () => {
+    const handleChange = jest.fn()
+    const { container } = render(
+      <input type="checkbox" onChange={handleChange} />
+    )
+    const checkbox: ChildNode | null = container.firstChild
 
-//     // не выбран
-//     expect(checkbox).not.toBeChecked()
+    // не выбран
+    expect(checkbox).not.toBeChecked()
 
-//     fireEvent.click(checkbox!)
+    fireEvent.click(checkbox!)
 
-//     // выбран
-//     expect(checkbox).toBeChecked()
-//   })
+    // выбран
+    expect(checkbox).toBeChecked()
+  })
 
-//   it('input focus', () => {
-//     const { getByTestId } = render(
-//       <input type="checkbox" data-testid="focus-test" />
-//     )
+  it('input focus', () => {
+    const { getByTestId } = render(
+      <input type="checkbox" data-testid="focus-test" />
+    )
 
-//     const input: HTMLElement = getByTestId('focus-test')
-//     expect(input).not.toHaveFocus()
-//     input.focus()
-//     expect(input).toHaveFocus()
-//   })
-// })
+    const input: HTMLElement = getByTestId('focus-test')
+    expect(input).not.toHaveFocus()
+    input.focus()
+    expect(input).toHaveFocus()
+  })
+})
 
-// describe('user events', () => {
-//   it('checkbox click', () => {
-//     const handleChange = jest.fn()
-//     const { container } = render(
-//       <input type="checkbox" onChange={handleChange} />
-//     )
-//     const checkbox: ChildNode | any = container.firstChild
+describe('user events', () => {
+  it('checkbox click', () => {
+    const handleChange = jest.fn()
+    const { container } = render(
+      <input type="checkbox" onChange={handleChange} />
+    )
+    const checkbox: ChildNode | any = container.firstChild
 
-//     expect(checkbox).not.toBeChecked()
-//     userEvent.click(checkbox, { ctrlKey: true, shiftKey: true })
-//     expect(checkbox).toBeChecked()
-//   })
+    expect(checkbox).not.toBeChecked()
+    userEvent.click(checkbox, { ctrlKey: true, shiftKey: true })
+    expect(checkbox).toBeChecked()
+  })
 
-//   it('double click', () => {
-//     const onChange = jest.fn()
-//     const { container } = render(<input type="checkbox" onChange={onChange} />)
-//     const checkbox: ChildNode | any = container.firstChild
+  it('double click', () => {
+    const onChange = jest.fn()
+    const { container } = render(<input type="checkbox" onChange={onChange} />)
+    const checkbox: ChildNode | any = container.firstChild
 
-//     expect(checkbox).not.toBeChecked()
-//     userEvent.dblClick(checkbox)
+    expect(checkbox).not.toBeChecked()
+    userEvent.dblClick(checkbox)
 
-//     // вызвали 2 раза
-//     expect(onChange).toHaveBeenCalledTimes(2)
-//   })
+    // вызвали 2 раза
+    expect(onChange).toHaveBeenCalledTimes(2)
+  })
 
-//   it('input focus', () => {
-//     const { getAllByTestId } = render(
-//       <div>
-//         <input data-testid="elem" type="checkbox" />
-//         <input data-testid="elem" type="radio" />
-//         <input data-testid="elem" type="number" />
-//       </div>
-//     )
-//     const [checkbox, radio, number] = getAllByTestId('elem')
+  it('input focus', () => {
+    const { getAllByTestId } = render(
+      <div>
+        <input data-testid="elem" type="checkbox" />
+        <input data-testid="elem" type="radio" />
+        <input data-testid="elem" type="number" />
+      </div>
+    )
+    const [checkbox, radio, number] = getAllByTestId('elem')
 
-//     userEvent.tab()
-//     expect(checkbox).toHaveFocus()
-//     userEvent.tab()
-//     expect(radio).toHaveFocus()
-//     userEvent.tab()
-//     expect(number).toHaveFocus()
-//   })
-// })
+    userEvent.tab()
+    expect(checkbox).toHaveFocus()
+    userEvent.tab()
+    expect(radio).toHaveFocus()
+    userEvent.tab()
+    expect(number).toHaveFocus()
+  })
+})

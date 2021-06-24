@@ -11,6 +11,7 @@
   - [fireEvent событие](#fireevent-событие)
   - [userEvent событие](#userevent-событие)
   - [Разные способы тестирования](#разные-способы-тестирования)
+  - [Асинхронный код](#асинхронный-код)
 
 # React-Testing-Library
 
@@ -420,5 +421,38 @@ it('input focus', () => {
   input.focus() 
   // в фокусе
   expect(input).toHaveFocus()
+})
+```
+***
+
+## Асинхронный код
+
+Есть следующая разметка, где по клику появляется список тасков или надпись с ошибкой: 
+
+```tsx
+<button data-testid="posts-click" onClick={handleFetch}>
+  Новости
+</button>
+
+{error && <span>Что-то пошло не так...</span>}
+
+{news.map(({ title, id }) => {
+  return <li key={id}>{title}</li>
+})}
+```
+
+Сам тест: 
+
+```tsx
+it('qq', async () => {
+  const { getByTestId, findAllByRole } = render(<List />)
+
+  // нажали на кнопку и получили список листов
+  const $button = getByTestId('posts-click') as HTMLButtonElement
+  userEvent.click($button)
+
+  // длинна массива листво - 100, как и заявлено
+  const $listItems = (await findAllByRole('listitem')) as HTMLLIElement[]
+  expect($listItems).toHaveLength(100)
 })
 ```
