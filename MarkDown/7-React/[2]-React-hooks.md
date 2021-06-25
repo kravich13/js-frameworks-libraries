@@ -1,16 +1,20 @@
 - [React хуки](#react-хуки)
-  - [Хук useState](#хук-usestate)
-  - [Хук useEffect](#хук-useeffect)
-  - [Хук useContext](#хук-usecontext)
-  - [Хук useRef](#хук-useref)
+  - [useState](#usestate)
+  - [useEffect](#useeffect)
+  - [useContext](#usecontext)
+  - [useRef](#useref)
     - [***Замена глобальным переменным:***](#замена-глобальным-переменным)
     - [***Получение ссылок на DOM элементы:***](#получение-ссылок-на-dom-элементы)
+  - [useMemo](#usememo)
+    - [***Пример 1: React.memo***](#пример-1-reactmemo)
+    - [***React.memo при export***](#reactmemo-при-export)
+    - [***Пример 2: useMemo***](#пример-2-usememo)
   - [Собственный хук](#собственный-хук)
 
 
 # React хуки
 
-## Хук useState
+## useState
 
 Есть пример с увеличением и уменьшием счётчиков. Но, в `React` нельзя изменить элемент так, чтобы это изменение отобразилось на странице даже после ивента, например:
 
@@ -138,7 +142,7 @@ function App() {
 
 ---
 
-## Хук useEffect
+## useEffect
 
 Принимает `cb` функцию первым параметром, а вторым - массив из элементов для наблюдения.
 
@@ -178,7 +182,7 @@ function App() {
 Если компонент/переменная неизменны - `useEffect` вызван не будет. Это может пригодиться в том случае, если пришло новое сообщение в переменную и нужно его отрисовать.
 ***
 
-## Хук useContext
+## useContext
 
 `useContext` - это глобальный объект, который можно экспортировать как реакт и инпортировать в нужные компоненты, не прибегая к множеству вложенностей в компонентах. 
 
@@ -280,7 +284,7 @@ function App() {
 * И затем в том самом файле, где необходимо получить контекст из главного файла - просто подключаем хук `useContext`, объект `Context` и получаем данные из него с помощью `useContext(context)`.
 ***
 
-## Хук useRef
+## useRef
 
 ### ***Замена глобальным переменным:***
 
@@ -374,6 +378,120 @@ function App() {
   )
 }
 ```
+***
+
+## useMemo
+
+### ***Пример 1: React.memo***
+
+Есть следующий пример: 
+
+```tsx
+export const App: React.FC = () => {
+  const [value, setValue] = useState<string>('') 
+
+  return (
+    <div className="App">
+      <p>{value}</p>
+      <Search setValue={setValue} /> 
+      <List1 />
+      <List2 >
+    </div>
+  )
+}
+```
+
+* `State`, который изменяется в компоненте `Search`
+* Компонент `Search`, который изменяет стейт по нажатию в `input`
+* Компонент `list1` и `list2`, которые рендерят список. 
+
+Проблема тут заключается в том, что при каждом нажатии в `input` меняется стейт и компонент `List1` и `List2` перерендериваются, когда по факту они никак не связаны со стейтом `value`.
+
+Для решения этой проблемы нужно обернуть сам компонент в `React.memo` и передать его как "мемомизированный" компонент:
+
+```tsx
+const MemoList1 = memo(List1)
+const MemoList2 = memo(List2)
+
+export const App: React.FC = () => {
+  const [value, setValue] = useState<string>('')
+
+  return (
+    <div className="App">
+      <p>{value}</p>
+      <Search setValue={setValue} />
+      <MemoList1 />
+      <MemoList2 />
+    </div>
+  )
+}
+```
+
+И теперь эти два листа не будут перерендероваться вообще. Отрисовались раз и хватит.
+
+
+### ***React.memo при export***
+
+Либо можно просто обернуть компонент в `React.memo` в экспорте и это будет то же самое:
+
+```tsx
+export default React.memo(List1)
+```
+
+Можно передать вторым параметром в `React.memo` функцию, которая в зависимости от возвращаемого значения может сделать рендер, т.е. рендер по условию:
+
+* вернёт `false` - рендера не будет
+* вернёт `true` - рендер будет
+
+```tsx
+export default React.memo(List1, (prevProps, nextProps): boolean => {
+  return nextProps.inputValue === 'kravich' ? false : true
+})
+```
+
+Перерендер случится лишь тогда, когда значение из пропса `inputValue` будет **kravich**.
+****
+
+
+### ***Пример 2: useMemo***
+
+Если передать массив в компонент `List`, то ситуация не изменится и перерендер будет происходить при каждом действии в `input`:
+
+```tsx
+export const App: React.FC = () => {
+  const [value, setValue] = useState<string>('')
+  const list2: number[] = [1, 2, 3, 4, 5]
+
+  return (
+    <div className="App">
+      <p>{value}</p>
+      <Search setValue={setValue} />
+      <MemoList1 />
+      <MemoList2 list={list2} />
+    </div>
+  )
+}
+```
+
+Для решения проблемы существует хук `useMemo`, также как `useEffect` принимает список зависимостей:
+
+```tsx
+export const App: React.FC = () => {
+  const [value, setValue] = useState<string>('')
+  const list2 = useMemo((): number[] => [1, 2, 3, 4, 5], [])
+
+  return (
+    <div className="App">
+      <p>{value}</p>
+      <Search setValue={setValue} />
+      <MemoList1 />
+      <MemoList2 list={list2} />
+    </div>
+  )
+}
+```
+
+Здесь массив просто мемомизируется и если он неизменный - перерендер компонента происходить не будет.
 ***
 
 ## Собственный хук
