@@ -1,5 +1,6 @@
 import React, { memo, useMemo, useState } from 'react'
 import './App.css'
+import FunCallback from './components/FunCallback'
 import List1 from './components/List1'
 import { List2 } from './components/List2'
 import { Search } from './components/Search'
@@ -16,6 +17,7 @@ export const App: React.FC = () => {
       <Search setValue={setValue} />
       <List1 inputValue={value} />
       <MemoList2 list={list2} />
+      <FunCallback />
     </div>
   )
 }

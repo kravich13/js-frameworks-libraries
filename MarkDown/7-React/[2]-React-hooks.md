@@ -9,6 +9,7 @@
     - [***Пример 1: React.memo***](#пример-1-reactmemo)
     - [***React.memo при export***](#reactmemo-при-export)
     - [***Пример 2: useMemo***](#пример-2-usememo)
+  - [useCallback](#usecallback)
   - [Собственный хук](#собственный-хук)
 
 
@@ -440,8 +441,8 @@ export default React.memo(List1)
 
 Можно передать вторым параметром в `React.memo` функцию, которая в зависимости от возвращаемого значения может сделать рендер, т.е. рендер по условию:
 
-* вернёт `false` - рендера произойдет
-* вернёт `true` - рендера не произойдет
+* вернёт `false` - рендер произойдет
+* вернёт `true` - рендер не произойдет
 
 ```tsx
 export default React.memo(List1, (prevProps, nextProps): boolean => {
@@ -492,6 +493,56 @@ export const App: React.FC = () => {
 ```
 
 Здесь массив просто мемомизируется и если он неизменный - перерендер компонента происходить не будет.
+***
+
+## useCallback
+
+Используется для того, чтобы закешировать само создание функции, т.к. при перерендере заново пересоздаются все функции и ссылки на них уже другие.
+
+```tsx
+const FunCallback: React.FC = () => {
+  const [message] = useState<string>('Ку')
+  const [counter, setCounter] = useState<number>(0)
+
+  const greeting = (text: string): void => {
+    console.log(text)
+  }
+
+  useEffect(() => greeting(message), [greeting, message])
+
+  return (
+    <button onClick={() => setCounter((prev: number) => (prev = counter + 1))}>
+      Нажали {counter} раз
+    </button>
+  )
+}
+```
+
+По нажатию на кнопку меняется стейт и от этого происходит перерендер, но также вызывается функция `greeting` в `useEffect`, хотя массив зависимостей остаётся неизменным.
+
+Решение проблемы - `useCallback`, которая кеширует само создание функции и таким образом она не пересоздаётся. 
+
+`useCallback` принимает функцию с входящими юзерскими параметрами (как обычная функция) и принимает список зависимостей:
+
+```tsx
+const FunCallback: React.FC = () => {
+  const [message] = useState<string>('Ку')
+  const [counter, setCounter] = useState<number>(0)
+
+  const greeting = useCallback((text: string) => {
+    console.log(text)
+  }, [])
+
+  useEffect(() => greeting(message), [greeting, message])
+
+  return (
+    <button onClick={() => setCounter((prev: number) => (prev = counter + 1))}>
+      Нажали {counter} раз
+    </button>
+  )
+}
+```
+
 ***
 
 ## Собственный хук
