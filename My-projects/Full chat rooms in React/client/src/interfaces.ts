@@ -33,7 +33,11 @@ interface IListRoomsProps {
   clickDelete: Function
 }
 
-interface IListMessagesProps {
+interface IListMessages_Props {
+  messages: IMessage[]
+}
+
+interface IMessage_Props {
   message: IMessage
 }
 
@@ -78,7 +82,8 @@ export type {
   IRoomsProps,
   IChatInfoProps,
   IListRoomsProps,
-  IListMessagesProps,
+  IListMessages_Props,
+  IMessage_Props,
   IMessage,
   IMessageFromRes,
   IRoom,

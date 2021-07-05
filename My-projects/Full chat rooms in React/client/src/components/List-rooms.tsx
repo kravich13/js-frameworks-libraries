@@ -1,23 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { IListRoomsProps } from '../interfaces'
 import '../styles/list-rooms.css'
 
-export const ListRooms: React.FC<IListRoomsProps> = (props) => {
-  const { id, title, clickLi, clickDelete, overLi, outLi } = props
-  const [titleRoom, setTitleRoom] = useState<string>(title)
+export const ListRooms: React.FC<IListRoomsProps> = ({
+  id,
+  title,
+  clickLi,
+  clickDelete,
+  overLi,
+  outLi,
+  click,
+  hover,
+}) => {
   const $mainElem = useRef<HTMLLIElement>(null)
   const classes: string[] = ['roomsLi']
+  const titleRoom: string =
+    title.length > 14 ? `${title.slice(0, 14)}...` : title
 
-  if (props.click) classes.push('clickRoomLi')
-  if (props.hover) classes.push('hoverRoom')
-
-  useEffect((): void => {
-    if (title.length > 14) {
-      const desiredLength: string = title.slice(0, 14)
-      setTitleRoom(`${desiredLength}...`)
-      return
-    }
-  }, [title])
+  if (click) classes.push('clickRoomLi')
+  if (hover) classes.push('hoverRoom')
 
   return (
     <li

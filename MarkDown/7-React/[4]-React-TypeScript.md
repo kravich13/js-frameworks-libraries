@@ -45,7 +45,9 @@ npm i --save typescript @types/node @types/react @types/react-dom @types/jest
 4. `const ref = useRef<HTMLInputElement>(null)` - указание элемента в **refs**
 5. `const [flag, setFlag] = useState<string>('')` - указание типа в **useState**
 6. `ref.current!.value = ''` - `!` гарантирует **TS** наличие поля у объекта ключа `value` 
-7. `React.createContext<any>({})` - для `createContext` нужно передать пустой объект.
+7. `React.createContext<IContext | null>(null)` - для `createContext` можно передать null.
+     * в получении `useContext` подписываем тип: `useContext(Context) as IContext`.
+
 ***
 
 ## Нестандартные ситуации
@@ -56,10 +58,10 @@ npm i --save typescript @types/node @types/react @types/react-dom @types/jest
 
 ```tsx
 const et = event.target as HTMLFormElement
-const $userName = et.elements.namedItem('username') as HTMLFormElement
+const $userName = et.elements.namedItem('username') as HTMLInputElement
 console.log($userName.value) // всегда будет такое поле
 ```
-
+      
 ***
 
 ## Роуты

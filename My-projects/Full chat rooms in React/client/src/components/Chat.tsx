@@ -6,7 +6,7 @@ import {
   IMessageFromRes,
   ISocketLastMessage,
 } from '../interfaces'
-import { ListMessages } from './List-messages'
+import ListMessages from './List-messages'
 import { Loader } from './Loader'
 import '../styles/chat.css'
 
@@ -17,50 +17,58 @@ const Chat: React.FC<IChatProps> = ({
   setLoader,
 }) => {
   const { setStateAlert } = useContext(Context)
-  const $inputName = useRef<HTMLInputElement>(null)
-  const $inputMessage = useRef<HTMLInputElement>(null)
   const $chatWindow = useRef<HTMLDivElement>(null)
+
   const [messages, setMessages] = useState<IMessage[]>([])
+  const [nameValue, setNameValue] = useState<string>(
+    localStorage.getItem('user') ?? ''
+  )
+  const [messageValue, setMessageValue] = useState<string>('')
 
   const formSendChat = (
     event: React.ChangeEvent<HTMLFormElement>
   ): string | void => {
     event.preventDefault()
 
-    const nickname: string = $inputName.current!.value
-    const userMess: string = $inputMessage.current!.value
+    const et = event.target as HTMLFormElement
+    const $name = et.elements.namedItem('userName') as HTMLInputElement
+    const $message = et.elements.namedItem('userMessage') as HTMLInputElement
 
-    if (nickname.length < 3) {
-      return setPlaceholder($inputName.current!, 'Короткое имя')
+    if (nameValue.length < 3) {
+      return defaultInput($name, setNameValue, 'Короткое имя')
     }
-    if (userMess.length < 1) {
-      return ($inputMessage.current!.placeholder = 'Пустое сообщение')
+    if (messageValue.length < 1) {
+      return ($message.placeholder = 'Пустое сообщение')
     }
-    if (userMess.length > 1024) {
-      return ($inputMessage.current!.placeholder = 'Длинное сообщение')
+    if (messageValue.length > 1024) {
+      return ($message.placeholder = 'Длинное сообщение')
     }
 
-    const nickMatch: RegExpMatchArray | null = nickname.match(/\w+/gi)
+    const nickMatch = nameValue.match(/\w+/gi) as RegExpMatchArray
 
-    if (nickMatch !== null) {
-      if (nickMatch[0] !== nickname) {
-        return setPlaceholder($inputName.current!, 'Англ. и "_"')
+    if (nickMatch?.length) {
+      if (nickMatch[0] !== nameValue) {
+        return defaultInput($name, setNameValue, 'Англ. и "_"')
       }
-    } else return setPlaceholder($inputName.current!, 'Англ. и "_"')
+    } else return defaultInput($name, setNameValue, 'Англ. и "_"')
 
     socket.emit('addMessage', {
-      user: $inputName.current!.value,
-      message: $inputMessage.current!.value,
+      user: nameValue,
+      message: messageValue,
       clickRoom,
     })
 
-    setPlaceholder($inputMessage.current!, 'Напишите сообщение...')
+    defaultInput($message, setMessageValue, 'Напишите сообщение...')
 
-    if (localStorage.getItem('user') === nickname) return
-    localStorage.setItem('user', nickname)
+    if (localStorage.getItem('user') === nameValue) return
+    localStorage.setItem('user', nameValue)
   }
-  function setPlaceholder(elem: HTMLInputElement, text: string): void {
-    elem.value = ''
+  function defaultInput(
+    elem: HTMLInputElement,
+    setValue: Function,
+    text: string
+  ): void {
+    setValue('')
     elem.placeholder = text
   }
 
@@ -93,7 +101,7 @@ const Chat: React.FC<IChatProps> = ({
 
       try {
         setMessages([])
-        setLoader((prev: boolean) => (prev = true))
+        setLoader(true)
         let newDayMessage: string = ''
 
         const response = await fetch('/rooms', {
@@ -108,7 +116,8 @@ const Chat: React.FC<IChatProps> = ({
         })
 
         const resMessages: IMessageFromRes[] = await response.json()
-        setLoader((prev: boolean) => (prev = false))
+
+        setLoader(false)
 
         const arrMessages = Array.from(resMessages, (elem: IMessageFromRes) => {
           const day: string = new Date(elem.createdAt).getDate().toString()
@@ -132,9 +141,7 @@ const Chat: React.FC<IChatProps> = ({
       <div id="chat-window" ref={$chatWindow}>
         {loader && <Loader />}
 
-        {messages.map((message: IMessage) => {
-          return <ListMessages key={message._id} message={message} />
-        })}
+        <ListMessages messages={messages} />
       </div>
       <form onSubmit={formSendChat} name="formUserData" id="formSendChat">
         <input
@@ -142,15 +149,16 @@ const Chat: React.FC<IChatProps> = ({
           name="userName"
           type="text"
           placeholder="Введите имя"
-          defaultValue={localStorage.getItem('user') ?? ''}
-          ref={$inputName}
+          onChange={(e) => setNameValue(e.target.value)}
+          value={nameValue}
         />
         <input
           id="userMessage"
           name="userMessage"
           type="text"
           placeholder="Напишите сообщение..."
-          ref={$inputMessage}
+          onChange={(e) => setMessageValue(e.target.value)}
+          value={messageValue}
         />
         <button id="sendMessage" name="sendMessage">
           &rsaquo;

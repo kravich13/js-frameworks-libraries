@@ -3,33 +3,34 @@ import { IChatInfoProps } from '../interfaces'
 import '../styles/chat-info.css'
 
 export const ChatInfo: React.FC<IChatInfoProps> = ({ socket, clickRoom }) => {
-  const [numberOfusers, setNumberOfUsers] = useState<string>((): string => {
-    return localStorage.getItem('numberOfUsers') ?? ''
-  })
+  const [inputValue, setInputValue] = useState<string>('')
+  const [numberOfusers, setNumberOfUsers] = useState<string>(
+    localStorage.getItem('numberOfUsers') ?? '0'
+  )
 
   const enterRoom = (
     event: React.KeyboardEvent<HTMLInputElement>
   ): string | void => {
     if (event.code === 'Enter') {
-      const et: HTMLInputElement = event.target as HTMLInputElement
+      const et = event.target as HTMLInputElement
 
       if (et.value === '') return (et.placeholder = 'Пустая строка')
       if (et.value.length < 3 || et.value.length > 32) {
-        return setPlaceholder(et, 'От 3-х до 32-х символов')
+        return defaultInput(et, 'От 3-х до 32-х символов')
       }
 
-      const roomMatch: RegExpMatchArray | null = et.value.match(/\w+/gi)
-      if (roomMatch !== null) {
+      const roomMatch = et.value.match(/\w+/gi) as RegExpMatchArray
+      if (roomMatch?.length) {
         if (roomMatch[0] !== et.value) {
-          return setPlaceholder(et, 'Англ. и "_"')
+          return defaultInput(et, 'Англ. и "_"')
         }
-      } else return setPlaceholder(et, 'Англ. и "_"')
+      } else return defaultInput(et, 'Англ. и "_"')
 
       socket.emit('addRoom', et.value)
-      setPlaceholder(et, 'Введите название комнаты')
+      defaultInput(et, 'Введите название комнаты')
     }
-    function setPlaceholder(elem: HTMLInputElement, text: string): void {
-      elem.value = ''
+    function defaultInput(elem: HTMLInputElement, text: string): void {
+      setInputValue('')
       elem.placeholder = text
     }
   }
@@ -52,6 +53,8 @@ export const ChatInfo: React.FC<IChatInfoProps> = ({ socket, clickRoom }) => {
           onKeyDown={(event) => enterRoom(event)}
           type="text"
           placeholder="Введите название комнаты"
+          onChange={(e) => setInputValue(e.target.value)}
+          value={inputValue}
         />
       </div>
       <h3>
