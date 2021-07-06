@@ -35,15 +35,18 @@ export const ChatInfo: React.FC<IChatInfoProps> = ({ socket, clickRoom }) => {
     }
   }
 
-  useEffect((): void => {
+  useEffect((): (() => void) => {
+    let cleanupFunction: boolean = false
+
     socket.on('numberOfUsers', async (count: number) => {
-      try {
-        localStorage.setItem('numberOfUsers', `${count}`)
-        setNumberOfUsers(`${count}`)
-      } catch (err) {
-        alert('Произошла ошибка')
-      }
+      if (cleanupFunction) return
+      localStorage.setItem('numberOfUsers', `${count}`)
+      setNumberOfUsers(`${count}`)
     })
+
+    return (): void => {
+      cleanupFunction = true
+    }
   }, [socket])
 
   return (

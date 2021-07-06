@@ -22,14 +22,17 @@ interface IChatInfoProps {
   clickRoom: string
 }
 
-interface IListRoomsProps {
+interface IListRooms_Props {
+  rooms: IRoom[]
+  clickLi: Function
+  clickDelete: Function
+}
+
+interface IRoom_Props {
   clickLi: Function
   id: string
   title: string
   click: boolean
-  hover: boolean
-  outLi: Function
-  overLi: Function
   clickDelete: Function
 }
 
@@ -60,7 +63,6 @@ interface IRoom {
   id: string
   title: string
   click: boolean
-  hover: boolean
 }
 
 interface ISocketLastMessage {
@@ -79,9 +81,10 @@ interface styleFinally {
 export type {
   IContext,
   IChatProps,
+  IListRooms_Props,
   IRoomsProps,
   IChatInfoProps,
-  IListRoomsProps,
+  IRoom_Props,
   IListMessages_Props,
   IMessage_Props,
   IMessage,

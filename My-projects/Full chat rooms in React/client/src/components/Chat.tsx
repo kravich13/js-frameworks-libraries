@@ -72,22 +72,21 @@ const Chat: React.FC<IChatProps> = ({
     elem.placeholder = text
   }
 
-  useEffect((): void | any => {
-    let cleanupFunction = false
-    socket.on('lastMessage', async (data: ISocketLastMessage) => {
-      try {
-        if (!cleanupFunction) {
-          const { lastData, sendFromRoom } = data
+  useEffect((): (() => void) => {
+    let cleanupFunction: boolean = false
 
-          if (clickRoom === sendFromRoom) {
-            setMessages((prev) => [...prev, lastData])
-          }
-        }
-      } catch (err) {
-        setStateAlert('Произошла ошибка при получении сообщений')
+    socket.on('lastMessage', async (data: ISocketLastMessage) => {
+      if (cleanupFunction) return
+
+      const { lastData, sendFromRoom } = data
+
+      if (clickRoom === sendFromRoom) {
+        setMessages((prev) => [...prev, lastData])
       }
     })
-    return (): boolean => (cleanupFunction = true)
+    return (): void => {
+      cleanupFunction = true
+    }
   }, [socket, setMessages, setStateAlert, clickRoom])
 
   useEffect((): void => {
@@ -102,9 +101,10 @@ const Chat: React.FC<IChatProps> = ({
       try {
         setMessages([])
         setLoader(true)
+
         let newDayMessage: string = ''
 
-        const response = await fetch('/rooms', {
+        const response: Response = await fetch('/rooms', {
           method: 'POST',
           headers: {
             'Content-type': 'application/json',
@@ -122,11 +122,9 @@ const Chat: React.FC<IChatProps> = ({
         const arrMessages = Array.from(resMessages, (elem: IMessageFromRes) => {
           const day: string = new Date(elem.createdAt).getDate().toString()
 
-          const result = {
-            ...elem,
-            newDay: newDayMessage !== day ? true : false,
-          }
+          const result = { ...elem, newDay: newDayMessage !== day ?? false }
           newDayMessage = day
+
           return result
         })
         setMessages([...arrMessages])

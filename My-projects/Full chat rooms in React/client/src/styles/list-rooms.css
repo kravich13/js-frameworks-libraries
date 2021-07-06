@@ -11,13 +11,16 @@
   font-size: 18px;
   font-weight: 600;
 }
-.clickRoomLi {
-  background: rgba(255, 255, 255, 0.83);
-}
 
-.hoverRoom {
+.roomHover {
   cursor: pointer;
   background: rgba(255, 255, 255, 0.3);
+}
+/* .roomsLi:hover {
+} */
+
+.clickRoomLi {
+  background: rgba(255, 255, 255, 0.83);
 }
 
 .room-li {
