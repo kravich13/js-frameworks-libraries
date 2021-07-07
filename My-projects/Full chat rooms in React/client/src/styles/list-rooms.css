@@ -16,8 +16,10 @@
   cursor: pointer;
   background: rgba(255, 255, 255, 0.3);
 }
-/* .roomsLi:hover {
-} */
+.roomsLi:hover {
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.3);
+}
 
 .clickRoomLi {
   background: rgba(255, 255, 255, 0.83);

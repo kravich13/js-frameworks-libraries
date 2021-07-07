@@ -19,18 +19,22 @@ const mongoClient = new MongoClient(MONGODB_URI, {
   useUnifiedTopology: true,
 })
 
-mongoClient.connect(function (err, client) {
-  if (err) return mongoose.disconnect()
+try {
+  mongoClient.connect(function (err, client) {
+    if (err) return mongoose.disconnect()
 
-  const db = client.db('ChatRoomsReact')
+    const db = client.db('ChatRoomsReact')
 
-  db.listCollections().toArray(function (err, collInfos) {
-    collInfos.forEach((elem) => {
-      arrNamesCollections.push(elem.name)
-      Work_DB.syncCollection(elem.name)
+    db.listCollections().toArray(function (err, collInfos) {
+      collInfos.forEach((elem) => {
+        arrNamesCollections.push(elem.name)
+        Work_DB.syncCollection(elem.name)
+      })
     })
   })
-})
+} catch (err) {
+  console.log('база данных не готова')
+}
 
 class Work_DB {
   static async syncCollection(nameTable) {

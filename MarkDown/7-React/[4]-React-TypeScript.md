@@ -3,10 +3,11 @@
     - [***Установка в новый проект:***](#установка-в-новый-проект)
     - [***Установка в существующий проект:***](#установка-в-существующий-проект)
   - [Основные функции TS в React](#основные-функции-ts-в-react)
-  - [Нестандартные ситуации](#нестандартные-ситуации)
-    - [Fix formElements](#fix-formelements)
   - [Роуты](#роуты)
     - [***Переадресация:***](#переадресация)
+  - [Нестандартные ситуации](#нестандартные-ситуации)
+    - [Fix formElements](#fix-formelements)
+    - [Fix return useEffect](#fix-return-useeffect)
 
 # React-TypeScript
 
@@ -48,20 +49,6 @@ npm i --save typescript @types/node @types/react @types/react-dom @types/jest
 7. `React.createContext<IContext | null>(null)` - для `createContext` можно передать null.
      * в получении `useContext` подписываем тип: `useContext(Context) as IContext`.
 
-***
-
-## Нестандартные ситуации
-
-### Fix formElements
-
-Чтобы получить данные `value` элементов формы без `useRef` - используется следующая конструкция: 
-
-```tsx
-const et = event.target as HTMLFormElement
-const $userName = et.elements.namedItem('username') as HTMLInputElement
-console.log($userName.value) // всегда будет такое поле
-```
-      
 ***
 
 ## Роуты
@@ -149,3 +136,37 @@ function UserAuthorized({ authorized }: any) {
     return <Redirect to="/" />
   }
 ```
+***
+
+## Нестандартные ситуации
+
+### Fix formElements
+
+Чтобы получить данные `value` элементов формы без `useRef` - используется следующая конструкция: 
+
+```tsx
+const et = event.target as HTMLFormElement
+const $userName = et.elements.namedItem('username') as HTMLInputElement
+console.log($userName.value) // всегда будет такое поле
+```
+
+### Fix return useEffect
+
+В случае отписки от события пишем следующий тип возвращаемого значения `useEffect`:
+
+```tsx
+useEffect((): (() => void) => { // указываем (() => return value)
+ let cleanupFunction: boolean = false
+
+ socket.on('numberOfUsers', async (count: number) => {
+   if (cleanupFunction) return
+   localStorage.setItem('numberOfUsers', `${count}`)
+   setNumberOfUsers(`${count}`)
+ })
+
+ return (): void => {
+   cleanupFunction = true
+ }
+}, [socket])
+```
+

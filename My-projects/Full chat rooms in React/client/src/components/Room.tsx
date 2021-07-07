@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { IRoom_Props } from '../interfaces'
 import '../styles/list-rooms.css'
 
@@ -10,39 +10,23 @@ export const Room: React.FC<IRoom_Props> = ({
   click,
 }) => {
   const $mainElem = useRef<HTMLLIElement>(null)
-  // const [classes, setClasses] = useState<string[]>(['roomsLi'])
+
   const classes: string[] = ['roomsLi']
   const titleRoom: string =
     title.length > 14 ? `${title.slice(0, 14)}...` : title
+  // const [classes, setClasses] = useState<string[]>(fnTest)
 
   if (click) classes.push('clickRoomLi')
 
-  // if (click) classes.push('clickRoomLi')
-  // useEffect(() => {
-  //   if (click) {
-  //     const obj: any = {}
+  // const onMouseOver = (): void => {
+  //   if (click) return
 
-  //     setClasses((prev) => {
-  //       prev.forEach((elem) => {
-  //         if (!obj[elem]) obj[elem] = 1
-  //         else obj[elem] += 1
-  //       })
+  //   setClasses((prev) => [...prev, 'roomHover'])
+  // }
 
-  //       for (const key of obj) {
-  //         if (obj[key] === 1)
-  //       }
-  //       return [...prev, 'clickRoomLi']
-  //     })
-  //     console.log(obj)
-  //   }
-  // }, [click])
-
-  const onMouseOver = (): void => {
-    if (click) return
-
-    // console.log('тут')
-    // classes.push('roomHover')
-  }
+  // const onMouseOut = (): void => {
+  //   setClasses((prev) => prev.filter((elem) => elem !== 'roomHover'))
+  // }
 
   return (
     <li
@@ -50,7 +34,8 @@ export const Room: React.FC<IRoom_Props> = ({
       className={classes.join(' ')}
       onClick={(event) => clickLi(event, id, $mainElem.current, title)}
       title={title}
-      onMouseOver={(): void => onMouseOver()}
+      // onMouseOver={(): void => onMouseOver()}
+      // onMouseOut={(): void => onMouseOut()}
     >
       <span className="room-li">{titleRoom}</span>
       <button
