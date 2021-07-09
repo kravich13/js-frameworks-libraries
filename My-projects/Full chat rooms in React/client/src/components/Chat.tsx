@@ -76,7 +76,7 @@ const Chat: React.FC<IChatProps> = ({
     let cleanupFunction: boolean = false
 
     socket.on('lastMessage', async (data: ISocketLastMessage) => {
-      if (cleanupFunction) return
+      if (cleanupFunction || !data.lastData) return
 
       const { lastData, sendFromRoom } = data
 

@@ -1,97 +1,47 @@
-// const { allCollections, arrNamesCollections } = require('./app')
 const mongoose = require('mongoose')
-mongoose.pluralize(null)
-const MongoClient = require('mongodb').MongoClient
-const MONGODB_URI =
-  'mongodb+srv://Chat:Mypassword@cluster0.pyfv2.mongodb.net/ChatRoomsReact?retryWrites=true&w=majority'
-
-mongoose.connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-
-const allCollections = {}
-const arrNamesCollections = []
 const { roomsSchema } = require('./schemas/schema.mongoose')
-
-const mongoClient = new MongoClient(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-
-try {
-  mongoClient.connect(function (err, client) {
-    if (err) return mongoose.disconnect()
-
-    const db = client.db('ChatRoomsReact')
-
-    db.listCollections().toArray(function (err, collInfos) {
-      collInfos.forEach((elem) => {
-        arrNamesCollections.push(elem.name)
-        Work_DB.syncCollection(elem.name)
-      })
-    })
-  })
-} catch (err) {
-  console.log('база данных не готова')
-}
+const allCollections = {}
 
 class Work_DB {
   static async syncCollection(nameTable) {
-    allCollections[nameTable] = mongoose.model(nameTable, roomsSchema)
     try {
+      allCollections[nameTable] = mongoose.model(nameTable, roomsSchema)
       await allCollections[nameTable].createCollection()
     } catch (err) {
       console.log(`Ошибка синхронизации коллекции: ${err}`)
-      return
     }
   }
 
-  static async deleteRoom(collectionName) {
-    return await collectionName.collection.drop()
+  static async deleteRoom(Model) {
+    return await Model.collection.drop()
   }
 
-  static async allMessages(collectionName) {
-    let arr
+  static async allMessages(Model) {
+    const arrData = []
 
     try {
-      await new Promise((resolve) => {
-        collectionName.find({}, (err, docs) => {
-          if (err) return console.log(`Ошибка поиска в БД: ${err}`)
-          arr = docs
-          resolve()
-        })
-      })
+      const arrMessages = await Model.find({})
+      if (arrMessages.length) arrData.push(...arrMessages)
     } catch (err) {
       console.log('Ошибка при загрузке всех сообщений')
+    } finally {
+      return arrData
     }
-    return arr
   }
 
-  static async newMessage(collectionName, user, message) {
-    let obj
+  static async newMessage(Model, user, message) {
+    let obj = null
+    const createdAt = new Date()
 
     try {
-      await new Promise((resolve) => {
-        collectionName.create(
-          { user, message, createdAt: new Date() },
-          (err, doc) => {
-            if (err) return console.log('Ошибка в добавлении в БД')
-            obj = {
-              _id: doc._id,
-              user: doc.user,
-              message: doc.message,
-              createdAt: doc.createdAt,
-            }
-            resolve()
-          }
-        )
-      })
+      const data = await Model.create({ user, message, createdAt })
+      if (data) obj = data
     } catch (err) {
       console.log('Ошибка при добавлении нового сообщения')
+    } finally {
+      return obj
     }
-    return obj
   }
 }
 
-module.exports = { Work_DB, allCollections, arrNamesCollections }
+module.exports = { Work_DB, allCollections }

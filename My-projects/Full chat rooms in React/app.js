@@ -5,8 +5,42 @@ const io = require('socket.io')(server)
 const path = require('path')
 const PORT = process.env.PORT ?? 5000
 
-const { Work_DB, allCollections, arrNamesCollections } = require('./work.db')
+// ============= THE DATABASE CONSTANTS =============
+const { Work_DB, allCollections } = require('./work.db')
+const mongoose = require('mongoose')
+const MongoClient = require('mongodb').MongoClient
+const MONGODB_URI =
+  'mongodb+srv://Chat:Mypassword@cluster0.pyfv2.mongodb.net/ChatRoomsReact?retryWrites=true&w=majority'
+const options = { useNewUrlParser: true, useUnifiedTopology: true }
+const mongoClient = new MongoClient(MONGODB_URI, options)
+
+// ============= OTHERS =============
 const connections = []
+const arrNamesCollections = []
+
+mongoose.pluralize(null)
+mongoose.connect(MONGODB_URI, options, (err) => {
+  if (err) console.log('The DB is not ready to work')
+})
+mongoose.connection.once('open', () => {
+  server.listen(PORT, () => {
+    console.log(`The server was started on the PORT: ${PORT}`)
+  })
+})
+
+mongoClient.connect((err, client) => {
+  if (err) return mongoose.disconnect()
+
+  const db = client.db('ChatRoomsReact')
+
+  db.listCollections().toArray((err, collInfos) => {
+    if (err) return console.log('Error sync of the collections')
+    collInfos.forEach((elem) => {
+      arrNamesCollections.push(elem.name)
+      Work_DB.syncCollection(elem.name)
+    })
+  })
+})
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
@@ -48,12 +82,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('addMessage', async ({ user, message, clickRoom }) => {
-    const roomMatch = user.match(/\w+/gi)
-
-    if (roomMatch !== null) {
-      if (roomMatch[0] !== user) return
-    } else return
-
+    if (regExp_RoomAndMessage(user)) return
     if (message.string > 1024) return
 
     const lastData = await Work_DB.newMessage(
@@ -65,15 +94,12 @@ io.on('connection', (socket) => {
   })
 
   socket.on('addRoom', (room) => {
+    if (regExp_RoomAndMessage(room)) return
+
     let uniqueRoom = false
 
-    const roomMatch = room.match(/\w+/gi)
-    if (roomMatch !== null) {
-      if (roomMatch[0] !== room) return
-    } else return
-
     arrNamesCollections.forEach((elem) => {
-      if (room === elem) return (uniqueRoom = true)
+      if (room === elem) uniqueRoom = true
     })
     if (uniqueRoom) return
 
@@ -83,14 +109,20 @@ io.on('connection', (socket) => {
   })
   socket.on('deleteRoom', async (room) => {
     const collectionDeleted = await Work_DB.deleteRoom(allCollections[room])
-    io.sockets.emit('roomDeleted', collectionDeleted ? true : false, room)
+    io.sockets.emit('roomDeleted', collectionDeleted ?? false, room)
 
-    if (collectionDeleted) {
-      delete allCollections[room]
-      const index = arrNamesCollections.indexOf(room)
-      if (index > -1) arrNamesCollections.splice(index, 1)
-    }
+    if (!collectionDeleted) return
+
+    delete allCollections[room]
+    const index = arrNamesCollections.indexOf(room)
+    if (index > -1) arrNamesCollections.splice(index, 1)
   })
 })
 
-server.listen(PORT, () => console.log('Сервер запущен'))
+function regExp_RoomAndMessage(value) {
+  const roomMatch = value.match(/\w+/gi)
+  if (!roomMatch || roomMatch[0] !== value) return true
+  return false
+}
+
+module.exports = { arrNamesCollections }
