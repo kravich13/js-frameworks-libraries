@@ -1,212 +1,198 @@
 const mongoose = require('mongoose')
-mongoose.pluralize(null)
 
 const {
   existingUsersScheme,
   usersTasks,
 } = require('./schemas/schemas.mongoose')
 
-const MONGODB_URI =
-  'mongodb+srv://Chat:MYPASSWORD@cluster0.pyfv2.mongodb.net/Calendar?retryWrites=true&w=majority'
+let ExistingUsers = null
+let UsersTasks = null
 
-mongoose.connect(MONGODB_URI, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
+mongoose.connection.once('open', () => {
+  ExistingUsers = mongoose.model('existing_users', existingUsersScheme)
+  UsersTasks = mongoose.model('usersTasks', usersTasks)
 })
-mongoose.set('useCreateIndex', true)
-
-const ExistingUsers = mongoose.model('existing_users', existingUsersScheme)
-const UsersTasks = mongoose.model('usersTasks', usersTasks)
 
 class Work_DB {
   static async all_tasks({ user, timestamp }) {
-    const tasks = []
+    const arrTasks = []
 
-    await new Promise((resolve) => {
-      UsersTasks.findOne({ user }, (err, doc) => {
-        if (err || !doc) return
-
-        for (const key of doc.tasks) {
-          if (key.timestamp === timestamp) tasks.push(key)
-        }
-        resolve()
-      })
-    })
-
-    return tasks
+    try {
+      const { tasks } = await UsersTasks.findOne({ user })
+      if (tasks?.length) {
+        tasks.forEach((elem) => {
+          if (elem.timestamp === timestamp) arrTasks.push(elem)
+        })
+      }
+    } catch (err) {
+      console.log('Ошибка в получении всех тасков')
+    } finally {
+      return arrTasks
+    }
   }
 
   static async search_user(user) {
     let status = false
-    await new Promise((resolve) => {
-      UsersTasks.findOne({ user }, (err, doc) => {
-        if (err) return console.log(err)
-        status = doc === null ? false : true
-        resolve()
-      })
-    })
-    return status
+
+    try {
+      const data = await UsersTasks.findOne({ user })
+      if (data) status = true
+    } catch (err) {
+      console.log('Ошибка в поиске юзера')
+    } finally {
+      return status
+    }
   }
 
   static async createDocument_tasksUser({ user, task }) {
     let status = false
 
-    await new Promise((resolve) => {
-      UsersTasks.create({ user: user, tasks: [task] }, (err) => {
-        if (err) return console.log(err)
-        status = true
-        resolve()
-      })
-    })
-    return status
+    try {
+      const data = await UsersTasks.create({ user: user, tasks: [task] })
+      if (data) status = true
+    } catch (err) {
+      console.log('Ошибка при создании документа юзера')
+    } finally {
+      return status
+    }
   }
 
   static async push_newTask({ user, task }) {
     let status = null
 
-    await new Promise((resolve) => {
-      UsersTasks.updateOne(
+    try {
+      const data = await UsersTasks.updateOne(
         { user: user },
-        { $push: { tasks: task } },
-        (err, doc) => {
-          if (err) return console.log(err)
-          status = doc.nModified
-          resolve()
-        }
+        { $push: { tasks: task } }
       )
-    })
-    return status
+      if (data.nModified) status = data.nModified
+    } catch (err) {
+      console.log('Ошибка при добавлении таска')
+    } finally {
+      return status
+    }
   }
 
   static async change_tasks({ userName, tasks }) {
-    let task = []
+    const changedTasks = []
 
-    await new Promise((resolve) => {
-      UsersTasks.findOne({ user: userName }, async (err, doc) => {
-        if (err) return console.log(err)
+    try {
+      const data = await UsersTasks.findOne({ user: userName })
+      if (!data) return changedTasks
 
-        for (const key of doc.tasks) {
-          for (const taskClient of tasks) {
-            if (key.id === taskClient.id) {
-              key.position = taskClient.position
-              key.posLeft = taskClient.posLeft
-              await doc.save()
+      for (const db of data.tasks) {
+        for (const { id, position, posLeft } of tasks) {
+          if (db.id !== id) continue
 
-              task.push({
-                id: taskClient.id,
-                position: taskClient.position,
-                posLeft: taskClient.posLeft,
-              })
-            }
-          }
+          db.position = position
+          db.posLeft = posLeft
+          await data.save()
+
+          changedTasks.push({ id, position, posLeft })
         }
-        resolve()
-      })
-    })
-    return task
+      }
+    } catch (err) {
+      console.log('Ошибка при изменении таска')
+    } finally {
+      return changedTasks
+    }
   }
 
   static async delete_task({ userName, task }) {
-    let idDel = null
+    let idDeldElem = null
 
-    await new Promise((resolve) => {
-      UsersTasks.updateOne(
+    try {
+      const data = await UsersTasks.updateOne(
         { user: userName },
-        { $pull: { tasks: task } },
-        (err, doc) => {
-          if (err) return console.log(err)
-
-          if (doc.nModified) {
-            idDel = task.id
-          }
-          resolve()
-        }
+        { $pull: { tasks: task } }
       )
-    })
-    return idDel
+      if (data.nModified) idDeldElem = task.id
+    } catch (err) {
+      console.log('Ошибка в удалении таска')
+    } finally {
+      return idDeldElem
+    }
   }
 
   static async filtering_login(login) {
     let user = false
-    await new Promise((resolve) => {
-      ExistingUsers.findOne({ login }, (err, doc) => {
-        if (err) return
-        user = doc === null ? false : true
-        resolve()
-      })
-    })
-    return user
+
+    try {
+      const data = await ExistingUsers.findOne({ login })
+      if (data) user = true
+    } catch (err) {
+      console.log('Ошибка поиска юзера')
+    } finally {
+      return user
+    }
   }
 
   static async create_user(login, password, birthday) {
     let id = false
-    await new Promise((resolve) => {
-      ExistingUsers.create({ login, password, birthday }, (err) => {
-        if (err) return console.log('Ошибка добавления пользователя')
 
-        id = true
-        resolve()
-      })
-    })
-    return id
+    try {
+      const data = await ExistingUsers.create({ login, password, birthday })
+      if (data) id = true
+    } catch (err) {
+      console.log('Ошибка добавления ')
+    } finally {
+      return id
+    }
   }
 
   static async login_details_match(login, password) {
-    let data = null
-    await new Promise((resolve) => {
-      ExistingUsers.findOne({ login }, (err, doc) => {
-        if (err || !doc) return resolve()
+    let result = null
 
-        if (password === doc.password) data = doc.login
-        resolve()
-      })
-    })
-    return data
+    try {
+      const data = await ExistingUsers.findOne({ login })
+      if (password === data?.password) result = data.login
+    } catch (err) {
+      console.log('Ошибка в сравнении пароля')
+    } finally {
+      return result
+    }
   }
 
   static async unique_day_task(user) {
     const arrTimestamp = []
 
     try {
-      await new Promise((resolve) => {
-        UsersTasks.findOne({ user }, (err, doc) => {
-          if (err || !doc) return resolve()
+      const data = await UsersTasks.findOne({ user })
+      if (!data) return arrTimestamp
 
-          const arrayDay = new Set()
+      const arrayDay = new Set()
 
-          for (let elem of doc.tasks) {
-            const day = new Date(elem.timestamp).toLocaleDateString('en-US', {
-              day: 'numeric',
-            })
-
-            if (!arrayDay.has(day)) arrTimestamp.push(elem.timestamp)
-            arrayDay.add(day)
-          }
-          resolve()
+      for (const { timestamp } of data.tasks) {
+        const day = new Date(timestamp).toLocaleDateString('en-US', {
+          day: 'numeric',
         })
+
+        if (!arrayDay.has(day)) arrTimestamp.push(timestamp)
+        arrayDay.add(day)
+      }
+
+      arrTimestamp.forEach((elem, index, array) => {
+        const date = new Date(elem)
+        return (array[index] = date.setDate(date.getDate() - 1))
       })
     } catch (err) {
+      console.log('Ошибка в добавлении уникального дня таска')
+    } finally {
       return arrTimestamp
     }
-
-    arrTimestamp.forEach((elem, index, array) => {
-      const date = new Date(elem)
-      return (array[index] = date.setDate(date.getDate() - 1))
-    })
-
-    return arrTimestamp
   }
-  static async user_birthday(user) {
-    let data = null
-    await new Promise((resolve) => {
-      ExistingUsers.findOne({ login: user }, (err, doc) => {
-        if (err || !doc) return resolve()
 
-        data = doc.birthday
-        resolve()
-      })
-    })
-    return data
+  static async user_birthday(user) {
+    let result = null
+
+    try {
+      const data = await ExistingUsers.findOne({ login: user })
+      if (data) result = data.birthday
+    } catch (err) {
+      console.log('Ошибка поиска дня рождения юзера')
+    } finally {
+      return result
+    }
   }
 }
 

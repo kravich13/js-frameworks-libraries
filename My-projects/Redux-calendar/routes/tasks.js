@@ -6,7 +6,7 @@ router.post('/tasks', async (req, res) => {
   try {
     if (!req.body && req.headers['action-type']) {
       return res.json({
-        message: 'Неверный формат запроса, попробуйте ещё раз'
+        message: 'Неверный формат запроса, попробуйте ещё раз',
       })
     }
 
@@ -16,7 +16,7 @@ router.post('/tasks', async (req, res) => {
     if (req.headers['action-type'] === 'allTasks') {
       const tasksDatas = await Work_DB.all_tasks({
         user: req.body.userName,
-        timestamp: +correctMonth
+        timestamp: +correctMonth,
       })
       return res.json(tasksDatas)
     }
@@ -27,39 +27,41 @@ router.post('/tasks', async (req, res) => {
     }
 
     if (req.headers['action-type'] === 'createTask') {
-      const dataCorrection = {
-        user: req.body.userName,
+      const { userName, id, title, posTop, posLeft, height, position } =
+        req.body
+
+      const dataStructure = {
+        user: userName,
         task: {
-          id: req.body.id,
+          id,
           timestamp: +correctMonth,
-          title: req.body.title,
-          posTop: req.body.posTop,
-          posLeft: req.body.posLeft,
-          height: req.body.height,
-          position: req.body.position
-        }
+          title,
+          posTop,
+          posLeft,
+          height,
+          position,
+        },
       }
 
       const userDataIs = await Work_DB.search_user(req.body.userName)
 
       if (userDataIs) {
         // Юзер существует
-        const userObjPush = await Work_DB.push_newTask(dataCorrection)
-
+        const userObjPush = await Work_DB.push_newTask(dataStructure)
         return_tasks(userObjPush)
       } else {
         // Новый юзер
         const userObjCreated = await Work_DB.createDocument_tasksUser(
-          dataCorrection
+          dataStructure
         )
 
         return_tasks(userObjCreated)
       }
 
       function return_tasks(flag) {
-        if (!flag)
-          return return_tasks({ message: 'Неизвестная ошибка', task: null })
-        return res.json({ message: 'Блок создан', task: dataCorrection.task })
+        return flag
+          ? res.json({ message: 'Блок создан', task: dataStructure.task })
+          : res.json({ message: 'Неизвестная ошибка', task: null })
       }
     }
 

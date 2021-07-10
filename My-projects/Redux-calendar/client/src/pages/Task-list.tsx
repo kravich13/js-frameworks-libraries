@@ -164,7 +164,7 @@ const TaskList: React.FC<PropsFromRedux> = ({
 
         createTask({
           id: new Date().getTime(),
-          timestamp: dateClickDay,
+          timestamp: +dateClickDay,
           userName,
           title: addTitle,
           posTop: firstPos,
