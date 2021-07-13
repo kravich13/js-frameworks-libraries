@@ -6,7 +6,7 @@ export const FormAddTask: React.FC<IFormAddTaskProps> = ({
   addTitle,
   currentTime,
   startTask,
-  endTask
+  endTask,
 }) => {
   const date: Date = new Date()
   const timeEnd = `${date.getHours() + 1}:${date.getMinutes()}`

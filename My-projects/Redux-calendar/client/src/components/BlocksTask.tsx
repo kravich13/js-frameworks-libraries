@@ -8,7 +8,7 @@ export const BlocksTask: React.FC<IBlocksTasks_Props> = ({
 }) => {
   return (
     <React.Fragment>
-      {blocks.map((elem) => {
+      {blocks.map((elem): JSX.Element => {
         return <BlockTask block={elem} key={elem.id} fn_delTask={fn_delTask} />
       })}
     </React.Fragment>

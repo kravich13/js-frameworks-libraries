@@ -35,15 +35,7 @@ const Month: React.FC<Props> = ({
   const titleH3: string[] = ['regular-month']
   const generalClasses: string[] = ['general-month']
   const containerOneMonth: string[] = ['container-oneMonth']
-  const [daysOfWeek] = useState<string[]>([
-    'Mo',
-    'Tu',
-    'We',
-    'Th',
-    'Fr',
-    'Sa',
-    'Su',
-  ])
+  const daysOfWeek: string[] = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
   let classTD: string = 'dayOfYear'
   const currentMonth: number = new Date().getMonth()
 
@@ -123,7 +115,7 @@ const Month: React.FC<Props> = ({
   return (
     <div
       className={generalClasses.join(' ')}
-      onClick={() => {
+      onClick={(): void => {
         change_monthNumber(monthNumber)
         setClickForYear(true)
       }}
@@ -136,14 +128,14 @@ const Month: React.FC<Props> = ({
         <div className="container-bigMonth">
           {clickedMonth && (
             <ul>
-              {daysOfWeek.map((elem: string, index: number) => {
+              {daysOfWeek.map((elem: string, index: number): JSX.Element => {
                 return <li key={index}>{elem}</li>
               })}
             </ul>
           )}
           <table>
             <tbody>
-              {stateWeeks.map((elem, index: number) => {
+              {stateWeeks.map((elem, index: number): JSX.Element => {
                 return (
                   <Week
                     key={index}

@@ -1,42 +1,37 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { IBlockTask_Props } from '../interfaces'
 
 export const BlockTask: React.FC<IBlockTask_Props> = ({
   block,
   fn_delTask,
 }) => {
-  const [title, setTitle] = useState<string>('')
-
+  const { posTop, posLeft, height, position, title } = block
   const classes: string[] = ['blockTask']
-  const top: string = `${block.posTop}px`
-  const left: string = `${block.posLeft}px`
-  const height: string = `${block.height}px`
+  const styles: Object = {
+    top: `${posTop}px`,
+    left: `${posLeft}px`,
+    height: `${height}px`,
+  }
 
-  useEffect((): void => {
-    let lengthStr: number = 20
+  let finalTitle: string = title
 
-    if (block.position === 'center') {
-      if (block.title.length < 20) return setTitle(block.title)
-    } else {
-      if (block.title.length < 5) return setTitle(block.title)
-      lengthStr = 5
-    }
+  if (position === 'center' && title.length > 20) {
+    finalTitle = `${title.slice(0, 17)}...`
+  } else if (position !== 'center' && title.length > 5) {
+    finalTitle = `${title.slice(0, 5)}...`
+  }
 
-    const desiredLength: string = block.title.slice(0, lengthStr)
-    setTitle(`${desiredLength}...`)
-  }, [block.title, block.position])
-
-  if (block.position !== 'center') classes.push('half-blockTask')
+  if (position !== 'center') classes.push('half-blockTask')
 
   return (
-    <div className={classes.join(' ')} style={{ top, left, height }}>
+    <div className={classes.join(' ')} style={styles}>
       <p className="leftTaskBorder"></p>
-      <p className="blocksTasksTitle" title={block.title}>
-        {title}
+      <p className="blocksTasksTitle" title={title}>
+        {finalTitle}
       </p>
       <div
         className="deleteTask"
-        onClick={() => fn_delTask(block)}
+        onClick={(): Function => fn_delTask(block)}
         title="Delete"
       >
         &#215;
