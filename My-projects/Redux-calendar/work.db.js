@@ -19,7 +19,7 @@ class Work_DB {
 
     try {
       const { tasks } = await UsersTasks.findOne({ user })
-      if (tasks?.length) {
+      if (tasks.length) {
         tasks.forEach((elem) => {
           if (elem.timestamp === timestamp) arrTasks.push(elem)
         })
@@ -145,7 +145,7 @@ class Work_DB {
 
     try {
       const data = await ExistingUsers.findOne({ login })
-      if (password === data?.password) result = data.login
+      if (password === data.password) result = data.login
     } catch (err) {
       console.log('Ошибка в сравнении пароля')
     } finally {
