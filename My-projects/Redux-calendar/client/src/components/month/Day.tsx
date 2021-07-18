@@ -63,11 +63,13 @@ const Day: React.FC<Props> = ({ elem, authorized, classTD, setDate_Day }) => {
   }
 
   function clickDay(): void {
-    if (!authorized || day === '' || !fullDate) return
+    if (!authorized || !day || !fullDate) return
+
+    document.title = 'Задачи на день'
     setDate_Day(fullDate)
   }
   return (
-    <td className={classes.join(' ')} onClick={clickDay} title={title}>
+    <td className={classes.join(' ')} onClick={() => clickDay()} title={title}>
       <TransitionTasks authorized={authorized} />
     </td>
   )

@@ -26,7 +26,7 @@ const ClickMonth: React.FC<PropsFromRedux> = ({
   daysTasks,
   click_Month,
 }) => {
-  useEffect((): void => click_Month(true), [click_Month])
+  useEffect(() => click_Month(true), [click_Month])
 
   return (
     <Month

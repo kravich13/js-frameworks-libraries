@@ -107,9 +107,11 @@ const Month: React.FC<Props> = ({
   }, [firstDayOfMonth, numberOfMonth, currentMonth, monthNumber, year])
 
   function Moving({ flag }: IMonth_Moving): null | JSX.Element {
-    if (authorized) return null
-    if (flag) return <Redirect to="/month" />
-    return null
+    if (flag) {
+      document.title = 'Задачи в месяце'
+      return <Redirect to="/month" />
+    }
+    return authorized ? null : null
   }
 
   return (

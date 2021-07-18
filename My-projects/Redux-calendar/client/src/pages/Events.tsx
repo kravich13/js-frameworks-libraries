@@ -9,6 +9,7 @@ import {
 } from '../redux/actions'
 import { BlocksTask } from '../components/BlocksTask'
 import { FormAddTask } from '../components/FormAddTask'
+import { BlocksTime } from '../components/tasksTime/BlocksTime'
 import {
   ImapDispatchToProps,
   IMapStateToProps,
@@ -38,7 +39,7 @@ const mapStateToProps = (state: IMapStateToProps) => {
 const connector = connect(mapStateToProps, mapDispatchToProps)
 type PropsFromRedux = ConnectedProps<typeof connector>
 
-const TaskList: React.FC<PropsFromRedux> = ({
+const Events: React.FC<PropsFromRedux> = ({
   blocksTask,
   authorized,
   userName,
@@ -52,17 +53,15 @@ const TaskList: React.FC<PropsFromRedux> = ({
   const [hours, setHours] = useState<string[]>([])
   const [taskHidden, setTaskHidden] = useState<boolean>(false)
   const [openDay, setOpenDay] = useState<string>('None')
-  const $addTitle = useRef<HTMLInputElement>(null)
-  const $startTask = useRef<HTMLInputElement>(null)
-  const $endTask = useRef<HTMLInputElement>(null)
+  const [titleValue, setTitleValue] = useState<string>('')
   const $blocksTime = useRef<HTMLLIElement[]>([])
-  const classesTimeBlock: string[] = ['block-time-toDo']
 
-  const date: Date = new Date()
-  const currentHrs: string | number =
-    date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
-  const currentMin: string | number =
-    date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+  const timeHours: number = new Date().getHours()
+  const timeMinutes: number = new Date().getMinutes()
+  const currentHrs: string =
+    timeHours < 10 ? `0${timeHours}` : timeHours.toString()
+  const currentMin: string =
+    timeMinutes < 10 ? `0${timeMinutes}` : timeMinutes.toString()
   const currentTime: string = `${currentHrs}:${currentMin}`
 
   const objData: ITaskList_req_change = { userName, tasks: [] }
@@ -101,15 +100,20 @@ const TaskList: React.FC<PropsFromRedux> = ({
   const formAddTask = (event: React.ChangeEvent<HTMLFormElement>): void => {
     event.preventDefault()
 
-    const addTitle: string = $addTitle.current!.value
-    if (addTitle.length < 2) {
-      $addTitle.current!.value = ''
-      $addTitle.current!.placeholder = 'Меньше двух символов'
-      return
+    const et = event.target as HTMLFormElement
+    const $title = et.elements.namedItem('title') as HTMLInputElement
+    const $startTime = et.elements.namedItem('startTime') as HTMLInputElement
+    const $endTime = et.elements.namedItem('endTime') as HTMLInputElement
+
+    function changeInput(): void {
+      setTitleValue('')
+      $title.placeholder = 'Меньше двух символов'
     }
 
-    const dateStart: Date | null = $startTask.current!.valueAsDate
-    const dateEnd: Date | null = $endTask.current!.valueAsDate
+    if (titleValue.length < 2) return changeInput()
+
+    const dateStart = $startTime.valueAsDate as Date
+    const dateEnd = $endTime.valueAsDate as Date
 
     if (!dateStart) return actions_withAlert('Не указано начальное время')
     if (!dateEnd) return actions_withAlert('Не указано конечное время')
@@ -121,6 +125,9 @@ const TaskList: React.FC<PropsFromRedux> = ({
 
     let differenceMinutes: number = 0
     let posBlock: string = 'center'
+
+    const min_minus = (): number => endMin - startMin
+    const hrs_minus = (): number => endHours - startHours
 
     if (startHours === endHours) {
       if (startMin < endMin) differenceMinutes = min_minus()
@@ -136,12 +143,6 @@ const TaskList: React.FC<PropsFromRedux> = ({
       } else return actions_withAlert('Неверно введены часы')
     }
 
-    function min_minus(): number {
-      return endMin - startMin
-    }
-    function hrs_minus(): number {
-      return endHours - startHours
-    }
     for (const elem of $blocksTime.current) {
       if (elem.children[0].id === `task${dateStart.getUTCHours()}`) {
         const finallyHeight: number =
@@ -166,17 +167,15 @@ const TaskList: React.FC<PropsFromRedux> = ({
           id: new Date().getTime(),
           timestamp: +dateClickDay,
           userName,
-          title: addTitle,
+          title: titleValue,
           posTop: firstPos,
           height: finallyHeight,
           position: posBlock,
           posLeft,
         })
 
-        $addTitle.current!.value = ''
-        $addTitle.current!.placeholder = 'Заголовок'
         // window.scrollBy(0, firstPos - finallyHeight)
-        return
+        return changeInput()
       }
     }
 
@@ -212,11 +211,10 @@ const TaskList: React.FC<PropsFromRedux> = ({
         }
       }
 
-      if (divisionOfWidth) {
-        posBlock = 'right'
-        return startPosLeft + 100
-      }
-      return startPosLeft
+      if (!divisionOfWidth) return startPosLeft
+
+      posBlock = 'right'
+      return startPosLeft + 100
     }
   }
 
@@ -292,62 +290,33 @@ const TaskList: React.FC<PropsFromRedux> = ({
       touchTop >= mainTop + 1 && endExisting <= endCurrent
 
     return startPosInTheRange || endPosInTheRange || existingInTheRange
-      ? true
-      : false
   }
 
   return (
     <div id="container-task-list">
       {!authorized && <div>Вы не авторизировались, функционал недоступен.</div>}
-      {authorized && (
-        <div id="container-auth-task-list">
-          <h3 style={{ margin: '30px' }}>{openDay}</h3>
-          <button
-            id="task-hiddenForm"
-            onClick={() => setTaskHidden(!taskHidden)}
-          >
-            {!taskHidden ? 'Добавить событие' : 'Скрыть окно'}
-          </button>
+      <div id="container-auth-task-list">
+        <h3 style={{ margin: '30px' }}>{openDay}</h3>
+        <button id="task-hiddenForm" onClick={() => setTaskHidden(!taskHidden)}>
+          {!taskHidden ? 'Добавить событие' : 'Скрыть окно'}
+        </button>
 
-          {taskHidden && (
-            <FormAddTask
-              formAddTask={formAddTask}
-              addTitle={$addTitle}
-              currentTime={currentTime}
-              startTask={$startTask}
-              endTask={$endTask}
-            />
-          )}
+        {taskHidden && (
+          <FormAddTask
+            formAddTask={formAddTask}
+            currentTime={currentTime}
+            titleValue={titleValue}
+            setTitleValue={setTitleValue}
+          />
+        )}
 
-          <div id="block-allTasks">
-            <BlocksTask blocks={blocksTask} fn_delTask={fn_delTask} />
-            <ul id="task-list">
-              {hours.map((elem, index: number) => {
-                if (index === hours.length - 1) {
-                  classesTimeBlock.push('end-time-toDo')
-                }
-
-                return (
-                  <li
-                    className={classesTimeBlock.join(' ')}
-                    key={index}
-                    ref={(el: HTMLLIElement) =>
-                      ($blocksTime.current[index] = el)
-                    }
-                  >
-                    <h3 id={`task${index}`} className="time-toDo">
-                      {elem}
-                    </h3>
-                    <div className="container-toDo"></div>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
+        <div id="block-allTasks">
+          <BlocksTime hours={hours} $blocksTime={$blocksTime} />
+          <BlocksTask blocks={blocksTask} fn_delTask={fn_delTask} />
         </div>
-      )}
+      </div>
     </div>
   )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskList)
+export default connect(mapStateToProps, mapDispatchToProps)(Events)

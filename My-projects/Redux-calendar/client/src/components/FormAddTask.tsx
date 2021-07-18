@@ -3,13 +3,12 @@ import { IFormAddTaskProps } from '../interfaces'
 
 export const FormAddTask: React.FC<IFormAddTaskProps> = ({
   formAddTask,
-  addTitle,
   currentTime,
-  startTask,
-  endTask,
+  titleValue,
+  setTitleValue,
 }) => {
   const date: Date = new Date()
-  const timeEnd = `${date.getHours() + 1}:${date.getMinutes()}`
+  const timeEnd: string = `${date.getHours() + 1}:${date.getMinutes()}`
 
   return (
     <div id="block-addTask">
@@ -18,16 +17,18 @@ export const FormAddTask: React.FC<IFormAddTaskProps> = ({
           type="text"
           placeholder="Заголовок"
           id="task-addTitle"
-          ref={addTitle}
+          value={titleValue}
+          onChange={(e) => setTitleValue(e.target.value)}
+          name="title"
         />
 
         <label>
           <p>Начало:</p>
-          <input type="time" ref={startTask} defaultValue={currentTime} />
+          <input type="time" defaultValue={currentTime} name="startTime" />
         </label>
         <label>
           <p>Конец:</p>
-          <input type="time" ref={endTask} defaultValue={timeEnd} />
+          <input type="time" defaultValue={timeEnd} name="endTime" />
         </label>
         <button id="task-save">Сохранить</button>
       </form>

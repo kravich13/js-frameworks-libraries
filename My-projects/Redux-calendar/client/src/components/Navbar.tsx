@@ -26,18 +26,20 @@ const Navbar: React.FC<PropsFromRedux> = ({
   log_out,
   hidden_navbar,
 }) => {
-  // const history = useHistory()
+  const onClick: Function = (
+    e: React.MouseEvent<HTMLLinkElement>,
+    flag: boolean
+  ): void => {
+    const et = e.target as HTMLLinkElement
 
-  function handleClick(where: string, hiddenNav: boolean = false): void {
-    // history.push(where)
-    // console.log(history)
-    hidden_navbar(hiddenNav)
+    document.title = et.textContent as string
+    hidden_navbar(flag)
   }
 
   function UserAuthorized({
     authorized,
   }: IComponent_UserAuthorized): JSX.Element {
-    if (authorized)
+    if (authorized) {
       return (
         <React.Fragment>
           <li title="В разработке">
@@ -51,13 +53,14 @@ const Navbar: React.FC<PropsFromRedux> = ({
           </li>
         </React.Fragment>
       )
+    }
 
     return (
       <React.Fragment>
-        <li onClick={() => handleClick('/login', true)}>
+        <li onClick={(e) => onClick(e, true)}>
           <NavLink to="/login">Вход</NavLink>
         </li>
-        <li onClick={() => handleClick('/sign-up', true)}>
+        <li onClick={(e) => onClick(e, true)}>
           <NavLink to="/sign-up">Регистрация</NavLink>
         </li>
       </React.Fragment>
@@ -70,7 +73,7 @@ const Navbar: React.FC<PropsFromRedux> = ({
         <MyLogo />
       </div>
       <ul id="container-url">
-        <li onClick={() => handleClick('/about')} title="Посмотреть информацию">
+        <li onClick={(e) => onClick(e, false)} title="Посмотреть информацию">
           <NavLink to="/about">О проекте</NavLink>
         </li>
         <UserAuthorized authorized={authorized} />

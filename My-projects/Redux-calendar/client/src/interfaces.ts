@@ -110,10 +110,9 @@ interface IDay_DispatchProps {
 
 interface IFormAddTaskProps {
   formAddTask: Function
-  addTitle: any
   currentTime: string
-  startTask: any
-  endTask: any
+  titleValue: string
+  setTitleValue: Function
 }
 
 interface IMyLogoProps {
@@ -146,6 +145,19 @@ interface IBlockTask_styles {
   [keys: string]: string
 }
 
+interface IBlocksTime_Props {
+  $blocksTime: any
+  hours: string[]
+}
+
+interface IBlockTime_Props {
+  classes: string[]
+  $blocksTime: any
+  title: string
+  index: number
+  lastElem: number
+}
+
 export type {
   IMapStateToProps,
   ImapDispatchToProps,
@@ -171,4 +183,6 @@ export type {
   IMonth_objOfDay,
   IBlockTask_styles,
   ITaskList_dynamicPosLeft,
+  IBlocksTime_Props,
+  IBlockTime_Props,
 }
