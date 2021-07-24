@@ -2,6 +2,7 @@
 interface ImapDispatchToProps {
   [key: string]: Function
 }
+
 interface IMapStateToProps {
   auth: {
     authorized: string
@@ -54,7 +55,7 @@ interface ITaskList_blockInRange {
   touchHeight: number
 }
 
-// ============= Login || Navbar || TransitionTasks =============
+// ============= Login || Navbar || User-Auth Props =============
 interface IComponent_UserAuthorized {
   authorized?: string
 }

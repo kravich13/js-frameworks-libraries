@@ -1,14 +1,11 @@
-import React, { useRef, useEffect } from 'react'
-import { NavLink, Redirect } from 'react-router-dom'
+import React, { useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import { connect, ConnectedProps } from 'react-redux'
 import { req_auth, hidden_navbar, actions_withAlert } from '../redux/actions'
 import MyLogo from '../components/MyLogo'
-import {
-  ImapDispatchToProps,
-  IMapStateToProps,
-  IComponent_UserAuthorized,
-} from '../interfaces'
+import { ImapDispatchToProps, IMapStateToProps } from '../interfaces'
 import '../styles/forms-auth-login.css'
+import UserAuthorized from '../components/Redirect/User-Auth'
 
 const mapDispatchToProps: ImapDispatchToProps = {
   req_auth,
@@ -28,42 +25,28 @@ const Login: React.FC<PropsFromRedux> = ({
   hidden_navbar,
   actions_withAlert,
 }) => {
-  const $userName = useRef<HTMLInputElement>(null)
-  const $userPassword = useRef<HTMLInputElement>(null)
+  const [loginValue, setLoginValue] = useState<string>('')
+  const [passwordValue, setPasswordValue] = useState<string>('')
 
   const loginSubmit = (
     event: React.ChangeEvent<HTMLFormElement>
   ): string | void => {
     event.preventDefault()
 
-    const name: string = $userName.current!.value
-    const password: string = $userPassword.current!.value
+    const et = event.target as HTMLFormElement
+    const $userName = et.elements.namedItem('login') as HTMLInputElement
 
-    if (name.length < 3) {
-      $userName.current!.value = ''
-      return ($userName.current!.placeholder = 'Короткое имя')
+    if (loginValue.length < 3) {
+      setLoginValue('')
+      return ($userName.placeholder = 'Короткое имя')
     }
-    if (password.length < 8) {
+    if (passwordValue.length < 8) {
       actions_withAlert('Короткий пароль')
-      $userPassword.current!.value = ''
-      return
+      return setPasswordValue('')
     }
 
-    $userName.current!.placeholder = 'Введите имя'
-    req_auth({ name, password })
-  }
-
-  useEffect((): void => hidden_navbar(true), [hidden_navbar])
-
-  useEffect((): void => {
-    if (authorized) hidden_navbar(false)
-  }, [authorized, hidden_navbar])
-
-  function UserAuthorized({
-    authorized,
-  }: IComponent_UserAuthorized): null | JSX.Element {
-    if (!authorized) return null
-    return <Redirect to="/" />
+    $userName.placeholder = 'Введите имя'
+    req_auth({ loginValue, passwordValue })
   }
 
   return (
@@ -78,12 +61,19 @@ const Login: React.FC<PropsFromRedux> = ({
 
         <label>
           <p>Имя пользователя</p>
-          <input type="text" ref={$userName} />
+          <input
+            type="text"
+            onChange={(e) => setLoginValue(e.target.value)}
+            name="login"
+          />
         </label>
 
         <label>
           <p>Пароль</p>
-          <input type="password" ref={$userPassword} />
+          <input
+            type="password"
+            onChange={(e) => setPasswordValue(e.target.value)}
+          />
         </label>
 
         <div id="log-into-account">

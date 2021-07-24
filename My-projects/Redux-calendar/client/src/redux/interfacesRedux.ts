@@ -92,8 +92,8 @@ interface IActions_res_signUp {
   message: string
 }
 interface IActions_req_auth {
-  name: string
-  password: string
+  loginValue: string
+  passwordValue: string
 }
 interface IActions_res_auth {
   login: string

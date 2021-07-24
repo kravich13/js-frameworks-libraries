@@ -197,12 +197,14 @@ export function req_signUp(task: IActions_req_signUp): Function {
 export function req_auth(task: IActions_req_auth): Function {
   return async (dispatch: Function): Promise<void> => {
     try {
+      const { loginValue: name, passwordValue: password } = task
+
       const res = await fetch('/login', {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
         },
-        body: JSON.stringify(task),
+        body: JSON.stringify({ name, password }),
       })
       const json: IActions_res_auth = await res.json()
 

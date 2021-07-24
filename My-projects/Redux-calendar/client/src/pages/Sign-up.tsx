@@ -1,17 +1,13 @@
-import React, { useEffect, useRef } from 'react'
-import { NavLink, Redirect } from 'react-router-dom'
+import React, { useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import { connect, ConnectedProps } from 'react-redux'
-import { req_signUp, hidden_navbar, actions_withAlert } from '../redux/actions'
+import { req_signUp, actions_withAlert } from '../redux/actions'
 import MyLogo from '../components/MyLogo'
-import {
-  IComponent_UserAuthorized,
-  ImapDispatchToProps,
-  IMapStateToProps,
-} from '../interfaces'
+import { ImapDispatchToProps, IMapStateToProps } from '../interfaces'
+import UserAuthorized from '../components/Redirect/User-Auth'
 
 const mapDispatchToProps: ImapDispatchToProps = {
   req_signUp,
-  hidden_navbar,
   actions_withAlert,
 }
 const mapStateToProps = (state: IMapStateToProps) => {
@@ -24,54 +20,43 @@ type PropsFromRedux = ConnectedProps<typeof connector>
 const SignUp: React.FC<PropsFromRedux> = ({
   authorized,
   req_signUp,
-  hidden_navbar,
   actions_withAlert,
 }) => {
-  const $login = useRef<HTMLInputElement>(null)
-  const $birthday = useRef<HTMLInputElement>(null)
-  const $password = useRef<HTMLInputElement>(null)
-  const $passwordConfirm = useRef<HTMLInputElement>(null)
+  const [loginValue, setLoginValue] = useState<string>('')
+  const [birthdayValue, setBirthdayValue] = useState<string>('')
+  const [passOrigValue, setPassOrigValue] = useState<string>('')
+  const [passCopyValue, setPassCopyValue] = useState<string>('')
 
   const signUpForm = (
     event: React.FormEvent<HTMLFormElement>
   ): void | string | Function => {
     event.preventDefault()
 
-    const login: string = $login.current!.value
-    const birthday: string = $birthday.current!.value
-    const password: string = $password.current!.value
-    const passwordConfirm: string = $passwordConfirm.current!.value
+    const et = event.target as HTMLFormElement
+    const $login = et.elements.namedItem('login') as HTMLInputElement
 
-    const dateYear: number = new Date(birthday).getFullYear()
+    const dateYear: number = new Date(birthdayValue).getFullYear()
     if (!dateYear || dateYear < 1920 || dateYear > 2012) {
       return actions_withAlert('Неправильная дата рождения')
     }
 
-    if (login.length < 3) {
-      $login.current!.value = ''
-      return ($login.current!.placeholder = 'Короткое имя')
+    if (loginValue.length < 3) {
+      setLoginValue('')
+      return ($login.placeholder = 'Короткое имя')
     }
-    if (password.length < 8) return actions_withAlert('Короткий пароль')
-    if (passwordConfirm !== password) {
+    if (passOrigValue.length < 8) return actions_withAlert('Короткий пароль')
+    if (passCopyValue !== passOrigValue) {
       return actions_withAlert('Неверный подтверждённый пароль')
     }
 
-    req_signUp({ login, birthday, password, passwordConfirm })
+    req_signUp({
+      login: loginValue,
+      birthday: birthdayValue,
+      password: passOrigValue,
+      passwordConfirm: passCopyValue,
+    })
 
-    $login.current!.placeholder = 'Введите логин'
-  }
-
-  useEffect((): void => hidden_navbar(true), [hidden_navbar])
-
-  useEffect((): void => {
-    if (authorized) hidden_navbar(false)
-  }, [hidden_navbar, authorized])
-
-  function UserAuthorized({
-    authorized,
-  }: IComponent_UserAuthorized): null | JSX.Element {
-    if (!authorized) return null
-    return <Redirect to="/" />
+    $login.placeholder = 'Введите логин'
   }
 
   return (
@@ -89,24 +74,37 @@ const SignUp: React.FC<PropsFromRedux> = ({
           <div id="login-birthday">
             <label>
               <p>Логин</p>
-              <input type="text" ref={$login} />
+              <input
+                type="text"
+                onChange={(e) => setLoginValue(e.target.value)}
+                name="login"
+              />
             </label>
 
             <label className="label-right">
               <p>Дата рождения</p>
-              <input type="date" ref={$birthday} />
+              <input
+                type="date"
+                onChange={(e) => setBirthdayValue(e.target.value)}
+              />
             </label>
           </div>
 
           <div id="signUp-password">
             <label>
               <p>Пароль</p>
-              <input type="password" ref={$password} />
+              <input
+                type="password"
+                onChange={(e) => setPassOrigValue(e.target.value)}
+              />
             </label>
 
             <label className="label-right">
               <p>Подтвердите пароль</p>
-              <input type="password" ref={$passwordConfirm} />
+              <input
+                type="password"
+                onChange={(e) => setPassCopyValue(e.target.value)}
+              />
             </label>
           </div>
           <div id="create-account">

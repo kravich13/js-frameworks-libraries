@@ -9,7 +9,7 @@ router.post(
   '/login',
   [
     check('name').isLength({ min: 3, max: 21 }).bail(),
-    check('password').isLength({ min: 8, max: 48 })
+    check('password').isLength({ min: 8, max: 48 }),
   ],
   async (req, res) => {
     try {
