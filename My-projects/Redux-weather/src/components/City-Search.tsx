@@ -8,7 +8,7 @@ const useStyles = makeStyles({
   subTitle: { textAlign: 'center' },
 })
 
-export const CitySearch: React.FC<ICitySearch_Props> = ({
+const CitySearch: React.FC<ICitySearch_Props> = ({
   clickedItem,
   item_selection_arrow,
   searchForMatches,
@@ -32,7 +32,7 @@ export const CitySearch: React.FC<ICitySearch_Props> = ({
   useEffect((): void => {
     if (clickedItem.default) return // the first elem from search
 
-    $textField.current!.value = clickedItem.title
+    setInputValue(clickedItem.title)
     // $textField.current!.focus()
     // $textField.current!.select()
   }, [clickedItem])
@@ -47,7 +47,7 @@ export const CitySearch: React.FC<ICitySearch_Props> = ({
   }
 
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setInputValue((prev) => (prev = event.target.value))
+    setInputValue(event.target.value)
     searchForMatches(event.target.value)
   }
 
@@ -64,9 +64,12 @@ export const CitySearch: React.FC<ICitySearch_Props> = ({
           onKeyDown={keyDownInput}
           onFocus={(event): void => event.target.select()}
           onBlur={(): void => clearSearch()}
+          value={inputValue}
           inputRef={$textField}
         />
       </label>
     </form>
   )
 }
+
+export default React.memo(CitySearch)

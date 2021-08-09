@@ -8,6 +8,7 @@
   - [Нестандартные ситуации](#нестандартные-ситуации)
     - [Fix formElements](#fix-formelements)
     - [Fix return useEffect](#fix-return-useeffect)
+    - [Fix React Lazy](#fix-react-lazy)
 
 # React-TypeScript
 
@@ -170,3 +171,12 @@ useEffect((): (() => void) => { // указываем (() => return value)
 }, [socket])
 ```
 
+### Fix React Lazy 
+
+Для подключения ленивого компонента его нужно дождаться, т.е. асинхронная загрузка: 
+
+```tsx
+const LZComp = React.lazy(async () => {
+  return await import('./../components/LazyComponents')
+})
+```

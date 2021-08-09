@@ -48,6 +48,7 @@ const DetailedCity: React.FC<PropsFromRedux> = ({ data }) => {
 
   const titleTemp: string =
     temp > 0 ? `+${temp}` : temp < 0 ? `-${temp}` : `${temp}`
+
   return (
     <Container className={classes.root}>
       <Card className={classes.cardInfo}>

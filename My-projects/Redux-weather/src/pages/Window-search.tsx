@@ -2,7 +2,7 @@ import React, { memo, useMemo } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { Container, makeStyles } from '@material-ui/core'
 import { ClassNameMap } from '@material-ui/styles'
-import { CitySearch } from '../components/City-Search'
+import CitySearch from '../components/City-Search'
 import { ListOfSities } from '../components/List-of-Cities'
 import { ListEnteredCities } from '../components/ListEntered-Cities'
 import {

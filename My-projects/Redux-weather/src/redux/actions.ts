@@ -131,9 +131,7 @@ export function deleteCity(task: ICitiesRed_CommonFields) {
   return { type: DELETE_CITY, payload: task }
 }
 
-export function clearSearch() {
-  return { type: ZEROING_SEARCH_DATA, payload: '' }
-}
+export const clearSearch = () => ({ type: ZEROING_SEARCH_DATA, payload: '' })
 
 async function getWeatherOfCity(
   data: ICitiesRed_EnteredCities[] | ICitiesRed_CommonFields[]
