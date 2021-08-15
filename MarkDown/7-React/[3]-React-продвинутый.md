@@ -542,6 +542,9 @@ import { BrowserRouter, Switch, Route, NavLink, Redirect } from 'react-router-do
     <Route component={Login} path="/login" exact />
     <Route component={ClickMonth} path="/month" exact />
     <Route component={TaskList} path="/month/events" exact />
+
+    // Показать на неверном роуте этот компонент (код)
+    <Route render={() => <div>There is no such page</div>} exact />
     ```
 * `<NavLink to="/">` - перенаправляет на страницу без её перезагрузки. Можно прикручивать различные стили и сам **css** доступен как атрибут `a`
 
