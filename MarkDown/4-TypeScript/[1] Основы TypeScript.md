@@ -244,7 +244,6 @@ enum CryptoCount {
 
 const price = CryptoCount.EOS 
 console.log(price) // 1 EOS === $3,65
-
 ```
 
 ### ***Динамические ключи:***
