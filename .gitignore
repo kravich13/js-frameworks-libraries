@@ -1,4 +1,4 @@
-node_modules 
-uploads
-rewriting
+Practica/**/*node_modules/
+My-projects/**/*node_modules/
+*node_modules
 .env
