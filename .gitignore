@@ -1,4 +1,11 @@
-Practica/**/*node_modules/
 My-projects/**/*node_modules/
+My-projects/**/*public/
+My-projects/**/*uploads/
+
+Practica/**/*node_modules/
+Practica/**/*public/
+Practica/**/*uploads/
+
 *node_modules
+
 .env
