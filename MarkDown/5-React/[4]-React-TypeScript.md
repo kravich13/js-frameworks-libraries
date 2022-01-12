@@ -1,3 +1,5 @@
+# React-TypeScript
+
 - [React-TypeScript](#react-typescript)
   - [Установка](#установка)
     - [***Установка в новый проект:***](#установка-в-новый-проект)
@@ -10,7 +12,11 @@
     - [Fix return useEffect](#fix-return-useeffect)
     - [Fix React Lazy](#fix-react-lazy)
 
-# React-TypeScript
+
+Отличный сайт с кучей инфо по тому, как писать на TS правильно. 
+
+https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/forms_and_events
+
 
 ## Установка
 
