@@ -1,11 +1,13 @@
 My-projects/**/*node_modules/
 My-projects/**/*public/
 My-projects/**/*uploads/
+My-projects/**/*package-lock.json
 
 Practica/**/*node_modules/
 Practica/**/*public/
 Practica/**/*uploads/
+Practica/**/*package-lock.json
 
 *node_modules
-
+.expo
 .env

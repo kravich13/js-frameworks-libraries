@@ -21,7 +21,14 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Root" component={BigCalendar} />
+      <Stack.Screen
+        name="Root"
+        component={BigCalendar}
+        options={{
+          title: 'Main Calendar',
+          headerTitleAlign: 'center',
+        }}
+      />
       <Stack.Screen name="Month" component={MonthlyCalendar} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       {/* <Stack.Group screenOptions={{ presentation: 'modal' }}>
