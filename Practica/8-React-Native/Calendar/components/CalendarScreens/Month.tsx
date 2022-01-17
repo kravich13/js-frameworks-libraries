@@ -1,13 +1,16 @@
+import { useNavigation } from '@react-navigation/native';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 import React, { FC } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { IMonth_Props } from '../../interfaces';
-import { Text, View } from '../Themed';
+import { Text, View } from '../ThemesAndStyles/Themed';
 import { Week } from './Week';
 
 export const Month: FC<IMonth_Props> = ({ monthNumber }) => {
-  const monthlyCalendar: number[][] = [[], [], [], [], [], []];
+  const navigation = useNavigation();
+
+  const fullCalendar: number[][] = [[], [], [], [], [], []];
 
   const currentYear = DateTime.now().year;
   const monthName = DateTime.utc(currentYear, monthNumber).toFormat('LLL');
@@ -25,30 +28,34 @@ export const Month: FC<IMonth_Props> = ({ monthNumber }) => {
 
   for (let i = 1; i <= totalNumberDays; i++) {
     if (i >= firstDate.weekday && i < lastDay) {
-      if (monthlyCalendar[indexWeek].length === 7) {
-        monthlyCalendar[++indexWeek].push(numberDay++);
+      if (fullCalendar[indexWeek].length === 7) {
+        fullCalendar[++indexWeek].push(numberDay++);
       } else {
-        monthlyCalendar[indexWeek].push(numberDay++);
+        fullCalendar[indexWeek].push(numberDay++);
       }
-    } else if (monthlyCalendar[indexWeek].length !== 7) {
-      monthlyCalendar[indexWeek].push(0);
+    } else if (fullCalendar[indexWeek].length !== 7) {
+      fullCalendar[indexWeek].push(0);
     }
   }
 
-  _.remove(monthlyCalendar, (week) => !week.length);
+  const readyCalendar = _.filter(fullCalendar, (week) => week.length) as number[][];
+
+  const onPress = () => {
+    navigation.navigate('Month');
+  };
+
+  const renderItem = (week: number[], index: number) => {
+    return <Week week={week} isCurrentMonth={isCurrentMonth} key={String(index)} />;
+  };
 
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} activeOpacity={0.5} onPress={onPress}>
       <View>
         <Text style={[styles.text, isCurrentMonth ? styles.currentMonth : {}]}>{monthName}</Text>
       </View>
 
-      <View>
-        {monthlyCalendar.map((week, index) => {
-          return <Week week={week} isCurrentMonth={isCurrentMonth} key={String(index)} />;
-        })}
-      </View>
-    </View>
+      <View>{readyCalendar.map(renderItem)}</View>
+    </TouchableOpacity>
   );
 };
 

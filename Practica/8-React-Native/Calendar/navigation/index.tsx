@@ -2,9 +2,7 @@ import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { ColorSchemeName } from 'react-native';
-import { MonthlyCalendar } from '../screens/MonthlyCalendar';
-import NotFoundScreen from '../screens/NotFoundScreen';
-import { BigCalendar } from '../screens/BigCalendar';
+import { BigCalendar, MonthlyCalendar, NotFoundScreen } from '../screens';
 import { RootStackParamList } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
@@ -25,12 +23,20 @@ function RootNavigator() {
         name="Root"
         component={BigCalendar}
         options={{
-          title: 'Main Calendar',
+          title: 'Calendar',
+          headerTitleAlign: 'center',
+          animation: 'flip',
+        }}
+      />
+      <Stack.Screen
+        name="Month"
+        component={MonthlyCalendar}
+        options={{
+          title: 'Monthly calendar',
           headerTitleAlign: 'center',
         }}
       />
-      <Stack.Screen name="Month" component={MonthlyCalendar} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!', headerTitleAlign: 'center' }} />
       {/* <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
       </Stack.Group> */}

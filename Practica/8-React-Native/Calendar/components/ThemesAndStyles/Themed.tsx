@@ -1,20 +1,5 @@
 import { ScrollView as DefaultScrollView, Text as DefaultText, View as DefaultView } from 'react-native';
-import { Colors } from '../constants';
-import { useColorScheme } from '../hooks';
-
-export function useThemeColor(
-  props: { light?: string; dark?: string },
-  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
-) {
-  const theme = useColorScheme();
-  const colorFromProps = props[theme];
-
-  if (colorFromProps) {
-    return colorFromProps;
-  } else {
-    return Colors[theme][colorName];
-  }
-}
+import { useThemeColor } from '../../hooks';
 
 type ThemeProps = {
   lightColor?: string;

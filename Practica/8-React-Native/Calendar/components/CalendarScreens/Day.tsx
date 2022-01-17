@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 import React, { FC } from 'react';
 import { StyleSheet } from 'react-native';
 import { IDay_Props } from '../../interfaces';
-import { Text, View } from '../Themed';
+import { Text, View } from '../ThemesAndStyles/Themed';
 
 export const Day: FC<IDay_Props> = ({ day, isCurrentMonth }) => {
   const isCurrentDay = DateTime.now().day === day && isCurrentMonth;
@@ -19,8 +19,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 1,
-    paddingVertical: 2.5,
+    height: 18,
   },
   currentDay: {
     backgroundColor: '#ff4500',
