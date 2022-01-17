@@ -1,12 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Context } from './context';
-import { useColorScheme } from './hooks';
-import { useCachedResources } from './hooks';
+import { useCachedResources, useColorScheme } from './hooks';
 import Navigation from './navigation';
-
-import 'intl';
-import 'intl/locale-data/jsonp/en'; // or any other locale you need
 
 export default function App() {
   const isLoadingComplete = useCachedResources();

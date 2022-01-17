@@ -1,22 +1,16 @@
 import { useNavigation } from '@react-navigation/native';
-import _ from 'lodash';
+import _, { wrap } from 'lodash';
 import { DateTime } from 'luxon';
 import React, { FC } from 'react';
 import { FlatList, ListRenderItemInfo, StyleSheet } from 'react-native';
 import { IMonth_Props } from '../../interfaces';
 import { Text, View } from '../ThemesAndStyles/Themed';
-import { Week } from './Week';
 
 export const SmallMonth: FC<IMonth_Props> = ({ monthNumber }) => {
   const navigation = useNavigation();
 
-  // const monthlyCalendar = useMonthlyCalendar(monthNumber);
-
-  // const currentYear = DateTime.now().year;
-  // const monthName = DateTime.utc(currentYear, monthNumber).toFormat('LLL');
-  // const isCurrentMonth = DateTime.now().month === monthNumber;
-
-  const fullCalendar: number[][] = [[], [], [], [], [], []];
+  const fullCalendar: number[] = [];
+  const newWeeksIndices: number[] = [];
 
   const currentYear = DateTime.now().year;
   const monthName = DateTime.utc(currentYear, monthNumber).toFormat('LLL');
@@ -27,41 +21,42 @@ export const SmallMonth: FC<IMonth_Props> = ({ monthNumber }) => {
   const daysInMonth = firstDate.daysInMonth;
   const lastDay = firstDate.weekday + daysInMonth;
   const dayWeekLastDay = firstDate.set({ day: daysInMonth }).weekday;
-  const totalNumberDays = 7 - dayWeekLastDay + lastDay;
+  const totalNumberDays = 7 - dayWeekLastDay + lastDay - 1;
 
   let numberDay = 1;
   let indexWeek = 0;
 
+  for (let i = 1; i < 7; i++) {
+    newWeeksIndices.push(i * 7);
+  }
+
   for (let i = 1; i <= totalNumberDays; i++) {
     if (i >= firstDate.weekday && i < lastDay) {
-      if (fullCalendar[indexWeek].length === 7) {
-        fullCalendar[++indexWeek].push(numberDay++);
-      } else {
-        fullCalendar[indexWeek].push(numberDay++);
-      }
-    } else if (fullCalendar[indexWeek].length !== 7) {
-      fullCalendar[indexWeek].push(0);
+      fullCalendar.push(numberDay++);
+    } else {
+      fullCalendar.push(0);
     }
   }
 
-  const readyCalendar = _.filter(fullCalendar, (week) => week.length) as number[][];
-
-  const renderItem = ({ item }: ListRenderItemInfo<number[]>) => {
-    return <Week week={item} isCurrentMonth={isCurrentMonth} />;
+  const renderItem = (elem: number, index: number) => {
+    return (
+      <View style={styles.day} key={String(index)}>
+        <Text style={styles.textDay}>{elem}</Text>
+      </View>
+    );
   };
-  const keyExtractor = (item: number[], index: number) => String(index);
+
+  // const keyExtractor = (item: number, index: number) => String(index);
 
   return (
     <View>
       <View>
-        <Text style={[styles.text, isCurrentMonth ? styles.currentMonth : {}]}>{monthName}</Text>
+        <Text style={[styles.textВфн, isCurrentMonth ? styles.currentMonth : {}]}>{monthName}</Text>
       </View>
 
-      <View>
-        <FlatList data={fullCalendar} renderItem={renderItem} keyExtractor={keyExtractor} />
-        {/* {readyCalendar.map((week, index) => {
-          return <Week week={week} isCurrentMonth={isCurrentMonth} key={String(index)} />;
-        })} */}
+      <View style={styles.month}>
+        {fullCalendar.map(renderItem)}
+        {/* <FlatList data={fullCalendar} renderItem={renderItem} keyExtractor={keyExtractor} /> */}
       </View>
     </View>
   );
@@ -74,8 +69,25 @@ const styles = StyleSheet.create({
   currentMonth: {
     color: '#ff4500',
   },
-  text: {
+  textВфн: {
     fontSize: 20,
+    fontWeight: '600',
+  },
+  month: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  day: {
+    borderTopColor: 'grey',
+    borderTopWidth: 1,
+    width: `${100 / 7}%`,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textDay: {
+    fontSize: 18,
     fontWeight: '600',
   },
 });

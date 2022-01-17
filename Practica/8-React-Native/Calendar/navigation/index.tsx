@@ -34,12 +34,10 @@ function RootNavigator() {
         options={{
           title: 'Monthly calendar',
           headerTitleAlign: 'center',
+          animation: 'flip',
         }}
       />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!', headerTitleAlign: 'center' }} />
-      {/* <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group> */}
     </Stack.Navigator>
   );
 }

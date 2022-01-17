@@ -1,16 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
-import _ from 'lodash';
 import { DateTime } from 'luxon';
 import React, { FC } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { IMonth_Props } from '../../interfaces';
 import { Text, View } from '../ThemesAndStyles/Themed';
-import { Week } from './Week';
+import { Day } from './Day';
 
-export const Month: FC<IMonth_Props> = ({ monthNumber }) => {
+export const Month: FC<IMonth_Props> = ({ monthNumber, littleMonth }) => {
   const navigation = useNavigation();
 
-  const fullCalendar: number[][] = [[], [], [], [], [], []];
+  const fullCalendar: number[] = [];
 
   const currentYear = DateTime.now().year;
   const monthName = DateTime.utc(currentYear, monthNumber).toFormat('LLL');
@@ -21,47 +20,51 @@ export const Month: FC<IMonth_Props> = ({ monthNumber }) => {
   const daysInMonth = firstDate.daysInMonth;
   const lastDay = firstDate.weekday + daysInMonth;
   const dayWeekLastDay = firstDate.set({ day: daysInMonth }).weekday;
-  const totalNumberDays = 7 - dayWeekLastDay + lastDay;
+  const totalNumberDays = 7 - dayWeekLastDay + lastDay - 1;
 
   let numberDay = 1;
-  let indexWeek = 0;
 
   for (let i = 1; i <= totalNumberDays; i++) {
     if (i >= firstDate.weekday && i < lastDay) {
-      if (fullCalendar[indexWeek].length === 7) {
-        fullCalendar[++indexWeek].push(numberDay++);
-      } else {
-        fullCalendar[indexWeek].push(numberDay++);
-      }
-    } else if (fullCalendar[indexWeek].length !== 7) {
-      fullCalendar[indexWeek].push(0);
+      fullCalendar.push(numberDay++);
+    } else {
+      fullCalendar.push(0);
     }
   }
-
-  const readyCalendar = _.filter(fullCalendar, (week) => week.length) as number[][];
 
   const onPress = () => {
     navigation.navigate('Month');
   };
 
-  const renderItem = (week: number[], index: number) => {
-    return <Week week={week} isCurrentMonth={isCurrentMonth} key={String(index)} />;
+  const renderItem = (day: number, index: number) => {
+    return <Day day={day} isCurrentMonth={isCurrentMonth} littleDay={littleMonth} key={String(index)} />;
   };
 
   return (
-    <TouchableOpacity style={styles.container} activeOpacity={0.5} onPress={onPress}>
+    <TouchableOpacity
+      disabled={!littleMonth}
+      style={littleMonth ? styles.littleContainer : styles.bigContainer}
+      activeOpacity={0.5}
+      onPress={onPress}
+    >
       <View>
         <Text style={[styles.text, isCurrentMonth ? styles.currentMonth : {}]}>{monthName}</Text>
       </View>
 
-      <View>{readyCalendar.map(renderItem)}</View>
+      <View style={styles.month}>{fullCalendar.map(renderItem)}</View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: '32%',
+  littleContainer: {
+    width: `32%`,
+    height: 145,
+  },
+  bigContainer: {},
+  month: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   currentMonth: {
     color: '#ff4500',

@@ -4,31 +4,65 @@ import { StyleSheet } from 'react-native';
 import { IDay_Props } from '../../interfaces';
 import { Text, View } from '../ThemesAndStyles/Themed';
 
-export const Day: FC<IDay_Props> = ({ day, isCurrentMonth }) => {
+export const Day: FC<IDay_Props> = ({ day, isCurrentMonth, littleDay }) => {
   const isCurrentDay = DateTime.now().day === day && isCurrentMonth;
   const titleDay = day || '';
 
+  if (littleDay) {
+    return (
+      <View style={[isCurrentDay ? sharedStyles.currentDay : {}, littleStyles.container]}>
+        <Text style={littleStyles.text}>{titleDay}</Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={[styles.container, isCurrentDay ? styles.currentDay : {}]}>
-      <Text style={styles.text}>{titleDay}</Text>
+    <View style={[bigStyles.container, titleDay ? bigStyles.isNumber : {}]}>
+      <View style={isCurrentDay ? sharedStyles.currentDay : {}}>
+        <Text style={bigStyles.text}>{titleDay}</Text>
+      </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const sharedStyles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: `${100 / 7}%`,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 1,
-    height: 18,
   },
   currentDay: {
     backgroundColor: '#ff4500',
     borderRadius: 50,
   },
+});
+
+const littleStyles = StyleSheet.create({
+  container: {
+    ...sharedStyles.container,
+    height: 18,
+  },
   text: {
     fontSize: 10,
+    fontWeight: '600',
+  },
+});
+
+const bigStyles = StyleSheet.create({
+  container: {
+    ...sharedStyles.container,
+    height: 70,
+    justifyContent: 'flex-start',
+    paddingVertical: 5,
+  },
+  isNumber: {
+    borderTopColor: 'grey',
+    borderTopWidth: 1,
+  },
+  text: {
+    paddingHorizontal: 7,
+    paddingVertical: 5,
+    fontSize: 18,
     fontWeight: '600',
   },
 });

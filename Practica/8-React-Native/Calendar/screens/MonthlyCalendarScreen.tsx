@@ -1,32 +1,54 @@
-import { useNavigation } from '@react-navigation/native';
+import _ from 'lodash';
 import React from 'react';
-import { Button, FlatList, ListRenderItemInfo, RefreshControl } from 'react-native';
+import { FlatList, ListRenderItemInfo, RefreshControl, StyleSheet } from 'react-native';
 import { Month } from '../components/CalendarScreens/Month';
-import { SmallMonth } from '../components/CalendarScreens/SmallMonth';
 import { Text, View } from '../components/ThemesAndStyles/Themed';
 import { globalStyles } from '../globalStyles';
 import { useRefreshing } from '../hooks';
 
 export const MonthlyCalendar = () => {
-  const navigation = useNavigation();
   const refreshing = useRefreshing();
 
-  const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const months = _.range(1, 4);
+  const daysWeek: string[] = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-  const renderItem = ({ item }: ListRenderItemInfo<number>) => <SmallMonth monthNumber={item} />;
+  const renderDaysWeek = (day: string, index: number) => {
+    return (
+      <Text style={styles.daysWeek} key={String(index)}>
+        {day}
+      </Text>
+    );
+  };
+
+  const renderMonts = ({ item }: ListRenderItemInfo<number>) => <Month monthNumber={item} littleMonth={false} />;
+
   const keyExtractor = (item: number, index: number) => String(index);
 
   return (
-    <View style={[globalStyles.container]}>
+    <View style={globalStyles.container}>
+      <View style={styles.containerWeek}>{daysWeek.map(renderDaysWeek)}</View>
+
       <FlatList
         refreshControl={<RefreshControl {...refreshing} />}
         data={months}
-        renderItem={renderItem}
+        renderItem={renderMonts}
         keyExtractor={keyExtractor}
-        initialNumToRender={10}
+        initialNumToRender={5}
         maxToRenderPerBatch={10}
         windowSize={10}
       />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  containerWeek: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  daysWeek: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 10,
+  },
+});
