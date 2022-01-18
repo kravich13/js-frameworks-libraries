@@ -27,7 +27,6 @@ export const Day: FC<IDay_Props> = ({ day, isCurrentMonth, littleDay }) => {
 
 const sharedStyles = StyleSheet.create({
   container: {
-    width: `${100 / 7}%`,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -40,6 +39,7 @@ const sharedStyles = StyleSheet.create({
 const littleStyles = StyleSheet.create({
   container: {
     ...sharedStyles.container,
+    width: `${(100 / 7).toFixed()}%`,
     height: 18,
   },
   text: {
@@ -51,18 +51,20 @@ const littleStyles = StyleSheet.create({
 const bigStyles = StyleSheet.create({
   container: {
     ...sharedStyles.container,
+    width: `${100 / 7}%`,
     height: 70,
     justifyContent: 'flex-start',
+    alignItems: 'center',
     paddingVertical: 5,
-  },
-  isNumber: {
-    borderTopColor: 'grey',
-    borderTopWidth: 1,
   },
   text: {
     paddingHorizontal: 7,
     paddingVertical: 5,
     fontSize: 18,
     fontWeight: '600',
+  },
+  isNumber: {
+    borderTopColor: 'grey',
+    borderTopWidth: 1,
   },
 });

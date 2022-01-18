@@ -1,18 +1,17 @@
-import { useNavigation } from '@react-navigation/native';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
-import React, { FC } from 'react';
-import { RefreshControl, StyleSheet } from 'react-native';
+import React, { FC, useCallback } from 'react';
+import { Button, RefreshControl, StyleSheet } from 'react-native';
 import { Month } from '../components/CalendarScreens/Month';
 import { ScrollView, Text, View } from '../components/ThemesAndStyles/Themed';
 import { Colors } from '../constants';
 import { globalStyles } from '../globalStyles';
 import { useRefreshing } from '../hooks';
+import { RootStackScreenProps } from '../types';
 
 const { dark, light } = Colors;
 
-export const BigCalendar: FC = () => {
-  const navigation = useNavigation();
+export const BigCalendar: FC<RootStackScreenProps<'Root'>> = ({ navigation }) => {
   const refreshing = useRefreshing();
 
   const months = _.range(1, 13);
@@ -20,18 +19,15 @@ export const BigCalendar: FC = () => {
   const currentYear = DateTime.now().year;
 
   const onPress = () => {
-    navigation.navigate('Month');
+    navigation.push('Month');
   };
 
-  const renderItem = (monthNumber: number, index: number) => {
+  const renderItem = useCallback((monthNumber: number, index: number) => {
     return <Month monthNumber={monthNumber} littleMonth={true} key={String(index)} />;
-  };
+  }, []);
 
   return (
-    <ScrollView
-      contentContainerStyle={[globalStyles.container, styles.container]}
-      refreshControl={<RefreshControl {...refreshing} />}
-    >
+    <ScrollView style={[globalStyles.container, styles.container]} refreshControl={<RefreshControl {...refreshing} />}>
       <Text style={[styles.textYear]} onPress={onPress}>
         {currentYear}
       </Text>

@@ -1,21 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
 import { DateTime } from 'luxon';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { IMonth_Props } from '../../interfaces';
 import { Text, View } from '../ThemesAndStyles/Themed';
-import { Day } from './Day';
+import { Days } from './Days';
 
-export const Month: FC<IMonth_Props> = ({ monthNumber, littleMonth }) => {
-  const navigation = useNavigation();
+const daysMonth = (monthNumber: number) => {
+  const state: number[] = [];
 
-  const fullCalendar: number[] = [];
-
-  const currentYear = DateTime.now().year;
-  const monthName = DateTime.utc(currentYear, monthNumber).toFormat('LLL');
   const firstDate = DateTime.utc(2022, monthNumber, 1);
-
-  const isCurrentMonth = DateTime.now().month === monthNumber;
 
   const daysInMonth = firstDate.daysInMonth;
   const lastDay = firstDate.weekday + daysInMonth;
@@ -26,18 +20,26 @@ export const Month: FC<IMonth_Props> = ({ monthNumber, littleMonth }) => {
 
   for (let i = 1; i <= totalNumberDays; i++) {
     if (i >= firstDate.weekday && i < lastDay) {
-      fullCalendar.push(numberDay++);
+      state.push(numberDay++);
     } else {
-      fullCalendar.push(0);
+      state.push(0);
     }
   }
 
+  return state;
+};
+
+export const Month: FC<IMonth_Props> = ({ monthNumber, littleMonth }) => {
+  const navigation = useNavigation();
+
+  const days = useMemo(() => daysMonth(monthNumber), [monthNumber]);
+
+  const currentYear = DateTime.now().year;
+  const monthName = DateTime.utc(currentYear, monthNumber).toFormat('LLL');
+  const isCurrentMonth = DateTime.now().month === monthNumber;
+
   const onPress = () => {
     navigation.navigate('Month');
-  };
-
-  const renderItem = (day: number, index: number) => {
-    return <Day day={day} isCurrentMonth={isCurrentMonth} littleDay={littleMonth} key={String(index)} />;
   };
 
   return (
@@ -51,7 +53,7 @@ export const Month: FC<IMonth_Props> = ({ monthNumber, littleMonth }) => {
         <Text style={[styles.text, isCurrentMonth ? styles.currentMonth : {}]}>{monthName}</Text>
       </View>
 
-      <View style={styles.month}>{fullCalendar.map(renderItem)}</View>
+      <Days days={days} isCurrentMonth={isCurrentMonth} littleDay={littleMonth} />
     </TouchableOpacity>
   );
 };
