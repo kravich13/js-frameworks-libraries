@@ -14,7 +14,7 @@ const { dark, light } = Colors;
 export const BigCalendar: FC<RootStackScreenProps<'Root'>> = ({ navigation }) => {
   const refreshing = useRefreshing();
 
-  const months = _.range(1, 13);
+  const months = _.range(1, 2);
 
   const currentYear = DateTime.now().year;
 

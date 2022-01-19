@@ -5,11 +5,12 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { IMonth_Props } from '../../interfaces';
 import { Text, View } from '../ThemesAndStyles/Themed';
 import { Days } from './Days';
+import { MonthName } from './MonthName';
 
 const daysMonth = (monthNumber: number) => {
   const state: number[] = [];
 
-  const firstDate = DateTime.utc(2022, monthNumber, 1);
+  const firstDate = DateTime.utc(DateTime.now().year, monthNumber, 1);
 
   const daysInMonth = firstDate.daysInMonth;
   const lastDay = firstDate.weekday + daysInMonth;
@@ -35,7 +36,10 @@ export const Month: FC<IMonth_Props> = ({ monthNumber, littleMonth }) => {
   const days = useMemo(() => daysMonth(monthNumber), [monthNumber]);
 
   const currentYear = DateTime.now().year;
-  const monthName = DateTime.utc(currentYear, monthNumber).toFormat('LLL');
+  const firstDate = DateTime.utc(currentYear, monthNumber, 1);
+  const monthName = firstDate.toFormat('LLL');
+  const firstDayWeek = firstDate.weekday;
+
   const isCurrentMonth = DateTime.now().month === monthNumber;
 
   const onPress = () => {
@@ -49,9 +53,7 @@ export const Month: FC<IMonth_Props> = ({ monthNumber, littleMonth }) => {
       activeOpacity={0.5}
       onPress={onPress}
     >
-      <View>
-        <Text style={[styles.text, isCurrentMonth ? styles.currentMonth : {}]}>{monthName}</Text>
-      </View>
+      <MonthName littleMonth={littleMonth} isCurrentMonth={isCurrentMonth} title={monthName} firstDayWeek={firstDayWeek} />
 
       <Days days={days} isCurrentMonth={isCurrentMonth} littleDay={littleMonth} />
     </TouchableOpacity>
@@ -64,13 +66,6 @@ const styles = StyleSheet.create({
     height: 145,
   },
   bigContainer: {},
-  month: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  currentMonth: {
-    color: '#ff4500',
-  },
   text: {
     fontSize: 20,
     fontWeight: '600',

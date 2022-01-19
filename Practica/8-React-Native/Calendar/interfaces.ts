@@ -3,6 +3,13 @@ export interface IMonth_Props {
   littleMonth: boolean;
 }
 
+export interface IMonthName_Props {
+  littleMonth: boolean;
+  isCurrentMonth: boolean;
+  title: string;
+  firstDayWeek: number;
+}
+
 export interface IDays_Props {
   days: number[];
   isCurrentMonth: boolean;
