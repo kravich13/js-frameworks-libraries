@@ -9,4 +9,7 @@ export const globalStyles = StyleSheet.create({
   text: {
     fontSize: 15,
   },
+  dayOff: {
+    color: 'grey',
+  },
 });

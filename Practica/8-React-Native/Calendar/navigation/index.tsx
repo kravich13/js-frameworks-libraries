@@ -2,9 +2,12 @@ import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { ColorSchemeName } from 'react-native';
+import { Text, View } from '../components/ThemesAndStyles';
 import { BigCalendar, MonthlyCalendar, NotFoundScreen } from '../screens';
 import { RootStackParamList } from '../types';
+import { MonthlyHeader } from './customHeaders/monthly/MonthlyHeader';
 import LinkingConfiguration from './LinkingConfiguration';
+import { getHeaderTitle, HeaderBackButton } from '@react-navigation/elements';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -35,6 +38,19 @@ function RootNavigator() {
           title: 'Monthly calendar',
           headerTitleAlign: 'center',
           animation: 'flip',
+
+          headerBackTitle: '2022',
+
+          // headerLeft: ({ label }) => {
+          //   return <Text>{label}</Text>;
+          // },
+          // header: ({ navigation, route, options, back }) => {
+          //   const title = getHeaderTitle(options, route.name);
+
+          //   options.headerTitleAlign = 'center';
+
+          //   return <MonthlyHeader title={title} leftButtonTitle={back?.title} navigation={navigation} />;
+          // },
         }}
       />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!', headerTitleAlign: 'center' }} />

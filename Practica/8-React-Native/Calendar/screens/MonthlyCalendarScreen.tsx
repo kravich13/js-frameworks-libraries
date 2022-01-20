@@ -1,16 +1,20 @@
+import { useFocusEffect } from '@react-navigation/native';
 import _ from 'lodash';
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useMemo, useRef } from 'react';
 import { FlatList, ListRenderItemInfo, RefreshControl } from 'react-native';
 import { DaysWeek } from '../components/CalendarScreens/DaysWeek';
 import { Month } from '../components/CalendarScreens/Month';
-import { View } from '../components/ThemesAndStyles/Themed';
+import { View } from '../components/ThemesAndStyles';
 import { globalStyles } from '../globalStyles';
 import { useRefreshing } from '../hooks';
+import { RootStackScreenProps } from '../types';
 
-export const MonthlyCalendar: FC = () => {
+export const MonthlyCalendar: FC<RootStackScreenProps<'Month'>> = ({ route, navigation }) => {
+  const { selectedMonth } = route.params;
+
   const refreshing = useRefreshing();
-
-  const months = _.range(1, 13);
+  const months = useMemo(() => _.range(1, 13), []);
+  const $flatList = useRef<FlatList | null>(null);
 
   const renderItem = useCallback(({ item }: ListRenderItemInfo<number>) => {
     return <Month monthNumber={item} littleMonth={false} />;
@@ -18,17 +22,29 @@ export const MonthlyCalendar: FC = () => {
 
   const keyExtractor = useCallback((key: number) => String(key), []);
 
+  const scrollToIndex = () => $flatList.current!.scrollToIndex({ index: selectedMonth - 1 });
+
+  useFocusEffect(
+    useCallback(() => {
+      setTimeout(() => scrollToIndex(), 500);
+    }, [selectedMonth])
+  );
+
+  const onScrollToIndexFailed = useCallback(() => {
+    setTimeout(() => scrollToIndex(), 500);
+  }, [selectedMonth]);
+
   return (
     <View style={globalStyles.container}>
+      <DaysWeek />
       <FlatList
-        ListHeaderComponent={<DaysWeek />}
+        ref={$flatList}
         refreshControl={<RefreshControl {...refreshing} />}
         data={months}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
-        initialNumToRender={5}
-        maxToRenderPerBatch={10}
-        windowSize={10}
+        initialScrollIndex={selectedMonth - 1}
+        onScrollToIndexFailed={onScrollToIndexFailed}
       />
     </View>
   );

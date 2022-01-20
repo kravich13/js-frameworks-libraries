@@ -8,7 +8,7 @@ declare global {
 
 export type RootStackParamList = {
   Root: undefined;
-  Month: undefined;
+  Month: { selectedMonth: number };
   Days: undefined;
   Modal: undefined;
   NotFound: undefined;

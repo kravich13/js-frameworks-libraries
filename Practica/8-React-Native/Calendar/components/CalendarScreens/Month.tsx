@@ -3,7 +3,6 @@ import { DateTime } from 'luxon';
 import React, { FC, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { IMonth_Props } from '../../interfaces';
-import { Text, View } from '../ThemesAndStyles/Themed';
 import { Days } from './Days';
 import { MonthName } from './MonthName';
 
@@ -32,7 +31,6 @@ const daysMonth = (monthNumber: number) => {
 
 export const Month: FC<IMonth_Props> = ({ monthNumber, littleMonth }) => {
   const navigation = useNavigation();
-
   const days = useMemo(() => daysMonth(monthNumber), [monthNumber]);
 
   const currentYear = DateTime.now().year;
@@ -43,7 +41,7 @@ export const Month: FC<IMonth_Props> = ({ monthNumber, littleMonth }) => {
   const isCurrentMonth = DateTime.now().month === monthNumber;
 
   const onPress = () => {
-    navigation.navigate('Month');
+    navigation.navigate('Month', { selectedMonth: monthNumber });
   };
 
   return (
