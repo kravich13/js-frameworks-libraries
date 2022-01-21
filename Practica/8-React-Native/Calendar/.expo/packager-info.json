@@ -2,9 +2,9 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19000,
-  "expoServerNgrokUrl": "https://my-xrj.vladislavonatskyi.calendar.exp.direct",
-  "packagerNgrokUrl": "https://packager.my-xrj.vladislavonatskyi.calendar.exp.direct",
-  "ngrokPid": 150942,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "packagerPid": null,
   "webpackServerPort": null
 }

@@ -35,6 +35,7 @@ const sharedStyles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
+    flex: 1,
   },
   currentDay: {
     backgroundColor: '#ff4500',
@@ -45,7 +46,6 @@ const sharedStyles = StyleSheet.create({
 const littleStyles = StyleSheet.create({
   container: {
     ...sharedStyles.container,
-    width: `${(100 / 7).toFixed()}%`,
     height: 18,
   },
   text: {
@@ -57,7 +57,7 @@ const littleStyles = StyleSheet.create({
 const bigStyles = StyleSheet.create({
   container: {
     ...sharedStyles.container,
-    width: `${100 / 7}%`,
+    flex: 1,
     height: 70,
     justifyContent: 'flex-start',
     alignItems: 'center',

@@ -1,7 +1,3 @@
-import { NavigationProp } from '@react-navigation/native';
-import { NativeStackNavigatorProps } from '@react-navigation/native-stack/lib/typescript/src/types';
-import { RootStackScreenProps } from './types';
-
 export interface IMonth_Props {
   monthNumber: number;
   littleMonth: boolean;
@@ -15,7 +11,7 @@ export interface IMonthName_Props {
 }
 
 export interface IDays_Props {
-  days: number[];
+  days: IMonth_DayState[];
   isCurrentMonth: boolean;
   littleDay: boolean;
 }
@@ -31,4 +27,9 @@ export interface IMonthlyHeader_Props {
   title: string;
   leftButtonTitle?: string;
   navigation: any;
+}
+
+export interface IMonth_DayState {
+  id: string;
+  day: number;
 }

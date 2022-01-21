@@ -1,13 +1,16 @@
 import { useNavigation } from '@react-navigation/native';
 import { DateTime } from 'luxon';
+import { customAlphabet } from 'nanoid/non-secure';
 import React, { FC, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { IMonth_Props } from '../../interfaces';
+import { IMonth_DayState, IMonth_Props } from '../../interfaces';
 import { Days } from './Days';
 import { MonthName } from './MonthName';
 
+const nanoid = customAlphabet('skrkyokyti5udnshgwg', 10);
+
 const daysMonth = (monthNumber: number) => {
-  const state: number[] = [];
+  const state: IMonth_DayState[] = [];
 
   const firstDate = DateTime.utc(DateTime.now().year, monthNumber, 1);
 
@@ -20,9 +23,9 @@ const daysMonth = (monthNumber: number) => {
 
   for (let i = 1; i <= totalNumberDays; i++) {
     if (i >= firstDate.weekday && i < lastDay) {
-      state.push(numberDay++);
+      state.push({ id: nanoid(), day: numberDay++ });
     } else {
-      state.push(0);
+      state.push({ id: nanoid(), day: 0 });
     }
   }
 
@@ -45,12 +48,7 @@ export const Month: FC<IMonth_Props> = ({ monthNumber, littleMonth }) => {
   };
 
   return (
-    <TouchableOpacity
-      disabled={!littleMonth}
-      style={littleMonth ? styles.littleContainer : styles.bigContainer}
-      activeOpacity={0.5}
-      onPress={onPress}
-    >
+    <TouchableOpacity disabled={!littleMonth} style={littleMonth && styles.container} activeOpacity={0.5} onPress={onPress}>
       <MonthName littleMonth={littleMonth} isCurrentMonth={isCurrentMonth} title={monthName} firstDayWeek={firstDayWeek} />
 
       <Days days={days} isCurrentMonth={isCurrentMonth} littleDay={littleMonth} />
@@ -59,11 +57,10 @@ export const Month: FC<IMonth_Props> = ({ monthNumber, littleMonth }) => {
 };
 
 const styles = StyleSheet.create({
-  littleContainer: {
-    width: `32%`,
+  container: {
+    width: '32%',
     height: 145,
   },
-  bigContainer: {},
   text: {
     fontSize: 20,
     fontWeight: '600',
