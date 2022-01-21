@@ -43,7 +43,6 @@ export const MonthlyCalendar: FC<RootStackScreenProps<'Month'>> = ({ route, navi
         data={months}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
-        initialScrollIndex={selectedMonth - 1}
         onScrollToIndexFailed={onScrollToIndexFailed}
       />
     </View>
