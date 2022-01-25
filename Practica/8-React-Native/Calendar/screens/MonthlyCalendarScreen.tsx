@@ -22,17 +22,17 @@ export const MonthlyCalendar: FC<RootStackScreenProps<'Month'>> = ({ route, navi
 
   const keyExtractor = useCallback((key: number) => String(key), []);
 
-  const scrollToIndex = () => $flatList.current!.scrollToIndex({ index: selectedMonth - 1 });
+  const scrollToIndex = () => $flatList.current?.scrollToIndex({ index: selectedMonth - 1 });
 
   useFocusEffect(
     useCallback(() => {
       setTimeout(() => scrollToIndex(), 500);
-    }, [selectedMonth])
+    }, [scrollToIndex])
   );
 
   const onScrollToIndexFailed = useCallback(() => {
     setTimeout(() => scrollToIndex(), 500);
-  }, [selectedMonth]);
+  }, [scrollToIndex]);
 
   return (
     <View style={globalStyles.container}>

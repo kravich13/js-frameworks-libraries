@@ -18,12 +18,12 @@ const MemoDays: FC<IDays_Props> = ({ days, isCurrentMonth, littleDay }) => {
         />
       );
     },
-    [isCurrentMonth, littleDay]
+    [isCurrentMonth, littleDay, lastDaysWeeks]
   );
 
   const keyExtractor = useCallback((item: IMonth_DayState) => item.id, []);
 
-  return <FlatList key={'_'} data={days} renderItem={renderItem} keyExtractor={keyExtractor} pagingEnabled numColumns={7} />;
+  return <FlatList key={'_'} data={days} renderItem={renderItem} keyExtractor={keyExtractor} numColumns={7} />;
 };
 
 export const Days = memo(MemoDays);

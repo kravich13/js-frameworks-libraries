@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
+import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Context } from './context';
 import { useCachedResources, useColorScheme } from './hooks';
