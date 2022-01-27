@@ -2,54 +2,31 @@ import { useNavigation } from '@react-navigation/native';
 import { DateTime } from 'luxon';
 import React, { FC, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { IMonth_DayState, IMonth_Props } from '../../interfaces';
-import { nanoid } from '../../scripts';
+import { IMonth_Props } from '../../interfaces';
+import { daysMonthState } from '../../scripts';
 import { Days } from './Days';
 import { MonthName } from './MonthName';
 
-const daysMonth = (monthNumber: number) => {
-  const state: IMonth_DayState[] = [];
-
-  const firstDate = DateTime.utc(DateTime.now().year, monthNumber, 1);
-
-  const daysInMonth = firstDate.daysInMonth;
-  const lastDay = firstDate.weekday + daysInMonth;
-  const dayWeekLastDay = firstDate.set({ day: daysInMonth }).weekday;
-  const totalNumberDays = 7 - dayWeekLastDay + lastDay - 1;
-
-  let numberDay = 1;
-
-  for (let i = 1; i <= totalNumberDays; i++) {
-    if (i >= firstDate.weekday && i < lastDay) {
-      state.push({ id: nanoid(), day: numberDay++ });
-    } else {
-      state.push({ id: nanoid(), day: 0 });
-    }
-  }
-
-  return state;
-};
-
-export const Month: FC<IMonth_Props> = ({ monthNumber, dateTime, littleMonth }) => {
+export const Month: FC<IMonth_Props> = ({ fullDate, littleMonth }) => {
   const navigation = useNavigation();
-  const days = useMemo(() => daysMonth(monthNumber), [monthNumber]);
 
-  const currentYear = DateTime.now().year;
-  const firstDate = DateTime.utc(currentYear, monthNumber, 1);
-  const monthName = firstDate.toFormat('LLL');
-  const firstDayWeek = firstDate.weekday;
+  const dateTime = DateTime.fromMillis(fullDate);
+  const days = useMemo(() => daysMonthState(dateTime), [dateTime]);
 
-  const isCurrentMonth = DateTime.now().month === monthNumber;
+  const monthName = dateTime.toFormat('LLL');
+  const firstDayWeek = dateTime.weekday;
+
+  const isCurrentMonth = DateTime.now().toFormat('yyyy LLL') === dateTime?.toFormat('yyyy LLL');
 
   const onPress = () => {
-    navigation.navigate('Month', { selectedMonth: monthNumber, dateTime });
+    navigation.navigate('Month', { selectedDate: fullDate });
   };
 
   return (
     <TouchableOpacity disabled={!littleMonth} style={littleMonth && styles.container} activeOpacity={0.5} onPress={onPress}>
-      <MonthName littleMonth={littleMonth} isCurrentMonth={isCurrentMonth} title={monthName} firstDayWeek={firstDayWeek} />
+      <MonthName isCurrentMonth={isCurrentMonth} littleMonth={littleMonth} title={monthName} firstDayWeek={firstDayWeek} />
 
-      <Days days={days} isCurrentMonth={isCurrentMonth} littleDay={littleMonth} />
+      <Days days={days} littleDay={littleMonth} />
     </TouchableOpacity>
   );
 };

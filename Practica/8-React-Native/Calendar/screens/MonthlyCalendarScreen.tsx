@@ -1,79 +1,92 @@
 import { useFocusEffect } from '@react-navigation/native';
 import _ from 'lodash';
-import React, { FC, useCallback, useRef, useState } from 'react';
+import { DateTime } from 'luxon';
+import React, { FC, useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { FlatList, ListRenderItemInfo } from 'react-native';
-import { DaysWeek } from '../components/CalendarScreens/DaysWeek';
-import { Month } from '../components/CalendarScreens/Month';
+import { DaysWeek, Month } from '../components/CalendarScreens';
 import { View } from '../components/ThemesAndStyles';
 import { globalStyles } from '../globalStyles';
+import { IMonthOrDay_State } from '../interfaces';
+import { monthState } from '../scripts';
 import { RootStackScreenProps } from '../types';
 
 const paginationStep = 3;
 
-const initialMonths = (selectedMonth: number) => {
-  if (selectedMonth === 1) {
-    return _.range(1, paginationStep + 1);
+const initialMonths = (year: number, month: number) => {
+  if (month === 1) {
+    return monthState(year, 1, paginationStep);
   }
-  if (selectedMonth === 12) {
-    return _.range(13 - paginationStep, 13);
+  if (month === 12) {
+    return monthState(year, 13 - paginationStep, 12);
   }
 
-  return _.range(selectedMonth - 1, selectedMonth + paginationStep - 1);
+  return monthState(year, month, month + paginationStep - 1);
 };
 
 export const MonthlyCalendarScreen: FC<RootStackScreenProps<'Month'>> = ({ route, navigation }) => {
-  const { selectedMonth, dateTime } = route.params;
+  const { selectedDate } = route.params;
 
-  const [months, setMonths] = useState(() => initialMonths(selectedMonth));
+  const dateTime = DateTime.fromMillis(selectedDate);
 
+  const [months, setMonths] = useState(() => initialMonths(dateTime.year, dateTime.month));
   const $flatList = useRef<FlatList | null>(null);
 
-  const renderItem = useCallback(({ item }: ListRenderItemInfo<number>) => {
-    return <Month dateTime={dateTime} monthNumber={item} littleMonth={false} />;
+  const renderItem = useCallback(({ item }: ListRenderItemInfo<IMonthOrDay_State>) => {
+    return <Month fullDate={item.fullDate} littleMonth={false} />;
   }, []);
 
-  const keyExtractor = useCallback((key: number) => String(key), []);
+  const keyExtractor = useCallback((item: IMonthOrDay_State) => item.id, []);
 
-  const scrollToIndex = () => {
-    $flatList.current?.scrollToIndex({ index: _.indexOf(months, selectedMonth) });
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerBackTitle: String(dateTime.year) });
+  }, []);
+
+  const scrollToIndex = (index: number) => {
+    setTimeout(() => {
+      $flatList.current?.scrollToIndex({ index: index });
+    }, 500);
   };
 
   useFocusEffect(
     useCallback(() => {
-      setTimeout(() => scrollToIndex(), 500);
-    }, [selectedMonth])
+      if (dateTime.month === 12) {
+        scrollToIndex(months.length - 1);
+      }
+    }, [selectedDate])
   );
 
   useFocusEffect(() => {
-    navigation.setOptions({ headerBackTitle: String(selectedMonth) });
+    console.log(navigation.getState().routes);
   });
 
   const onScrollToIndexFailed = useCallback(() => {
-    setTimeout(() => scrollToIndex(), 500);
-  }, [selectedMonth]);
+    if (dateTime.month === 12) {
+      scrollToIndex(months.length - 1);
+    }
+  }, [selectedDate]);
 
-  const getMonthsDown = () => {
-    const lastMonth = _.last(months);
+  const getMonthsDown = (info: { distanceFromEnd: number }) => {
+    const lastMonth = DateTime.fromMillis(_.last(months)!.fullDate).month;
 
     if (lastMonth && lastMonth < 12) {
       const remainingMonths = 12 - lastMonth;
       const lastAddedMonth = remainingMonths > paginationStep ? paginationStep + 1 : remainingMonths + 1;
 
-      const state = _.range(lastMonth + 1, lastMonth + lastAddedMonth);
+      const state = monthState(dateTime.year, lastMonth + 1, lastMonth + lastAddedMonth);
+
       setMonths((prev) => [...prev, ...state]);
     }
   };
 
   const getMonthsUp = () => {
-    const firstMonth = months[0];
+    const firstMonth = DateTime.fromMillis(months[0].fullDate).month;
 
     if (firstMonth > 1) {
       const remainingMonths = firstMonth - 1;
       const firstAddedMonth = remainingMonths > paginationStep ? firstMonth - paginationStep : 1;
 
-      const newMonths = _.range(firstAddedMonth, firstMonth);
-
-      setMonths((prev) => [...newMonths, ...prev]);
+      const state = monthState(dateTime.year, firstAddedMonth, remainingMonths);
+      setMonths((prev) => [...state, ...prev]);
     }
   };
 
@@ -86,14 +99,12 @@ export const MonthlyCalendarScreen: FC<RootStackScreenProps<'Month'>> = ({ route
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         onEndReached={getMonthsDown}
-        onEndReachedThreshold={0.45}
-        scrollEventThrottle={150}
+        onEndReachedThreshold={0.1}
         showsVerticalScrollIndicator={false}
-        onScrollToIndexFailed={onScrollToIndexFailed}
         refreshing={false}
         onRefresh={getMonthsUp}
-        maxToRenderPerBatch={2}
         removeClippedSubviews={true}
+        onScrollToIndexFailed={onScrollToIndexFailed}
       />
     </View>
   );

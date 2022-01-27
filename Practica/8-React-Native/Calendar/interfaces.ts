@@ -1,38 +1,27 @@
-import { DateTime } from 'luxon';
-
 export interface IMonth_Props {
-  dateTime: DateTime;
-  monthNumber: number;
+  fullDate: number;
   littleMonth: boolean;
 }
 
 export interface IMonthName_Props {
-  littleMonth: boolean;
   isCurrentMonth: boolean;
+  littleMonth: boolean;
   title: string;
   firstDayWeek: number;
 }
 
 export interface IDays_Props {
-  days: IMonth_DayState[];
-  isCurrentMonth: boolean;
+  days: IMonthOrDay_State[];
   littleDay: boolean;
 }
 
 export interface IDay_Props {
-  day: number;
-  isCurrentMonth: boolean;
+  fullDate: number;
   littleDay: boolean;
   dayOff: boolean;
 }
 
-export interface IMonthlyHeader_Props {
-  title: string;
-  leftButtonTitle?: string;
-  navigation: any;
-}
-
-export interface IMonth_DayState {
+export interface IMonthOrDay_State {
   id: string;
-  day: number;
+  fullDate: number;
 }

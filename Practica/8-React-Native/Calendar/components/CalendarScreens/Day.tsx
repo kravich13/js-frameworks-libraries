@@ -10,15 +10,17 @@ import { Text, View } from '../ThemesAndStyles';
 
 const { dark, light } = Colors;
 
-export const Day: FC<IDay_Props> = ({ day, isCurrentMonth, littleDay, dayOff }) => {
+export const Day: FC<IDay_Props> = ({ fullDate, littleDay, dayOff }) => {
   const navigation = useNavigation();
 
   const borderTopColor = useThemeColor({ light: light.container, dark: dark.container }, 'background');
-  const isCurrentDay = DateTime.now().day === day && isCurrentMonth;
-  const titleDay = day || '';
+
+  const dateTime = fullDate ? DateTime.fromMillis(fullDate) : null;
+  const isCurrentDay = DateTime.now().toFormat('yyyy LLL dd') === dateTime?.toFormat('yyyy LLL dd');
+  const titleDay = dateTime?.day || '';
 
   const onPress = useCallback(() => {
-    navigation.navigate('Day');
+    navigation.navigate('Day', { selectedDate: fullDate });
   }, []);
 
   if (littleDay) {

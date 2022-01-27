@@ -1,26 +1,23 @@
-import _ from 'lodash';
 import { DateTime } from 'luxon';
 import React, { FC, useCallback, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
-import { Month } from '../components/CalendarScreens/Month';
+import { Month } from '../components/CalendarScreens';
 import { Text, View } from '../components/ThemesAndStyles';
 import { Colors } from '../constants';
 import { globalStyles } from '../globalStyles';
-import { createMonthState } from '../scripts';
+import { IMonthOrDay_State } from '../interfaces';
+import { monthState } from '../scripts';
 import { RootStackScreenProps } from '../types';
 
 const { dark, light } = Colors;
 
 export const BigCalendarScreen: FC<RootStackScreenProps<'Root'>> = ({ navigation }) => {
   const dateTime = DateTime.now();
-  const months = useMemo(() => _.range(1, 13), []);
-  const state = createMonthState(dateTime.year, 1, 12);
-  console.log(state);
 
-  createMonthState(dateTime.year, 1, 12);
+  const months = useMemo(() => monthState(dateTime.year, 1, 12), [dateTime.year]);
 
-  const renderItem = useCallback((monthNumber: number, index: number) => {
-    return <Month dateTime={dateTime} monthNumber={monthNumber} littleMonth={true} key={String(index)} />;
+  const renderItem = useCallback(({ id, fullDate }: IMonthOrDay_State) => {
+    return <Month fullDate={fullDate} littleMonth={true} key={id} />;
   }, []);
 
   return (
