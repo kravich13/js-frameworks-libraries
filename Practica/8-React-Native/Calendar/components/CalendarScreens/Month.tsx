@@ -1,13 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import { DateTime } from 'luxon';
-import { customAlphabet } from 'nanoid/non-secure';
 import React, { FC, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { IMonth_DayState, IMonth_Props } from '../../interfaces';
+import { nanoid } from '../../scripts';
 import { Days } from './Days';
 import { MonthName } from './MonthName';
-
-const nanoid = customAlphabet('skrkyokyti5udnshgwg', 10);
 
 const daysMonth = (monthNumber: number) => {
   const state: IMonth_DayState[] = [];
@@ -32,7 +30,7 @@ const daysMonth = (monthNumber: number) => {
   return state;
 };
 
-export const Month: FC<IMonth_Props> = ({ monthNumber, littleMonth }) => {
+export const Month: FC<IMonth_Props> = ({ monthNumber, dateTime, littleMonth }) => {
   const navigation = useNavigation();
   const days = useMemo(() => daysMonth(monthNumber), [monthNumber]);
 
@@ -44,7 +42,7 @@ export const Month: FC<IMonth_Props> = ({ monthNumber, littleMonth }) => {
   const isCurrentMonth = DateTime.now().month === monthNumber;
 
   const onPress = () => {
-    navigation.navigate('Month', { selectedMonth: monthNumber });
+    navigation.navigate('Month', { selectedMonth: monthNumber, dateTime });
   };
 
   return (

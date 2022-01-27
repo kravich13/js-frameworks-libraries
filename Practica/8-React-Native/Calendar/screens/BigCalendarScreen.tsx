@@ -6,22 +6,26 @@ import { Month } from '../components/CalendarScreens/Month';
 import { Text, View } from '../components/ThemesAndStyles';
 import { Colors } from '../constants';
 import { globalStyles } from '../globalStyles';
+import { createMonthState } from '../scripts';
 import { RootStackScreenProps } from '../types';
 
 const { dark, light } = Colors;
 
-export const BigCalendar: FC<RootStackScreenProps<'Root'>> = ({ navigation }) => {
+export const BigCalendarScreen: FC<RootStackScreenProps<'Root'>> = ({ navigation }) => {
+  const dateTime = DateTime.now();
   const months = useMemo(() => _.range(1, 13), []);
+  const state = createMonthState(dateTime.year, 1, 12);
+  console.log(state);
 
-  const currentYear = DateTime.now().year;
+  createMonthState(dateTime.year, 1, 12);
 
   const renderItem = useCallback((monthNumber: number, index: number) => {
-    return <Month monthNumber={monthNumber} littleMonth={true} key={String(index)} />;
+    return <Month dateTime={dateTime} monthNumber={monthNumber} littleMonth={true} key={String(index)} />;
   }, []);
 
   return (
     <View style={[globalStyles.container, styles.container]}>
-      <Text style={[styles.textYear]}>{currentYear}</Text>
+      <Text style={[styles.textYear]}>{dateTime.year}</Text>
 
       <View style={[styles.breakYear]} lightColor={light.container} darkColor={dark.container} />
 

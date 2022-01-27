@@ -1,6 +1,7 @@
+import { useNavigation } from '@react-navigation/native';
 import { DateTime } from 'luxon';
-import React, { FC } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { FC, useCallback } from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Colors } from '../../constants';
 import { globalStyles } from '../../globalStyles';
 import { useThemeColor } from '../../hooks';
@@ -10,9 +11,15 @@ import { Text, View } from '../ThemesAndStyles';
 const { dark, light } = Colors;
 
 export const Day: FC<IDay_Props> = ({ day, isCurrentMonth, littleDay, dayOff }) => {
+  const navigation = useNavigation();
+
   const borderTopColor = useThemeColor({ light: light.container, dark: dark.container }, 'background');
   const isCurrentDay = DateTime.now().day === day && isCurrentMonth;
   const titleDay = day || '';
+
+  const onPress = useCallback(() => {
+    navigation.navigate('Day');
+  }, []);
 
   if (littleDay) {
     return (
@@ -23,11 +30,15 @@ export const Day: FC<IDay_Props> = ({ day, isCurrentMonth, littleDay, dayOff }) 
   }
 
   return (
-    <View style={[bigStyles.container, !!titleDay && { borderTopColor, borderTopWidth: 1 }]}>
+    <TouchableOpacity
+      style={[bigStyles.container, !!titleDay && { borderTopColor, borderTopWidth: 1 }]}
+      onPress={onPress}
+      activeOpacity={0.5}
+    >
       <View style={isCurrentDay && sharedStyles.currentDay}>
         <Text style={[bigStyles.text, dayOff && globalStyles.dayOff]}>{titleDay}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

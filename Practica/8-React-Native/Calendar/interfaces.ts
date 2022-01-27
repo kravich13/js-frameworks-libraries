@@ -1,4 +1,7 @@
+import { DateTime } from 'luxon';
+
 export interface IMonth_Props {
+  dateTime: DateTime;
   monthNumber: number;
   littleMonth: boolean;
 }

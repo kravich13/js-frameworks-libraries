@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
-import _, { last } from 'lodash';
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, ListRenderItemInfo, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import _ from 'lodash';
+import React, { FC, useCallback, useRef, useState } from 'react';
+import { FlatList, ListRenderItemInfo } from 'react-native';
 import { DaysWeek } from '../components/CalendarScreens/DaysWeek';
 import { Month } from '../components/CalendarScreens/Month';
 import { View } from '../components/ThemesAndStyles';
@@ -21,15 +21,15 @@ const initialMonths = (selectedMonth: number) => {
   return _.range(selectedMonth - 1, selectedMonth + paginationStep - 1);
 };
 
-export const MonthlyCalendar: FC<RootStackScreenProps<'Month'>> = ({ route, navigation }) => {
-  const { selectedMonth } = route.params;
+export const MonthlyCalendarScreen: FC<RootStackScreenProps<'Month'>> = ({ route, navigation }) => {
+  const { selectedMonth, dateTime } = route.params;
 
   const [months, setMonths] = useState(() => initialMonths(selectedMonth));
 
   const $flatList = useRef<FlatList | null>(null);
 
   const renderItem = useCallback(({ item }: ListRenderItemInfo<number>) => {
-    return <Month monthNumber={item} littleMonth={false} />;
+    return <Month dateTime={dateTime} monthNumber={item} littleMonth={false} />;
   }, []);
 
   const keyExtractor = useCallback((key: number) => String(key), []);
@@ -43,6 +43,10 @@ export const MonthlyCalendar: FC<RootStackScreenProps<'Month'>> = ({ route, navi
       setTimeout(() => scrollToIndex(), 500);
     }, [selectedMonth])
   );
+
+  useFocusEffect(() => {
+    navigation.setOptions({ headerBackTitle: String(selectedMonth) });
+  });
 
   const onScrollToIndexFailed = useCallback(() => {
     setTimeout(() => scrollToIndex(), 500);

@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { DateTime } from 'luxon';
 
 declare global {
   namespace ReactNavigation {
@@ -8,8 +9,9 @@ declare global {
 
 export type RootStackParamList = {
   Root: undefined;
-  Month: { selectedMonth: number };
+  Month: { selectedMonth: number; dateTime: DateTime };
   Days: undefined;
+  Day: undefined;
   Modal: undefined;
   NotFound: undefined;
 };
