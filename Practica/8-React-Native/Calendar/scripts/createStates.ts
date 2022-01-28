@@ -24,10 +24,8 @@ export const daysMonthState = (dateTime: DateTime) => {
 
   for (let i = 1; i <= totalNumberDays; i++) {
     if (i >= dateTime.weekday && i < lastDay) {
-      // state.push({ id: nanoid(), day: numberDay++ });
       state.push({ id: nanoid(), fullDate: dateTime.set({ day: numberDay++ }).toMillis() });
     } else {
-      // state.push({ id: nanoid(), day: 0 });
       state.push({ id: nanoid(), fullDate: 0 });
     }
   }

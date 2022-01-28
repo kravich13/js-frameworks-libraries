@@ -1,5 +1,4 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { DateTime } from 'luxon';
 
 declare global {
   namespace ReactNavigation {

@@ -3,7 +3,6 @@ import 'intl';
 import 'intl/locale-data/jsonp/en';
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Context } from './context';
 import { useCachedResources, useColorScheme } from './hooks';
 import Navigation from './navigation';
 
@@ -16,11 +15,9 @@ export default function App() {
   }
 
   return (
-    <Context.Provider value={{ colorScheme }}>
-      <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} />
-        <StatusBar />
-      </SafeAreaProvider>
-    </Context.Provider>
+    <SafeAreaProvider>
+      <Navigation colorScheme={colorScheme} />
+      <StatusBar />
+    </SafeAreaProvider>
   );
 }

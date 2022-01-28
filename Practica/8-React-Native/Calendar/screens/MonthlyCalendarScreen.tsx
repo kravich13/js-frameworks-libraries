@@ -39,7 +39,7 @@ export const MonthlyCalendarScreen: FC<RootStackScreenProps<'Month'>> = ({ route
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerBackTitle: String(dateTime.year) });
-  }, []);
+  }, [navigation]);
 
   const scrollToIndex = (index: number) => {
     setTimeout(() => {
@@ -54,10 +54,6 @@ export const MonthlyCalendarScreen: FC<RootStackScreenProps<'Month'>> = ({ route
       }
     }, [selectedDate])
   );
-
-  useFocusEffect(() => {
-    console.log(navigation.getState().routes);
-  });
 
   const onScrollToIndexFailed = useCallback(() => {
     if (dateTime.month === 12) {
