@@ -21,6 +21,11 @@ export interface IDay_Props {
   dayOff: boolean;
 }
 
+export interface INumbersWeek_Props {
+  fullDate: number;
+  selectedDay: number;
+}
+
 export interface IMonthOrDay_State {
   id: string;
   fullDate: number;

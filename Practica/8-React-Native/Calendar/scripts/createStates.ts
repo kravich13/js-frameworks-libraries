@@ -32,3 +32,28 @@ export const daysMonthState = (dateTime: DateTime) => {
 
   return state;
 };
+
+export const numbersWeekState = (dateTime: DateTime) => {
+  const day = dateTime.day;
+  const weekDay = dateTime.weekday;
+
+  const state: number[] = [];
+
+  let posStart = 1;
+
+  for (let i = 1; i <= 7; i++) {
+    if (i < weekDay) {
+      state.push(dateTime.minus({ days: weekDay - i }).day);
+    } else if (i > weekDay) {
+      if (weekDay === 1 || weekDay === 7) {
+        state.push(dateTime.plus({ days: i - 1 }).day);
+      } else {
+        state.push(dateTime.plus({ days: posStart++ }).day);
+      }
+    } else {
+      state.push(day);
+    }
+  }
+
+  return state;
+};

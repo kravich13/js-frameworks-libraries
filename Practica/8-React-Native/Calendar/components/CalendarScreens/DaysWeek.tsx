@@ -22,7 +22,7 @@ export const DaysWeek = () => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   text: {
     flex: 1,

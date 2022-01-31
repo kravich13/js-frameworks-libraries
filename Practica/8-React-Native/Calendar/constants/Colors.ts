@@ -18,4 +18,5 @@ export const Colors = {
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
   },
+  currentDay: 'ff4500',
 };
