@@ -26,7 +26,7 @@ export const Day: FC<IDay_Props> = ({ fullDate, littleDay, dayOff }) => {
   if (littleDay) {
     return (
       <View style={littleStyles.container}>
-        <View style={[littleStyles.containerDay, isCurrentDay && globalStyles.currentDay]}>
+        <View style={[littleStyles.containerDay, isCurrentDay && globalStyles.currentDayBackground]}>
           <Text style={littleStyles.text}>{titleDay}</Text>
         </View>
       </View>
@@ -39,7 +39,7 @@ export const Day: FC<IDay_Props> = ({ fullDate, littleDay, dayOff }) => {
       onPress={onPress}
       activeOpacity={0.5}
     >
-      <View style={[globalStyles.containerDay, isCurrentDay && globalStyles.currentDay]}>
+      <View style={[globalStyles.containerDay, isCurrentDay && globalStyles.currentDayBackground]}>
         <Text style={[bigStyles.text, dayOff && globalStyles.dayOff]}>{titleDay}</Text>
       </View>
     </TouchableOpacity>

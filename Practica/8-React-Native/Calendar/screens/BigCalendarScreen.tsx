@@ -22,7 +22,7 @@ export const BigCalendarScreen: FC<RootStackScreenProps<'Root'>> = ({ navigation
 
   return (
     <View style={[globalStyles.container, styles.container]}>
-      <Text style={[styles.textYear]}>{dateTime.year}</Text>
+      <Text style={[globalStyles.currentDayColor, styles.textYear]}>{dateTime.year}</Text>
 
       <View style={[styles.breakYear]} lightColor={light.container} darkColor={dark.container} />
 
@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
   container: {},
 
   textYear: {
-    color: '#ff4500',
     fontWeight: '600',
     fontSize: 35,
   },

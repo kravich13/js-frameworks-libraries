@@ -23,8 +23,12 @@ export const globalStyles = StyleSheet.create({
     color: 'grey',
   },
 
-  currentDay: {
+  currentDayBackground: {
     backgroundColor: Colors.currentDay,
     borderRadius: 50,
+  },
+
+  currentDayColor: {
+    color: Colors.currentDay,
   },
 });

@@ -41,7 +41,7 @@ function RootNavigator() {
           name="Day"
           component={DayScreen}
           options={{
-            title: 'Day',
+            title: 'Slot list',
             animation: 'flip',
           }}
         />

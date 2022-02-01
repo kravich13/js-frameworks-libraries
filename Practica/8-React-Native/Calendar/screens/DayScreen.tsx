@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import React, { FC, useLayoutEffect } from 'react';
 import { StyleSheet } from 'react-native';
-import { DaysWeek, MemoNumbersWeek } from '../components/CalendarScreens';
+import { DaysWeek, NumbersWeek } from '../components/CalendarScreens';
 import { Text, View } from '../components/ThemesAndStyles';
 import { globalStyles } from '../globalStyles';
 import { RootStackScreenProps } from '../types';
@@ -20,8 +20,13 @@ export const DayScreen: FC<RootStackScreenProps<'Day'>> = ({ route, navigation }
   return (
     <View style={[globalStyles.container]}>
       <DaysWeek />
-      <MemoNumbersWeek fullDate={selectedDate} selectedDay={dateTime.day} />
+      <NumbersWeek fullDate={selectedDate} selectedDay={dateTime.day} />
       <Text style={styles.titleFullDate}>{titleFullDate}</Text>
+
+      <View>
+        <Text>To make an appointment 1</Text>
+        <Text>To make an appointment 2</Text>
+      </View>
     </View>
   );
 };
@@ -31,6 +36,7 @@ const styles = StyleSheet.create({
 
   titleFullDate: {
     fontSize: 16,
+    paddingBottom: 10,
     textAlign: 'center',
   },
 });

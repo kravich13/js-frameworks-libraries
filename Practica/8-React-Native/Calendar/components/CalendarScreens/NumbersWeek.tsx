@@ -10,7 +10,7 @@ import { Text, View } from '../ThemesAndStyles';
 
 const { dark, light } = Colors;
 
-export const MemoNumbersWeek: FC<INumbersWeek_Props> = ({ fullDate, selectedDay }) => {
+const MemoNumbersWeek: FC<INumbersWeek_Props> = ({ fullDate, selectedDay }) => {
   const backgroundColor = useThemeColor({ light: light.text, dark: dark.text }, 'text');
   const textColor = useThemeColor({ light: dark.text, dark: light.text }, 'text');
 
@@ -19,6 +19,8 @@ export const MemoNumbersWeek: FC<INumbersWeek_Props> = ({ fullDate, selectedDay 
 
   const isCurrentDay = DateTime.now().toFormat('yyyy LLL dd') === dateTime.toFormat('yyyy LLL dd');
 
+  const onPress = () => {};
+
   const renderItem = useCallback((day: number, index: number) => {
     const dayOff = index === 5 || index === 6;
     const currentDay = isCurrentDay && dateTime.day === day;
@@ -26,11 +28,11 @@ export const MemoNumbersWeek: FC<INumbersWeek_Props> = ({ fullDate, selectedDay 
     const notCurrentDaySelected = selectedDay === day && !currentDaySelected;
 
     return (
-      <TouchableOpacity style={[styles.containerTouch]} key={String(index)} activeOpacity={0.5}>
+      <TouchableOpacity style={[styles.containerTouch]} key={String(index)} activeOpacity={0.5} onPress={onPress}>
         <View
           style={[
             globalStyles.containerDay,
-            !!currentDaySelected && globalStyles.currentDay,
+            !!currentDaySelected && globalStyles.currentDayBackground,
             notCurrentDaySelected && { borderRadius: 50, backgroundColor },
           ]}
         >
@@ -39,7 +41,7 @@ export const MemoNumbersWeek: FC<INumbersWeek_Props> = ({ fullDate, selectedDay 
               styles.text,
               dayOff && globalStyles.dayOff,
               notCurrentDaySelected && { color: textColor },
-              isCurrentDayInList === day && { color: '#ff4500' },
+              isCurrentDayInList === day && globalStyles.currentDayColor,
             ]}
           >
             {day}

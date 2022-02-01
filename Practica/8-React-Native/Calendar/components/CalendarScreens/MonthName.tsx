@@ -1,13 +1,14 @@
 import _ from 'lodash';
 import React, { FC, useCallback, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
+import { globalStyles } from '../../globalStyles';
 import { IMonthName_Props } from '../../interfaces';
 import { Text, View } from '../ThemesAndStyles';
 
 export const MonthName: FC<IMonthName_Props> = ({ littleMonth, title, isCurrentMonth, firstDayWeek }) => {
   const daysWeek = useMemo(() => _.range(1, 8), []);
 
-  const sharedStyles = [styles.text, isCurrentMonth && styles.currentMonth];
+  const sharedStyles = [styles.text, isCurrentMonth && globalStyles.currentDayColor];
 
   const renderItem = useCallback(
     (dayNumber: number) => (
@@ -34,10 +35,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: `${100 / 7}%`,
-  },
-
-  currentMonth: {
-    color: '#ff4500',
   },
 
   text: {
