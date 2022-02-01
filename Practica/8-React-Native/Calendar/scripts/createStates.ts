@@ -37,23 +37,32 @@ export const numbersWeekState = (dateTime: DateTime) => {
   const day = dateTime.day;
   const weekDay = dateTime.weekday;
 
-  const state: number[] = [];
-
-  let posStart = 1;
+  const numbersList: number[] = [];
+  let isCurrentDayInList = 0;
 
   for (let i = 1; i <= 7; i++) {
     if (i < weekDay) {
-      state.push(dateTime.minus({ days: weekDay - i }).day);
+      const localDate = dateTime.minus({ days: weekDay - i });
+      numbersList.push(localDate.day);
+
+      if (DateTime.now().toFormat('yyyy LLL dd') === localDate.toFormat('yyyy LLL dd')) {
+        isCurrentDayInList = localDate.day;
+      }
     } else if (i > weekDay) {
       if (weekDay === 1 || weekDay === 7) {
-        state.push(dateTime.plus({ days: i - 1 }).day);
+        numbersList.push(dateTime.plus({ days: i - 1 }).day);
       } else {
-        state.push(dateTime.plus({ days: posStart++ }).day);
+        const localDate = dateTime.plus({ days: i - weekDay });
+        numbersList.push(localDate.day);
+
+        if (DateTime.now().toFormat('yyyy LLL dd') === localDate.toFormat('yyyy LLL dd')) {
+          isCurrentDayInList = localDate.day;
+        }
       }
     } else {
-      state.push(day);
+      numbersList.push(day);
     }
   }
 
-  return state;
+  return { numbersList, isCurrentDayInList };
 };

@@ -28,6 +28,7 @@ export const DayScreen: FC<RootStackScreenProps<'Day'>> = ({ route, navigation }
 
 const styles = StyleSheet.create({
   container: {},
+
   titleFullDate: {
     fontSize: 16,
     textAlign: 'center',

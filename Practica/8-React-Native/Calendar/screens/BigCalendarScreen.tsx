@@ -33,15 +33,18 @@ export const BigCalendarScreen: FC<RootStackScreenProps<'Root'>> = ({ navigation
 
 const styles = StyleSheet.create({
   container: {},
+
   textYear: {
     color: '#ff4500',
     fontWeight: '600',
     fontSize: 35,
   },
+
   breakYear: {
     height: 1,
     marginBottom: 20,
   },
+
   calendar: {
     flexDirection: 'row',
     flexWrap: 'wrap',

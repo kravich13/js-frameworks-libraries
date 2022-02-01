@@ -25,8 +25,10 @@ export const Day: FC<IDay_Props> = ({ fullDate, littleDay, dayOff }) => {
 
   if (littleDay) {
     return (
-      <View style={[littleStyles.container, isCurrentDay && sharedStyles.currentDay]}>
-        <Text style={littleStyles.text}>{titleDay}</Text>
+      <View style={littleStyles.container}>
+        <View style={[littleStyles.containerDay, isCurrentDay && globalStyles.currentDay]}>
+          <Text style={littleStyles.text}>{titleDay}</Text>
+        </View>
       </View>
     );
   }
@@ -37,7 +39,7 @@ export const Day: FC<IDay_Props> = ({ fullDate, littleDay, dayOff }) => {
       onPress={onPress}
       activeOpacity={0.5}
     >
-      <View style={isCurrentDay && sharedStyles.currentDay}>
+      <View style={[globalStyles.containerDay, isCurrentDay && globalStyles.currentDay]}>
         <Text style={[bigStyles.text, dayOff && globalStyles.dayOff]}>{titleDay}</Text>
       </View>
     </TouchableOpacity>
@@ -48,19 +50,21 @@ const sharedStyles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
-  },
-  currentDay: {
-    backgroundColor: '#ff4500',
-    borderRadius: 50,
   },
 });
 
 const littleStyles = StyleSheet.create({
   container: {
-    ...sharedStyles.container,
-    height: 18,
+    flex: 1,
+    paddingVertical: 1,
   },
+
+  containerDay: {
+    ...sharedStyles.container,
+    height: 16,
+    width: 16,
+  },
+
   text: {
     fontSize: 10,
     fontWeight: '600',
@@ -76,12 +80,12 @@ const bigStyles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 5,
   },
+
   text: {
-    paddingHorizontal: 7,
-    paddingVertical: 5,
     fontSize: 18,
     fontWeight: '600',
   },
+
   isNumber: {
     borderTopColor: 'grey',
     borderTopWidth: 1,

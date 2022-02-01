@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import { StyleSheet } from 'react-native';
 import { globalStyles } from '../../globalStyles';
 import { Text, View } from '../ThemesAndStyles';
 
-export const DaysWeek = () => {
+const MemoDaysWeek = () => {
   const daysWeek = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   const renderItem = useCallback((day: string, index: number) => {
@@ -19,11 +19,14 @@ export const DaysWeek = () => {
   return <View style={styles.container}>{daysWeek.map(renderItem)}</View>;
 };
 
+export const DaysWeek = memo(MemoDaysWeek);
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     marginBottom: 10,
   },
+
   text: {
     flex: 1,
     textAlign: 'center',

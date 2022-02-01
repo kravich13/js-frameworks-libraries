@@ -28,15 +28,18 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
   },
+
   dayContainer: {
     paddingVertical: 5,
     justifyContent: 'center',
     alignItems: 'center',
     width: `${100 / 7}%`,
   },
+
   currentMonth: {
     color: '#ff4500',
   },
+
   text: {
     fontSize: 20,
     fontWeight: '600',

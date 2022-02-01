@@ -15,27 +15,9 @@ export const MemoNumbersWeek: FC<INumbersWeek_Props> = ({ fullDate, selectedDay 
   const textColor = useThemeColor({ light: dark.text, dark: light.text }, 'text');
 
   const dateTime = DateTime.fromMillis(fullDate);
-  const numbersList = useMemo(() => numbersWeekState(dateTime), [dateTime]);
+  const { numbersList, isCurrentDayInList } = useMemo(() => numbersWeekState(dateTime), [dateTime]);
 
-  const dateNow = DateTime.now();
-
-  const isCurrentDay = dateNow.toFormat('yyyy LLL dd') === dateTime.toFormat('yyyy LLL dd');
-  const weekDay = dateTime.weekday;
-  let isCurrentDayInList = false;
-
-  let posStart = 1;
-
-  for (let i = 1; i <= 7; i++) {
-    if (i < weekDay) {
-      const localDate = dateTime.minus({ days: i });
-      isCurrentDayInList = dateNow.toFormat('yyyy LLL dd') === localDate.toFormat('yyyy LLL dd');
-    } else if (i > weekDay) {
-      const localDate = dateTime.plus({ days: posStart++ });
-      isCurrentDayInList = dateNow.toFormat('yyyy LLL dd') === localDate.toFormat('yyyy LLL dd');
-    }
-  }
-
-  console.log(isCurrentDay);
+  const isCurrentDay = DateTime.now().toFormat('yyyy LLL dd') === dateTime.toFormat('yyyy LLL dd');
 
   const renderItem = useCallback((day: number, index: number) => {
     const dayOff = index === 5 || index === 6;
@@ -46,9 +28,22 @@ export const MemoNumbersWeek: FC<INumbersWeek_Props> = ({ fullDate, selectedDay 
     return (
       <TouchableOpacity style={[styles.containerTouch]} key={String(index)} activeOpacity={0.5}>
         <View
-          style={[!!currentDaySelected && styles.selectedDay, notCurrentDaySelected && { borderRadius: 50, backgroundColor }]}
+          style={[
+            globalStyles.containerDay,
+            !!currentDaySelected && globalStyles.currentDay,
+            notCurrentDaySelected && { borderRadius: 50, backgroundColor },
+          ]}
         >
-          <Text style={[styles.text, dayOff && globalStyles.dayOff, notCurrentDaySelected && { color: textColor }]}>{day}</Text>
+          <Text
+            style={[
+              styles.text,
+              dayOff && globalStyles.dayOff,
+              notCurrentDaySelected && { color: textColor },
+              isCurrentDayInList === day && { color: '#ff4500' },
+            ]}
+          >
+            {day}
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -62,8 +57,7 @@ export const NumbersWeek = memo(MemoNumbersWeek);
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    marginBottom: 10,
-    borderColor: 'red',
+    marginBottom: 5,
   },
 
   containerTouch: {
@@ -71,14 +65,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  selectedDay: {
-    borderRadius: 50,
-    backgroundColor: '#ff4500',
-  },
-
   text: {
-    paddingHorizontal: 7,
-    paddingVertical: 5,
     fontSize: 18,
     fontWeight: '600',
   },

@@ -10,6 +10,7 @@ export const Colors = {
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorLight,
   },
+
   dark: {
     container: 'rgba(255,255,255,0.15)',
     text: '#fff',
@@ -18,5 +19,6 @@ export const Colors = {
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
   },
-  currentDay: 'ff4500',
+
+  currentDay: '#ff4500',
 };
