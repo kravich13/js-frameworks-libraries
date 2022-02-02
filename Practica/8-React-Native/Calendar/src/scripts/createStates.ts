@@ -50,7 +50,12 @@ export const numbersWeekState = (dateTime: DateTime) => {
       }
     } else if (i > weekDay) {
       if (weekDay === 1 || weekDay === 7) {
-        numbersList.push(dateTime.plus({ days: i - 1 }).day);
+        const localDate = dateTime.plus({ days: i - 1 });
+        numbersList.push(localDate.day);
+
+        if (DateTime.now().toFormat('yyyy LLL dd') === localDate.toFormat('yyyy LLL dd')) {
+          isCurrentDayInList = localDate.day;
+        }
       } else {
         const localDate = dateTime.plus({ days: i - weekDay });
         numbersList.push(localDate.day);

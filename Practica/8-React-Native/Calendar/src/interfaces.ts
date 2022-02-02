@@ -1,3 +1,5 @@
+import React from 'react';
+
 export interface IMonth_Props {
   fullDate: number;
   littleMonth: boolean;
@@ -23,7 +25,7 @@ export interface IDay_Props {
 
 export interface INumbersWeek_Props {
   fullDate: number;
-  selectedDay: number;
+  setSelectedDate: (clickWeekDay: number) => void;
 }
 
 export interface IMonthOrDay_State {

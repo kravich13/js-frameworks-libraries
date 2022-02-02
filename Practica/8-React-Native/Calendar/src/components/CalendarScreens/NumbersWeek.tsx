@@ -10,7 +10,7 @@ import { Text, View } from '../ThemesAndStyles';
 
 const { dark, light } = Colors;
 
-const MemoNumbersWeek: FC<INumbersWeek_Props> = ({ fullDate, selectedDay }) => {
+const MemoNumbersWeek: FC<INumbersWeek_Props> = ({ fullDate, setSelectedDate }) => {
   const backgroundColor = useThemeColor({ light: light.text, dark: dark.text }, 'text');
   const textColor = useThemeColor({ light: dark.text, dark: light.text }, 'text');
 
@@ -19,37 +19,44 @@ const MemoNumbersWeek: FC<INumbersWeek_Props> = ({ fullDate, selectedDay }) => {
 
   const isCurrentDay = DateTime.now().toFormat('yyyy LLL dd') === dateTime.toFormat('yyyy LLL dd');
 
-  const onPress = () => {};
+  const renderItem = useCallback(
+    (day: number, index: number) => {
+      const dayOff = index === 5 || index === 6;
+      const selectedDay = dateTime.day === day;
 
-  const renderItem = useCallback((day: number, index: number) => {
-    const dayOff = index === 5 || index === 6;
-    const currentDay = isCurrentDay && dateTime.day === day;
-    const currentDaySelected = currentDay && selectedDay;
-    const notCurrentDaySelected = selectedDay === day && !currentDaySelected;
+      const currentDaySelected = selectedDay && isCurrentDay;
+      const selectedDayNotCurrent = selectedDay && !isCurrentDay;
 
-    return (
-      <TouchableOpacity style={[styles.containerTouch]} key={String(index)} activeOpacity={0.5} onPress={onPress}>
-        <View
-          style={[
-            globalStyles.containerDay,
-            !!currentDaySelected && globalStyles.currentDayBackground,
-            notCurrentDaySelected && { borderRadius: 50, backgroundColor },
-          ]}
+      return (
+        <TouchableOpacity
+          style={[styles.containerTouch]}
+          key={String(index)}
+          activeOpacity={0.5}
+          onPress={() => setSelectedDate(index + 1)}
         >
-          <Text
+          <View
             style={[
-              styles.text,
-              dayOff && globalStyles.dayOff,
-              notCurrentDaySelected && { color: textColor },
-              isCurrentDayInList === day && globalStyles.currentDayColor,
+              globalStyles.containerDay,
+              !!currentDaySelected && globalStyles.currentDayBackground,
+              selectedDayNotCurrent && { borderRadius: 50, backgroundColor },
             ]}
           >
-            {day}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }, []);
+            <Text
+              style={[
+                styles.text,
+                dayOff && globalStyles.dayOff,
+                selectedDayNotCurrent && { color: textColor },
+                isCurrentDayInList === day && globalStyles.currentDayColor,
+              ]}
+            >
+              {day}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      );
+    },
+    [dateTime]
+  );
 
   return <View style={styles.container}>{numbersList.map(renderItem)}</View>;
 };
