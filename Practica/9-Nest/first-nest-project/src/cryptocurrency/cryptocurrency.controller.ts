@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { CryptocurrencyService } from './cryptocurrency.service';
 import { CreateCoinDto } from './dto/create-coin.dto';
 
@@ -13,7 +21,7 @@ export class CryptocurrencyController {
 
   @Get(':id')
   getCoin(@Param('id') id: string) {
-    return `Ticker: ${this.cryptocurrencyService.getById(id)}`;
+    return this.cryptocurrencyService.getById(id);
   }
 
   @Post()

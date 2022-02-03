@@ -27,7 +27,7 @@ export class CryptocurrencyService {
     return newCryptocurrency.save();
   }
 
-  async remove(id: string): Promise<Cryptocurrency> {
-    return this.cryptocurrencyModel.findByIdAndRemove(id);
+  remove(id: string): Promise<Cryptocurrency> {
+    return this.cryptocurrencyModel.findByIdAndRemove(id).exec();
   }
 }
