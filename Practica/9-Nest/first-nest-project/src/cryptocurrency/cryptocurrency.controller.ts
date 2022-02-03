@@ -1,15 +1,6 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { CryptocurrencyService } from './cryptocurrency.service';
 import { CreateCoinDto } from './dto/create-coin.dto';
-import { UpdateCoinDto } from './dto/update-coin.dto';
 
 @Controller('cryptocurrency')
 export class CryptocurrencyController {
@@ -20,9 +11,9 @@ export class CryptocurrencyController {
     return this.cryptocurrencyService.getAll();
   }
 
-  @Get(':ticker')
-  getCoin(@Param('ticker') ticker: string) {
-    return `Ticker: ${this.cryptocurrencyService.getByTicker(ticker)}`;
+  @Get(':id')
+  getCoin(@Param('id') id: string) {
+    return `Ticker: ${this.cryptocurrencyService.getById(id)}`;
   }
 
   @Post()
@@ -30,18 +21,8 @@ export class CryptocurrencyController {
     return this.cryptocurrencyService.create(createCoin);
   }
 
-  @Put(':ticker')
-  updateCoin(
-    @Body() updateCoin: UpdateCoinDto,
-    @Param('ticker') ticker: string,
-  ) {
-    if (ticker.toLocaleUpperCase() === 'ETH') {
-      return { ticker: 'ETH', fullName: 'Ethereum', price: updateCoin.price };
-    }
-
-    return 'Failed';
+  @Delete(':id')
+  deleteCoin(@Param('id') id: string) {
+    return this.cryptocurrencyService.remove(id);
   }
-
-  @Delete()
-  deleteCoin() {}
 }

@@ -1,20 +1,33 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateCoinDto } from './dto/create-coin.dto';
+import {
+  Cryptocurrency,
+  CryptocurrencyDocument,
+} from './schemas/cryptocurrency.schema';
 
 @Injectable()
 export class CryptocurrencyService {
-  private coins = [];
+  constructor(
+    @InjectModel(Cryptocurrency.name)
+    private cryptocurrencyModel: Model<CryptocurrencyDocument>,
+  ) {}
 
-  getAll() {
-    return this.coins;
+  getAll(): Promise<Cryptocurrency[]> {
+    return this.cryptocurrencyModel.find().exec();
   }
 
-  getByTicker(ticker: string) {
-    return this.coins.find((coin) => coin.ticker === ticker);
+  getById(id: string): Promise<Cryptocurrency> {
+    return this.cryptocurrencyModel.findById(id).exec();
   }
 
-  create(coinData: CreateCoinDto) {
-    this.coins.push({ id: Date.now().toString(), ...coinData });
-    return `${coinData.ticker} was created`;
+  create(coinDto: CreateCoinDto): Promise<Cryptocurrency> {
+    const newCryptocurrency = new this.cryptocurrencyModel(coinDto);
+    return newCryptocurrency.save();
+  }
+
+  async remove(id: string): Promise<Cryptocurrency> {
+    return this.cryptocurrencyModel.findByIdAndRemove(id);
   }
 }
