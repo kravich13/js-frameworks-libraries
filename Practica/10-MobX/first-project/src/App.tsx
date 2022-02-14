@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import './App.css';
-import { AsyncPosts } from './components/AsyncPosts';
-import { PostForm } from './components/PostForm';
-import { Posts } from './components/Posts';
+import { Comments } from './components/Comments';
+import { Navbar } from './components/Navbar';
+import { Todos } from './components/Todos';
 
 function App() {
+  const [page, setPage] = useState('Todos');
+
   return (
-    <div className="App">
-      <PostForm />
-      <Posts />
-      <AsyncPosts />
-    </div>
+    <QueryClientProvider client={new QueryClient()}>
+      <div className="App">
+        <h1>Test React-query</h1>
+        <Navbar setPage={setPage} />
+        <div>{page === 'Todos' ? <Todos /> : <Comments />}</div>
+
+        {/* <PostForm />
+        <Posts />
+        <AsyncPosts /> */}
+      </div>
+    </QueryClientProvider>
   );
 }
 
