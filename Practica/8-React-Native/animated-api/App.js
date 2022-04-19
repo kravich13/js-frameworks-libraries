@@ -1,13 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { FadeInView } from './components/FadeInView';
-import { MoveElement } from './components/MoveElement';
+import { StyleSheet, View } from 'react-native';
+import { PanResponderComponent, MoveElement, Sequence, TaskAnimation, TranformTranslate } from './components/';
 
 export default function App(props) {
   return (
     <View style={styles.container}>
-      <MoveElement />
+      <TaskAnimation />
+      {/* <FadeInOut /> */}
+      {/* <PanResponderComponent /> */}
+      {/* <MoveElement /> */}
       {/* <FadeInView>
         <Text>HELLO</Text>
       </FadeInView> */}
