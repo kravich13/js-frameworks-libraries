@@ -1,7 +1,8 @@
-import React, { useCallback } from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import React, { useCallback } from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyledText } from '../../styledComponents';
 import { useStore } from '../../zustand/useStore';
 
 interface IHeaderLeftProps {
@@ -22,7 +23,10 @@ export const HeaderLeft: React.VFC<IHeaderLeftProps> = ({ headerTintColor }) => 
   return (
     <TouchableOpacity style={styles.container} onPress={handlerPress}>
       <AntDesign name="left" size={24} color="crimson" />
-      <Text style={[styles.text, { color: headerTintColor }]}>Back to QR</Text>
+
+      <StyledText fontSize={16} fontWeight={600} color={headerTintColor}>
+        Back to QR
+      </StyledText>
     </TouchableOpacity>
   );
 };
@@ -31,9 +35,5 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  text: {
-    fontSize: 16,
-    fontWeight: '600',
   },
 });

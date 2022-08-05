@@ -4,7 +4,10 @@ import shallow from 'zustand/shallow';
 import { useStore } from '../zustand/useStore';
 
 export const useCryptoAlert = () => {
-  const { alertText, resetAlert } = useStore(({ alertText, resetAlert }) => ({ alertText, resetAlert }), shallow);
+  const { alertText, resetAlert } = useStore(
+    ({ alertText, resetAlert }) => ({ alertText, resetAlert }),
+    shallow
+  );
 
   useEffect(() => {
     if (alertText) {

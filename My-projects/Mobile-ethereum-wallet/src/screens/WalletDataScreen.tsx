@@ -7,7 +7,10 @@ import { WalletInfo } from '../components/WalletInfo';
 import { RootStackScreenProps } from '../types';
 import { useStore } from '../zustand/useStore';
 
-export const WalletDataScreen: React.VFC<RootStackScreenProps<'WalletData'>> = ({ navigation, route }) => {
+export const WalletDataScreen: React.VFC<RootStackScreenProps<'WalletData'>> = ({
+  navigation,
+  route,
+}) => {
   const { address, refreshing, getBalance, onRefresh, getTransactions } = useStore(
     ({ address, refreshing, getBalance, onRefresh, getTransactions }) => ({
       address,
@@ -25,8 +28,7 @@ export const WalletDataScreen: React.VFC<RootStackScreenProps<'WalletData'>> = (
 
   useEffect(() => {
     (async () => {
-      await getBalance(address);
-      await getTransactions(address);
+      await Promise.all([getBalance(address), getTransactions(address)]);
     })();
   }, [address]);
 

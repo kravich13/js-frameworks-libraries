@@ -105,12 +105,6 @@ export const useStore = create<IUseStore>((set, get) => ({
           set({ isPendingTransaction: false });
         });
 
-      // const newTransactions = get()
-      //   .transactions.map((data) => ({ ...data }))
-      //   .filter((data, index, arr) => index !== arr.length - 1);
-
-      // newTransactions.unshift({ from: fromAddress, to: toAddress, value, txreceipt_status: '0' });
-
       set({ alertText: 'Transaction has been sent' });
     } catch (err) {
       console.warn(err);

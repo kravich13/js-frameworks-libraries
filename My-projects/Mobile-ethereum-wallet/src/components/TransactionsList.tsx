@@ -1,34 +1,48 @@
-import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useCallback } from 'react';
+import { StyleSheet, View } from 'react-native';
 import shallow from 'zustand/shallow';
+import { StyledCardTitle, StyledColumn, StyledText } from '../styledComponents';
 import { IDataTransaction } from '../zustand/interfaces';
 import { useStore } from '../zustand/useStore';
 import { Transaction } from './Transaction';
 
 export const TransactionsList: React.VFC = () => {
   const { transactions, transactionCount, isPendingTransaction } = useStore(
-    ({ transactions, transactionCount, isPendingTransaction }) => ({ transactions, transactionCount, isPendingTransaction }),
+    ({ transactions, transactionCount, isPendingTransaction }) => ({
+      transactions,
+      transactionCount,
+      isPendingTransaction,
+    }),
     shallow
   );
 
-  const renderItem = useCallback((data: IDataTransaction, index) => <Transaction data={data} key={index} />, [transactions]);
+  const renderItem = useCallback(
+    (data: IDataTransaction, index) => <Transaction data={data} key={index} />,
+    [transactions]
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Transactions</Text>
+      <StyledCardTitle>Transactions</StyledCardTitle>
 
-      <Text style={[styles.latestTransactions, { color: isPendingTransaction ? 'lime' : 'white' }]}>
+      <StyledText color={isPendingTransaction ? 'lime' : 'white'} fontWeight={600} mb={15}>
         Transactions pending: {isPendingTransaction ? 1 : 0}
-      </Text>
+      </StyledText>
 
-      <Text style={styles.latestTransactions}>
+      <StyledText color={'white'} fontWeight={600} mb={15}>
         Latest {transactions.length} from a total of {transactionCount} transactions
-      </Text>
+      </StyledText>
 
-      <View style={styles.columNames}>
-        <Text style={[styles.columnName, { flexGrow: 3 }]}>From</Text>
-        <Text style={[styles.columnName, { flexGrow: 3 }]}>To</Text>
-        <Text style={[styles.columnName, { flexGrow: 1.5 }]}>Value</Text>
+      <View style={styles.columnNames}>
+        <StyledColumn flexGrow={3} header>
+          From
+        </StyledColumn>
+        <StyledColumn flexGrow={3} header>
+          To
+        </StyledColumn>
+        <StyledColumn flexGrow={1.5} header>
+          Value
+        </StyledColumn>
       </View>
 
       <View>{transactions.map(renderItem)}</View>
@@ -44,18 +58,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginBottom: 30,
   },
-  title: {
-    color: 'white',
-    paddingBottom: 30,
-    fontSize: 16,
-    fontWeight: '800',
-  },
-  latestTransactions: {
-    color: 'white',
-    fontWeight: '600',
-    paddingBottom: 15,
-  },
-  columNames: {
+  columnNames: {
     paddingVertical: 5,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -64,10 +67,5 @@ const styles = StyleSheet.create({
     borderBottomColor: 'grey',
     borderTopWidth: 1,
     borderBottomWidth: 1,
-  },
-  columnName: {
-    flex: 1,
-    paddingHorizontal: 10,
-    fontWeight: '700',
   },
 });
