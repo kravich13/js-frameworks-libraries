@@ -11,3 +11,4 @@ Practica/**/*package-lock.json
 *node_modules
 .expo
 .env
+.vscode

@@ -1,0 +1,8 @@
+<h1>{{ title | titlecase }}</h1>
+
+<p *ngIf="loading">Loading...</p>
+
+<app-about
+  *ngFor="let product of products$ | async; let i = index"
+  [product]="product"
+></app-about>

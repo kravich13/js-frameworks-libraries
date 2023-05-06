@@ -1,0 +1,21 @@
+<div>
+  <img [src]="product.image" [alt]="product.title" />
+
+  <h2>{{ product.title }}</h2>
+
+  <p>
+    Price: <span>{{ product.price }}</span>
+  </p>
+
+  <button
+    (click)="details = !details"
+    [ngStyle]="{ background: details ? 'blue' : 'yellow' }"
+  >
+    {{ details ? "Hide" : "Show" }} Details
+  </button>
+
+  <div *ngIf="details">
+    <p>{{ product.description }}</p>
+    <p>Rate: {{ product.rating.rate }}</p>
+  </div>
+</div>
