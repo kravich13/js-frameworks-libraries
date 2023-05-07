@@ -20,6 +20,7 @@
     - [Обработка ошибок](#обработка-ошибок)
   - [Pipe](#pipe)
   - [Директивы](#директивы)
+  - [Навигация](#навигация)
 
 Основная суть Ангуляра в том, что он имеет модульный подход. Здесь с самого начала предустановлен Typescript, проект имеет чёткую структуру и для сохранения структуры используются команды CLI для создания уже готовых и подключенных модулей.
 
@@ -594,4 +595,57 @@ export class FocusDirective implements OnInit, AfterViewInit {
 <!-- create-product.component.html -->
 
 <input placeholder="Product name" id="title" formControlName="title" appFocus />
+```
+
+---
+
+## Навигация
+
+Есть специальный модуль для настройки навигации:
+
+```ts
+// app-routing.module.ts
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
+// регистрируем по какому пути какая страница (компонент)
+const routes: Routes = [
+  { path: '', component: ProductPageComponent },
+  { path: 'about', component: AboutPageComponent },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+```
+
+Инициализируем сам роутер в `html`:
+
+```html
+<!-- app-component.html -->
+
+<app-global-error></app-global-error>
+
+<app-navigation></app-navigation>
+
+<div>
+  <!-- все роутеры находятся здесь -->
+  <router-outlet></router-outlet>
+</div>
+```
+
+Навигации между страницами происходит так:
+
+```html
+<nav>
+  <h1>First Angular App</h1>
+
+  <span>
+    <a routerLink="/">Products</a>
+    <a routerLink="/about">About</a>
+  </span>
+</nav>
 ```
