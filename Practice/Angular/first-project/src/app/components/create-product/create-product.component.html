@@ -1,0 +1,14 @@
+<form [formGroup]="form" (submit)="submit()">
+  <input
+    placeholder="Product name"
+    id="title"
+    formControlName="title"
+    appFocus
+  />
+
+  <p *ngIf="title.errors?.['minlength'] && title.touched" class="error">
+    Fill title with min length 6
+  </p>
+
+  <button type="submit">Create</button>
+</form>

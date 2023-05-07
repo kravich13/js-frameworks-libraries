@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IProduct } from './models/product';
 import { ProductsService } from './services/products.service';
 import { Observable, tap } from 'rxjs';
+import { ModalService } from './services/modal.service';
 
 @Component({
   selector: 'app-root',
@@ -11,23 +12,28 @@ import { Observable, tap } from 'rxjs';
 export class AppComponent implements OnInit {
   title = 'first-project';
 
+  term = '';
+
   loading = false;
   // products: IProduct[] = [];
-  products$: Observable<IProduct[]>;
+  // products$: Observable<IProduct[]>;
 
-  constructor(private productsService: ProductsService) {}
+  constructor(
+    public productsService: ProductsService,
+    public modalService: ModalService
+  ) {}
 
   ngOnInit() {
     this.loading = true;
-    this.products$ = this.productsService.getAll().pipe(
-      tap(() => {
-        this.loading = false;
-      })
-    );
 
-    // this.productsService.getAll().subscribe((products) => {
-    //   this.products = products;
-    //   this.loading = false;
-    // });
+    // this.products$ = this.productsService.getAll().pipe(
+    //   tap(() => {
+    //     this.loading = false;
+    //   })
+    // );
+
+    this.productsService.getAll().subscribe(() => {
+      this.loading = false;
+    });
   }
 }
