@@ -1,0 +1,20 @@
+<div>
+  <form>
+    <input type="text" placeholder="Filter by city" #filter />
+
+    <button
+      class="primary"
+      type="button"
+      (click)="filterResults(filter.value); $event.preventDefault()"
+    >
+      Search
+    </button>
+  </form>
+</div>
+
+<div class="results">
+  <app-housing-location
+    *ngFor="let housingLocation of filteredLocationList"
+    [housingLocation]="housingLocation"
+  ></app-housing-location>
+</div>
